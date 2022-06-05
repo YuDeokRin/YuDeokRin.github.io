@@ -5,7 +5,7 @@ title: "드디어 블로그 시작하며..."
 
 # post specific
 # if not specified, .name will be used from _data/owner.yml
-author: Dante
+author: "Dante"
 
 # multiple category is not supported
 category:
@@ -19,7 +19,7 @@ img: ":Sisyphus.jpg"
 #comments_disable: true
 
 # publish date
-date: 2022-06-03 14:17:00 +0900
+date: 2022-06-04 20:14:51 +0900
 
 # seo
 # if not specified, date will be used.
