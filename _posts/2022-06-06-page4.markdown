@@ -11,16 +11,16 @@ category: auto generated
 # multiple tag entries are possible
 tags:
 # thumbnail image for post
-img: ""
+img: ":method.jpg"
 # disable comments on this page
 comments_disable: true
 
 # publish date
-date: 2022-06-05 20:13:00 +0900
+date: 2022-06-06 23:25:00 +0900
 
 # seo
 # if not specified, date will be used.
-#meta_modify_date: 2022-06-06 23:01:00 +0900
+#meta_modify_date: 2022-06-06 23:25:00 +0900
 # check the meta_common_description in _data/lang/[language].yml
 #meta_description: ""
 
