@@ -11,7 +11,7 @@ category: auto generated
 # multiple tag entries are possible
 tags:
 # thumbnail image for post
-img: ":grow_together_cover.jpg"
+img: ":grow_together_cover3.jpg"
 # disable comments on this page
 comments_disable: true
 
@@ -44,6 +44,8 @@ date: 2022-06-07 23:58:00 +0900
 
 ### 2022.05.31
 
+![](../assets/img/posts/grow_together_cover.jpg)
+
 > ### 글을 쓰기에 앞 서
 
 글쓴이는 이 책을 알게 된 경로는 기억을 더자바지기(포비)님이 유튜브 채널에서 소개해준 것 같다.
@@ -52,19 +54,19 @@ date: 2022-06-07 23:58:00 +0900
 
 추천을 받고 바로 구매하였지만, 몇 개월간 서재에 그냥 먼지만 쌓인 채 있었다.
 
-> ### 먼지 속 보물
+> ### 책을 읽게된 동기
 
 이번 SSAFY 8기를 지원하게 되면서 자소서 문항 중 향 후 어떤 SW 개발자가 되고 싶은지에 관한 질문이 있었다.
 누군가에게 쉽게 글로 작성되는 글일 수 있지만, 나는 떳떳하게 써 내려가지 못했다.
 
 그때의 감정을 한 마디로 말하면 무척 부끄러웠다.
 
-![심슨-좌절](https://user-images.githubusercontent.com/56623911/172410673-8504cf7d-6d71-4962-aef8-96e0ee959745.jpg)
+![giphy](https://user-images.githubusercontent.com/56623911/172419544-4cd74950-1926-409f-a421-15590afde3f8.gif)
 
 
 오만가지의 생각이 들었다. 컴퓨터소프트웨어 공학을 전공하고 졸업했는데 나는 그런 짧은 생각도 안 하고 살아왔는가 ? ….
 
-![생각](https://user-images.githubusercontent.com/56623911/172411505-95acd16a-a0e5-41eb-ab54-f375a69ff610.jpg)
+![giphy](https://user-images.githubusercontent.com/56623911/172419818-278eab8e-bde3-489f-93a3-dfb37dd08181.gif)
 
 맹목적으로 정말 나는 공부만 하면 잘될 거라는 미신으로 공부만 하려고 했던 거 같다.  마치 과거 나의 재수생활처럼…  계속 순환되어오는 나의 삶.  이번에는 정말로 이 악의 순환을 끊고 더 나은 사람, 더 나은 프로그래머가 되기 위해서..쇠똥구리처럼 doing
 
