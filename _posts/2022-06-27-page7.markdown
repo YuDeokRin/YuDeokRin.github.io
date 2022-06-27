@@ -41,9 +41,10 @@ date: 2022-06-27 16:15:00 +0900
 {%- include util/auto-content-generator.liquid -%}
 
 <!-- outline-start -->
-# Effective Java
 
 # Item 1.  생성자 대신 정적 팩터리 메서드를 고려하라
+
+
 
 ## 정적팩토리 메소드의 장점
 
