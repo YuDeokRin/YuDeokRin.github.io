@@ -11,7 +11,7 @@ category: auto generated
 # multiple tag entries are possible
 tags:
 # thumbnail image for post
-img: ":Eff.png"
+img: ":Eff3.jpg"
 # disable comments on this page
 comments_disable: true
 

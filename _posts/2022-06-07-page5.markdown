@@ -11,7 +11,7 @@ category: auto generated
 # multiple tag entries are possible
 tags:
 # thumbnail image for post
-img: ":grow_together_cover.jpg"
+img: ":togeter.jpg"
 # disable comments on this page
 comments_disable: true
 
