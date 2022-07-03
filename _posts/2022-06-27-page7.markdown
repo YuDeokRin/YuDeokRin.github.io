@@ -9,7 +9,7 @@ title: Effective-Java(Item1)
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible
-tags:
+tags: [Effective_Java, Java]
 # thumbnail image for post
 img: ":Eff3.jpg"
 # disable comments on this page

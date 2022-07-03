@@ -9,7 +9,7 @@ title: The Java Manipulation(1)
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible`
-tags: [java, 백기선, 다양한 조작 코드방법]
+tags: [Java,The Java Manipulation]
 # thumbnail image for post
 img: ":java.jpg"
 # disable comments on this page

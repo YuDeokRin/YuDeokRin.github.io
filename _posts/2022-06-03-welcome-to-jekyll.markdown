@@ -11,8 +11,7 @@ author: "Dante"
 category:
 
 # multiple tag entries are possible
-tags: [jekyll, sample, test]
-
+tags:
 # thumbnail image for post
 img: ":Sisyphus.jpg"
 # disable comments on this page

@@ -9,7 +9,7 @@ title: GithubPage 개설 과정 1
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible
-tags:
+tags: [jekyll]
 # thumbnail image for post
 img: ":githubpage.jpg"
 # disable comments on this page

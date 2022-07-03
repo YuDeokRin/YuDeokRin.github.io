@@ -9,7 +9,7 @@ title: The Java Manipulation(2)
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible`
-tags:
+tags: [Java,The Java Manipulation]
 # thumbnail image for post
 img: ":java.jpg"
 # disable comments on this page

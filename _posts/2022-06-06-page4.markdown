@@ -9,7 +9,7 @@ title: 프로그래밍 왕초식(나누기)
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible
-tags:
+tags: [Programming, Basic, Java]
 # thumbnail image for post
 img: ":method2.jpg"
 # disable comments on this page

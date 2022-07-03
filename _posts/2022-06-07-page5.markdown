@@ -9,7 +9,7 @@ title: (도서 리뷰) 함께 자라기 (0)
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible
-tags:
+tags: [BookReview , Book]
 # thumbnail image for post
 img: ":togeter.jpg"
 # disable comments on this page

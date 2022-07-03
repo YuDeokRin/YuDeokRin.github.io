@@ -9,7 +9,7 @@ title: 순열, 조합 정리
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible
-tags:
+tags: [Math]
 # thumbnail image for post
 img: ":dice.jpg"
 # disable comments on this page
