@@ -11,7 +11,7 @@ author: "Dante"
 category:
 
 # multiple tag entries are possible
-tags: [jekyll, example post, sample, test]
+tags: [jekyll, sample, test]
 
 # thumbnail image for post
 img: ":Sisyphus.jpg"
