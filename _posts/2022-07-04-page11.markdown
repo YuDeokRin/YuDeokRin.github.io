@@ -45,6 +45,7 @@ date: 2022-07-04 14:40:00 +0900
 
 ## 섞여 있는 계산 로직과 반영 로직 분리
 
+![frist](https://user-images.githubusercontent.com/56623911/177091448-f7f4bd57-1117-46b7-867d-c3fcb78cbdfa.jpg)
 ```java
 public void provideServicePeriod(Long ordNo, LocalDate loginDate){
 	... period, order 구하고 검사하는 코드 생략
@@ -119,6 +120,9 @@ if(조건) {
 - 이를 위해 다음 항복 확인
   - 계산하는데 필요한 값  → 즉 입력 값
   - 계산 결과로 생성되는 값 → 즉 출력 값
+
+
+![두번쨰](https://user-images.githubusercontent.com/56623911/177091769-140df695-9b3d-4e3b-aa22-dc9756dd8d7b.jpg)
 
 ```java
 public void provideServicePeriod(Long ordNo, LocalDate loginDate){
