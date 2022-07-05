@@ -46,6 +46,7 @@ date: 2022-07-04 14:40:00 +0900
 ## 섞여 있는 계산 로직과 반영 로직 분리
 
 ![frist](https://user-images.githubusercontent.com/56623911/177091448-f7f4bd57-1117-46b7-867d-c3fcb78cbdfa.jpg)
+
 ```java
 public void provideServicePeriod(Long ordNo, LocalDate loginDate){
 	... period, order 구하고 검사하는 코드 생략
