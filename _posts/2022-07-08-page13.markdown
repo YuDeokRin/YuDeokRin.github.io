@@ -45,7 +45,7 @@ date: 2022-07-05 21:10:00 +0900
 
 람다가 하는 일이 기존 메서드 또는 생성자를 호출하는 거라면, 메소드 레퍼런스를 사용해서 매우 간결하게 표현할 수 있다.
 
-## 메소드 참조하는 방법
+## 메소드 참조 정리
 
 | 스태릭 메소드 참조 | 타입::스태틱 메소드 |
 | --- | --- |
@@ -55,6 +55,19 @@ date: 2022-07-05 21:10:00 +0900
 
 - 메소드 또는 생성자의 매개변수로 람다의 입력값을 받는다.
 - 리턴값 또는 생성한 객체를 람다의 리턴값이다.
+
+### Wrapping Up Method References
+
+출처 : [dev.java에서 제공하는 메소드 참조 정리](https://dev.java/learn/writing-lambda-expressions-as-method-references/)
+
+여기서 제공하는 표가 조금 더 이해하기가 쉽게 나와 있는 거같아서 가져옴
+
+| Name | Syntax | Lambda equivalent |
+| --- | --- | --- |
+| static | RefType::staticMethod | (args) → RefType.staticMethod(args) |
+| bound | expr::instanceMethod | (args) →expr.instanceMethod(args) |
+| unbound | RefType::instanceMethod | (arg0, arg1) → arg0.instanceMethod(rest) |
+| constructor | ClassName::new | (args) → new ClassName(args) |
 
 int로 받아서 문자열로 내보내는 것
 
@@ -66,7 +79,7 @@ class Greeting{
 	public Greeting(){
 	}
 
-	//생성자 메소드 (매개변수가 있음 )
+	//생성자 메소드 (매개변수가 있음)
 	public Greeting(String name){
 		this.name = name;
 	}
@@ -90,7 +103,7 @@ public class App{
 }
 ```
 
-메소드 레퍼런스는 구현을 하는게 아니라 기존에 존재하는 메서드들이 있으면 그 메소드를 참조하는 것이다.
+구현을 하는게 아니라 기존에 존재하는 메서드들이 있으면 그 메소드를 참조하는 것이다.
 
 메소드 자체를 Function Interface의 구현체로 쓰는 것이다.
 
@@ -98,7 +111,7 @@ public class App{
 
 - 입력값과 결과값의 Type이 같은 경우
   - Function<Type,  Type>      → 두개의 타입을 써야함
-  - UnaryOperator<Type> → 타입을 한번만 쓰면됨
+  - UnaryOperator<Type>       → 타입을 한번만 쓰면됨
 
 UnaryOperator는 입력값과 결과값이 Type이 같은 경우에 자주 쓴다.
 
@@ -113,7 +126,7 @@ public class App{
 }
 ```
 
-- (s) -> "hi" + s   이 부분에서 하는 일이 Greeting 밑에 메소드랑 같은 행위를한다.
+- `(s) -> "hi" + s`  이 부분에서 하는 일이 Greeting 아래의 메소드랑 같은 행위를한다.
 
 ```java
 public class Greeting{
@@ -123,7 +136,7 @@ public class Greeting{
 }
 ```
 
-- Greeting 에 메소드랑 같다.
+>  그렇다면 메소드 레퍼런스로 표현하게 된다면 ??
 
 ### 메소드 레퍼런스로 표현
 
@@ -137,6 +150,8 @@ public class App{
 	}
 }
 ```
+
+**UnaryOperator<String> hi**는 구현체이고 Type은 **Greeting**이고 Greeting class에 **static method**를 참조하고 있다.
 
 | 스태릭 메소드 참조 | 타입::스태틱 메소드 |
 | --- | --- |
@@ -153,6 +168,8 @@ public class App{
 }
 ```
 
+- Greeting에 (인스턴스메소드)hello메소드를 참조했다.
+
 ```java
 class Greeting{
 	private String name;
@@ -164,13 +181,11 @@ class Greeting{
 }
 ```
 
-- Greeting에 (인스턴스메소드)hello메소드를 참조했다.
-
 ```java
 UnaryOperator<String> hello = greeting::hello;
 ```
 
-- 참조는 했지만 호출은 아니다.
+- 참조는 했지만 호출은 아니다.  이 코드를 쓴다고해서 아무런 일이 발생하지 않는다.
 
 ```java
 System.out.println(hello.apply("Dante"));
@@ -181,10 +196,10 @@ System.out.println(hello.apply("Dante"));
 ## 생성자 참조
 
 - 생성자
-  - 입력값이 없고 결과값이 있음
-  - 입력값이 있고 결과값이 있음
+  1. 입력값이 없고 결과값이 있음
+  2. 입력값이 있고 결과값이 있음
 
-### 입력값이 없고 결과값이 있음  → Supplier< >
+### 1. 입력값이 없고 결과값이 있음  → Supplier< >
 
 ```java
 public class App{
@@ -197,7 +212,7 @@ public class App{
 
 ```
 
-- 생성자의 return 값은 ?  그 객체의 타입이다.
+- 생성자를 호출할 때 return 값은 ?  그 객체의 타입(Greeting)이다.
 
 - 입력값이 없는데 결과값이 있는 것 (함수형 인터페이스 : Supplier<>)
 
@@ -205,13 +220,19 @@ public class App{
 Supplier<Greeting> newGreeting = Greeting::new;
 ```
 
-- 객체를 생성
+가져올 Type은 Greeting ,  메소드 레퍼런스로 Greeting을 만드는 방법  new 해서 만들어 낸다.
+
+하지만 이 자체로 인스턴스를 만든 것이 아니다.  실제로 Supplier이지 Greeting이 아니다.
+
+그래서 …
+
+- get()을 통해서 객체를 생성 한다.
 
 ```java
 Greeting greeting = newGreeting.get();
 ```
 
-## 입력값이 있고 결과값이 있음
+### 2. 입력값이 있고 결과값이 있음   → Funtion< >
 
 ```java
 public class Greeting{
@@ -220,6 +241,8 @@ public class Greeting{
 	}
 }
 ```
+
+입력 값은 String, return 값은 Greeting이다.  → Function 인터페이스가 적합하다
 
 ```java
 public class App{
@@ -232,7 +255,8 @@ public class App{
 - 위에 있는 입력값이 없고 결과값이 있는 것(Supplier)랑 비슷해 보인다.
   하지만 다르다. 여기서 new는 레퍼런스는 같아보이지만, 서로 다른 생성자를 참조하고 있다.
 
-여기서의 new 는 매개변수가 있는 Greeting(String name) 이지만, Supplier의 new는 Greeting() 을 호출한다.  주의해야한다!
+여기서의 new 는 매개변수가 있는 Greeting(String name) 이지만, Supplier의 new는 Greeting() 을 호출한다.  주의해야한다 !
 
-***참고 : 백기선강의 - The Java8***
+### 참고 : [백기선 - The Java8 ](https://www.inflearn.com/course/the-java-java8/dashboard)
+
 <!-- outline-end -->
