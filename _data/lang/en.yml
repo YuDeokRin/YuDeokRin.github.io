@@ -27,7 +27,7 @@ not_found:
 no_translation_tooltip: No Translation
 
 navigation:
-  brand_sub_text: 몽상하는 개발자
+  brand_sub_text: Just Programmer
   contact_header: Contact
 
 color_scheme_switch_tooltip: Color scheme
@@ -168,7 +168,7 @@ privacy-policy:
 # seo meta this is needed for each language
 # If meta_description is not defined in front matter, it's created from (post / page) content,
 # if it has no content, this will be used for page description. It is also used in manifest.json
-meta_common_description: &meta_info  Software 전공하였습니다.
+meta_common_description: &meta_info  "I'm not a great programmer, I'm just a good programmer with great habits."
 
 auto_content:
   title: Sample post (auto generated)
