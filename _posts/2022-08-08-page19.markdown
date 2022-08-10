@@ -41,42 +41,24 @@ date: 2022-08-08 23:55:00 +0900
 {%- include util/auto-content-generator.liquid -%}
 
 <!-- outline-start -->
-# [Chapter 1] 환경설정
 
-## 1. git 설치
 
-→ 글쓴이는  mac환경에서 brew를 이용하여 손쉽게 다운 받았다.
 
-home brew 명령어
+## 1. MariaDB(또는 Mysql) 설치 및 테스트
 
-`git install : brew install git`
+글쓴이는  Homebrew 3.5.8 버젼을 사용하고 있다.
 
-`installed git version check : brew info git`
-
-## 2. JDK 설치, 개발 통합환경(IDE) 설치
-
-글쓴이는 java 11을 쓰고 있다.
-
-## 3. 웹 개발 설정 및 플러그인 설치
-
-- JavaEE 플러그인 설치 →JSP 웹 개발 환경
-- Javascript 파일 인식 설정
-- Lombok 설치
-- 폰트 및 인코딩 설정 : Hack Nerd Font Mono , UTF - 8(CSS, HTML, JSP)
-
-## 4. MariaDB(또는 Mysql) 설치 및 테스트
-
-MariaDB설치 : `brew install mariadb`
+##### MariaDB설치 : `brew install mariadb`
 
 - 경로 /opt/homebrew/Cellar/mariadb/
 
-mysql 설치 :  `brew install mysql`
+##### mysql 설치 :  `brew install mysql`
 
 - /opt/homebrew/Cellar/mysql/
 
-기존에 mysqld이 있었다. 그런데 mariadb 다운 받으려고 home brew를 했는데….  💥 충돌
+기존에 mysqld이 있었다. 그런데 mariadb 다운 받으려고 homebrew를 했는데….  💥 충돌
 
-※주의 :  mysql이 있는 상태에서 Mariadb 를 brew 로 install할 경우 install에 있어서 충돌이 일어난다.
+※주의 :  mysql이 있는 상태에서 Mariadb 를 brew 로 install할 경우 충돌이 일어난다.
 
 ```bash
 > brew install mysqld
@@ -142,103 +124,7 @@ mariadb를 활성화 시켜준다.
 | mysql | mysql Ver 8.0.29 for macos12.2 on arm64 (Homebrew) |
 | mariadb | 다운받는다는 가정하에 버젼 10.5 |
 
-## 5. postman 설치, Json viewer
 
-`brew install postman`
+아직 도커를 안해봐서 도전하기가 어렵다. 우선 위에 있는 방법들로 해보자 ! 안된다면 도커를 배우자 !
 
-## 6. yml 파일 이해하기
-
-springframework를 만들 때 **어떻게** 만들지 정의한다.
-
-음료 공장을 만드는 기술자
-
-(1) 두번째 공장
-
-**→ contextPath : /**
-
-```yaml
-server:
-	port:8080
-	servlet:
-		context-path: /
-```
-
-(2) 공장 입구는 서쪽
-
-**→ port : 8080**
-
-```yaml
-server:
-	port:8080
-```
-
-(3) 음료 요청은 전부 한글 문서로 변경해서 받는다.
-
-**→  encoding  :  UTF-8**
-
-```yaml
-encoding:
-	charset:uft-8
-	enabled:true
-```
-
-(4) 음료는 전부 콜라로 만들어서 출시된다.
-
-**→ 응답을 .jsp 파일로 한다는 설정 (View Resolver)**
-
-```yaml
-spring:
-	mvc:
-		view:
-			prefix: /WEB-INF/views/
-			suffix: .jsp
-```
-
-다른 예시) Json 파일,  XML파일, HTML
-
-(5) 음료 창고는 컨테이너 박스를 사용한다.  → mysql
-
-(6) 음료는 요청에 따라 패트병, 캔, 병으로 출시된다.
-
-**→ JPA(ORM) :응답이 고정이아닌  원하는데(페트,캔, 병)로 해줄 수 있다.**
-
-```yaml
-jpa:
-```
-
-(7) 공장이 재가동 될 때 기존에 만들어졌던 음료는 버리지 않는다.
-
-```yaml
-jpa:
-	open-in-view: true
-	hiernate:
-		ddl-auto: update
-```
-
-**update** : server가 재가동 될 때 마다 데이터베이스에 데이터, 스키마,테이블 등 그대로 유지된다.
-
-**create** : server가 재가동 될 때 마다 기존의 데이터들 없어진다.
-
-(8) 음료 요청시 A4용지 2장 이상의 문서는 받지 않는다.
-
-**→ max-file-size:2MB**
-
-```yaml
-servelt:
-	multipart:
-		enabled:true
-		max-file-size:2MB
-```
-
-(9) 음료 요청은 아무나 할 수 없다. 암호를 아는 사람만 요청한다.
-
-**→ security : name과 password를 아는 사람만 요청이 가능하다.**
-
-```yaml
-security:
-	user:
-		name:test
-		password:1234
-
-```
 <!-- outline-end -->
