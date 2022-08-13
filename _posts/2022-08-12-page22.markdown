@@ -62,7 +62,7 @@ date: 2022-08-12 23:35:00 +0900
 
 - 기존의 코드
 
-```java
+```jaav
 @EnableWebSecurity // 2.해당 파일로 시큐리티를 활성화 시켜준다.
 @Configuration // 1. IoC에 등록해주는 것
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -246,7 +246,6 @@ public class User {
 
 이번 글에서 비크립트를 사용하여 비밀번호를 암호화 해주고 권한 설정까지 넣어주었다.
 
-여기서 생각나는 것은 제약조건을 enum로 만들어될까? 라는 고민을 했다. 1차 리팩토링 할 때 이 글을 다시보면서 enum으로 구현을 가능한지  알아봐야겠다.
 
 ### 정리
 
