@@ -61,7 +61,8 @@ MariaDB install 하면서 겪은 일들을 남기고자 한다.
 > brew search mysql
 >
 
-![Untitled](Mysql%20install%20for%20Mac%20c10318549e474f64b99c2b2e80aa01df/Untitled.png)
+![Untitled](https://user-images.githubusercontent.com/56623911/184654931-68e4f73f-f0a0-4a59-8151-2205bc3b1c05.png)
+
 
 ## 3. mysql 설치
 
