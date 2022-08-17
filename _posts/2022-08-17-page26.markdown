@@ -11,7 +11,7 @@ category: auto generated
 # multiple tag entries are possible`
 tags: [Http, Network]
 # thumbnail image for post
-img: ":java.jpg"
+img: ":http.jpg"
 # disable comments on this page
 comments_disable: true
 
