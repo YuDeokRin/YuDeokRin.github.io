@@ -101,4 +101,9 @@ public class StringTest {
 ![Untitled 7](https://user-images.githubusercontent.com/56623911/186915681-33b87e31-a802-4957-bbf1-0c72d1da96e5.png)
 
 성공 환경 설정 완료
+
+IntelliJ,Maven, Gradle 세 가지로 설정이 가능하다. 위에서 설명은 IntelliJ로 라이브러리를 다운로드로해서 설정했다.
+
+
+
 <!-- outline-end -->
