@@ -9,7 +9,7 @@ title: 동적 파라미터를 예제를 통해서 배워보자.
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible`
-tags: [Java, Design Patternm, Modern Java in action]
+tags: [Java, Design Pattern, Modern Java in action]
 # thumbnail image for post
 img: ":ModernJava.jpg"
 # disable comments on this page
