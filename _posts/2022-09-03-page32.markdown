@@ -66,6 +66,9 @@ inventory.sort(comparing(Apple::getWeight));
 
 실제로 메서드 참조를 이용하면 기존 메서드 구현으로 람다 표현식을 만들 수 있다.
 
+<br>
+<br>
+
 - 메서드 참조는 어떻게 활용할까 ?
 
 ```java
@@ -76,6 +79,7 @@ ex) Apple::getWeight
 //메서드 참조는 람다 표현식 (Apple a) -> a.getWeight()를 축약한 것.
 ```
 
+<br>
 - 람다와 메서드 참조 단축 표현 예제
 
 | 람다 | 메서드 참조 단축 표현 |
@@ -87,6 +91,7 @@ ex) Apple::getWeight
 | (String s) → System.out.println(s)  |  System.out::println |
 | (String s) → this.isValidName(s) | this::isValidName |
 
+<br>
 ### 메서드 참조를 만드는 방법
 
 - **정적 메서드 참조**
@@ -106,6 +111,7 @@ ex) Apple::getWeight
 
 세 번째 유형의 메서드 참조는 비공개 헬퍼 메서드를 정의한 상황에서 유용하게 활용할 수 있다.
 
+<br>
 예를 들어 isValidName이라는 헬퍼 메서드를 정의했다고 가정해보자.
 
 ```java
@@ -120,13 +126,14 @@ private boolean isValidName(String string){
 filter(words, this::isValidName)
 ```
 
-위와 같은 세 가지 경우 말고도 특별한 형식의 메서드 참조도 있다.
+위와 같은 세 가지 경우 말고도 특별한 형식의 메서드 참조도 있다.<br>
 
-여기서 특별한 형식은 생성자, 배열 생성자, super 호출 등에 사용할 수 있는 형식을 말한다.
+여기서 특별한 형식은 생성자, 배열 생성자, super 호출 등에 사용할 수 있는 형식을 말한다.<br>
 
-- 예제 : List에 포함된 문자열을 대소문자를 구분하지 않고 정렬하는 프로그램 구현해 보자.
+- 예제 : List에 포함된 문자열을 대소문자를 구분하지 않고 정렬하는 프로그램 구현해 보자.<br>
 
-List의 sort 메서드는 인수로 Comparator를 기대한다. Comparator는 (T, T) → int 라는 함수 디스크립터를 갖는다.  String 클래스에 정의되어 있는 compareToIgnoreCase메서드로 람다 표현식을 정의할 수 있다.
+List의 sort 메서드는 인수로 Comparator를 기대한다. Comparator는 (T, T) → int 라는 함수 디스크립터를 갖는다.  <br>
+String 클래스에 정의되어 있는 compareToIgnoreCase메서드로 람다 표현식을 정의할 수 있다. <br>
 
 ```java
 List<String> str = Arrays.asList("a","b","A","B");
@@ -137,20 +144,21 @@ str.sort((s1, s2) -> s1.compareToIgnoreCase(s2));
 
 ![Untitled](https://user-images.githubusercontent.com/56623911/188360420-8c509bdb-eb9f-40ef-a4d7-6d4a37fd6990.png)
 
-Comparator의 함수 디스크립터와 호환되는 람다 표현식 시그니처도 있다. 위에서 설명한 기법을 이용하면 람다 표현식을 메서드 참조를 사용해서 다음처럼 줄일 수 있다.
+Comparator의 함수 디스크립터와 호환되는 람다 표현식 시그니처도 있다. <br>
+위에서 설명한 기법을 이용하면 람다 표현식을 메서드 참조를 사용해서 다음처럼 줄일 수 있다. <br>
 
 ```java
 List<String> str = Arrays.asList("a","b","A","B");
 str.sort(String::compareToIgnoreCase);
 ```
 
-컴파일러는 람다 표현식의 형식을 검사하던 방식과 비슷한 과정으로 메서드 참조가 주어진 함수형 인터페이스와 호환하는지 확인한다. 즉 메서드 참조는 콘텍스트의 형식과 일치해야한다.
+컴파일러는 람다 표현식의 형식을 검사하던 방식과 비슷한 과정으로 메서드 참조가 주어진 함수형 인터페이스와 호환하는지 확인한다. 즉 메서드 참조는 콘텍스트의 형식과 일치해야한다. <br>
 
 ### 클래스의 생성자를 이용하는 방법  - 생성자 참조
 
-ClassName::new처럼 클래스명과 new 키워드를 이용해서 기존 생성자의 참조를 만들 수 있다. 이것은 정적 메서드의 참조를 만드는 방법과 비슷하다.
+ClassName::new처럼 클래스명과 new 키워드를 이용해서 기존 생성자의 참조를 만들 수 있다. 이것은 정적 메서드의 참조를 만드는 방법과 비슷하다.<br>
 
-예를 들어 인수가 없는 생성자, 즉 Supplier() → Apple과 같은 시그니처를 갖는 생성자가 있다고 가정하자.
+예를 들어 인수가 없는 생성자, 즉 Supplier() → Apple과 같은 시그니처를 갖는 생성자가 있다고 가정하자.<br>
 
 ```java
 Supplier<Apple> c1 = Apple::new;
@@ -163,9 +171,9 @@ Apple a1 = c1.get(); //<-- Supplier의 get 메서드를 호출해서 새로운 A
 
 ```
 
-Apple(Integer weight)라는 시그니처를 갖는 생성자는 Function 인터페이스의 시그니처와 같다.
+Apple(Integer weight)라는 시그니처를 갖는 생성자는 Function 인터페이스의 시그니처와 같다. <br>
 
-따라서 다음과 같은 코드를 구현할 수 있다.
+따라서 다음과 같은 코드를 구현할 수 있다. <br>
 
 ```java
 Function<Integer, Apple> c2 = Apple::new; //<-- Apple(Integer weight)의 생성자 참조
@@ -180,7 +188,8 @@ Function<Integer, Apple> c2 = (weight) -> new Apple(weight); //<-- 특정 무게
 Apple a2 = c2.apply(110); //<-- Function의 apply 메서드에 무게를 인수로 호출해서 새로운 Apple객체를 만들 수 있다.
 ```
 
-다음 코드에서 Integer를 포함하는 리스트의 각 요소를 우리가 정의했던 map 같은 메서드를 이용해서 Apple 생성자로 전달한다. 결과적으로 다양한 무게를 포함하는 사과 리스트가 만들어 진다.
+다음 코드에서 Integer를 포함하는 리스트의 각 요소를 우리가 정의했던 map 같은 메서드를 이용해서 Apple 생성자로 전달한다. <br>
+결과적으로 다양한 무게를 포함하는 사과 리스트가 만들어 진다. <br>
 
 ```java
 List<Integer> weights = Arrays.asList(7, 3, 4, 10);
@@ -211,7 +220,7 @@ Apple a3 = c3.apply(GREEN, 110); //<-- BiFunction의 apply메서드에 색과 �
 
 ```
 
-인스턴스화 하지 않고도 생성자에 접근할 수 있는 기능을 다양한 상황에 응요할 수 있다.
+인스턴스화 하지 않고도 생성자에 접근할 수 있는 기능을 다양한 상황에 응요할 수 있다. <br>
 
 예를 들어 Map으로 생성자와 문자열값을 관련시킬수 있다. 그리고 String과 Integer가 주어졌을 때 다양한 무게를 갖는 여러 종류의 과일을 만드는 giveMeFruit라는 메서드를 만들 수 있다.
 
@@ -241,7 +250,10 @@ public static Fruit giveMeFruit(String fruit, Integer weight){
     ```
 
 
-이 코드는 Comparator 객체를 인수로 받아 두 사과를 비교한다. 객체 안에 동작을 포함시키는 방식으로 다양한 전략을 전달할 수 있다.  이제 ‘sort의 **`동작`**은  **`파라미터화` 되었다.’ 라고 말할 수 있다. 즉 sort에 전달된 정렬 전략에 따라 sort의 동작이 달라질 것이다.**
+이 코드는 Comparator 객체를 인수로 받아 두 사과를 비교한다. <br>
+객체 안에 동작을 포함시키는 방식으로 다양한 전략을 전달할 수 있다.  이제 ‘sort의 **`동작`**은  **`파라미터화` 되었다.’ 라고 말할 수 있다. 즉 sort에 전달된 정렬 전략에 따라 sort의 동작이 달라질 것이다.**
+
+<br>
 
 - **1단계 코드**
 
@@ -287,9 +299,10 @@ inventory.sort(new AppleComparator());
     inventory.sort((a1, a2) -> a1.getWeight().compareTo(a2.getWeight()));
     ```
 
-  위의 코드의 가독성을 더 향상 시킬 수 없을까 ?
+  위의 코드의 가독성을 더 향상 시킬 수 없을까 ? <br>
 
-  Comparator는 Comparable 키를 추출해서 Comparator 객체로 만드는 Function 함수를 인수로 받는 정적 메서드 comparing을 포함한다.  다음 처럼 comparing 메서드를 사용할 수 있다.( 람다 표현식은 사과를 비교하는데 사용할 키를 어떻게 추출할 것인지 지정하는 한 개의 인수만 포함한다.)
+  Comparator는 Comparable 키를 추출해서 Comparator 객체로 만드는 Function 함수를 인수로 받는 정적 메서드 comparing을 포함한다. <br>
+  다음 처럼 comparing 메서드를 사용할 수 있다.( 람다 표현식은 사과를 비교하는데 사용할 키를 어떻게 추출할 것인지 지정하는 한 개의 인수만 포함한다.) <br>
 
     ```java
     Comparator<Apple> c = Comparator.comparing((Apple a) -> a.getWeight());
@@ -312,15 +325,15 @@ inventory.sort(comparing(apple -> apple.getWeight()));
     ```
 
 
-드디어 최적의 코드를 만들었다. 자바 8 이전의 코드에 비해 어ㅈ떤 점이 개선되었을까?
+드디어 최적의 코드를 만들었다. 자바 8 이전의 코드에 비해 어ㅈ떤 점이 개선되었을까? <br>
 
-코드의 간결성이 좋아졌고 코드의 의미도 명확해졌다. 코드 자체로 ‘Apple을 Weight별로 비교해서 inventory를 sort하라’는 의미를 전달할 수 있다.
+코드의 간결성이 좋아졌고 코드의 의미도 명확해졌다. 코드 자체로 ‘Apple을 Weight별로 비교해서 inventory를 sort하라’는 의미를 전달할 수 있다.<br>
 
 ## 람다 표현식을 조합할 수 있는 유용한 메서드
 
 ### Comparator조합
 
-정적 메서드 Comparator.comparing을 이용해서 비교에 사용할 키를 추출하는 Funtion 기반의 Comparator를 반환할 수 있다.
+정적 메서드 Comparator.comparing을 이용해서 비교에 사용할 키를 추출하는 Funtion 기반의 Comparator를 반환할 수 있다. <br>
 
 ```java
 Comparator<Apple> c = Comparator.comparing(Apple::getWeight);
@@ -328,9 +341,10 @@ Comparator<Apple> c = Comparator.comparing(Apple::getWeight);
 
 - 역정렬
 
-사과의 무게를 내림차순으로 하고 싶다면 어떻게 해야할까 ?
+사과의 무게를 내림차순으로 하고 싶다면 어떻게 해야할까 ? <br>
 
-다른 Comparator 인스턴스를 만들 필요가 없다. 인터페이스 자체에서 주어진 비교자의 순서를 뒤바꾸는 reverse라는 디폴트 메서드를 제공하기 때문이다. 따라서 처음 비교자 구현을 그대로 재사용해서 사과의 무게를 기준으로 역정렬할 수 있다.
+다른 Comparator 인스턴스를 만들 필요가 없다. 인터페이스 자체에서 주어진 비교자의 순서를 뒤바꾸는 reverse라는 디폴트 메서드를 제공하기 때문이다.<br>
+따라서 처음 비교자 구현을 그대로 재사용해서 사과의 무게를 기준으로 역정렬할 수 있다. <br>
 
 ➡️코드
 
@@ -364,15 +378,16 @@ System.out.println(inventory);
 
 - Comparator 연결
 
-위 코드를 하면서 의문점이 하나 들었다. 사과의 무게가 같은 것들이 있는 것은 어떻게 처리할까 ? 정렬된 리스트에서 어떤 사과를 먼저 나열해야할까 ?
+위 코드를 하면서 의문점이 하나 들었다. 사과의 무게가 같은 것들이 있는 것은 어떻게 처리할까 ?  정렬된 리스트에서 어떤 사과를 먼저 나열해야할까 ? <br>
 
-비교 결과를 더 다듬을 수 있는 두 번째 Comparator를 만들 수 있다.
+비교 결과를 더 다듬을 수 있는 두 번째 Comparator를 만들 수 있다. <br>
 
-예를들면 - 두 사과를 비교한 다음에 무게가 같다면 `원산지 국가별`로 사과를 정렬할 수 있다. `thenComparing` 메서드로 두 번째 비교자를 만들 수 있다. `thenComparing`은 (comparing 메서드처럼) 함수를 인수로 받아 첫 번째 비교자를 이용해서 두 객체가 같다고 판단되면 두 번째 비교자에 객체를 전달한다.
+예를들면 - 두 사과를 비교한 다음에 무게가 같다면 `원산지 국가별`로 사과를 정렬할 수 있다. `thenComparing` 메서드로 두 번째 비교자를 만들 수 있다. `thenComparing`은 (comparing 메서드처럼) 함수를 인수로 받아 첫 번째 비교자를 이용해서 두 객체가 같다고 판단되면 두 번째 비교자에 객체를 전달한다. <br>
+
 
 ![Untitled 1](https://user-images.githubusercontent.com/56623911/188360404-88ebf197-e34c-49e2-97b7-f9c73ec468bf.png)
 
-백문이 불여일타 ! 코드를 통해서 보자!
+백문이 불여일타 ! 코드를 통해서 보자!<br>
 
 ```java
 inventory.sort(comparing(Apple::getWeight)
@@ -392,16 +407,16 @@ Apple{color=GREEN, weight=80, country=KOREA}]
 
 ### Predicate 조합
 
-Predicate 인터페이스는 복잡한 프레디케이트를 만들 수 있도록 `negate`, `and`, `or` 세 가지 메서드를 제공한다.
+Predicate 인터페이스는 복잡한 프레디케이트를 만들 수 있도록 `negate`, `and`, `or` 세 가지 메서드를 제공한다. <br>
 
-예를 들어 ‘빨간색이 아닌 사과’처럼 특정 프레디케이트를 반전시킬 때 `negate`메서드를 사용할 수 있다.
+예를 들어 ‘빨간색이 아닌 사과’처럼 특정 프레디케이트를 반전시킬 때 `negate`메서드를 사용할 수 있다. <br>
 
 ```java
 //기존 프레디케이트 객체 redApple의 결과를 반전시킨 객체를 만든다.
 Predicate<Apple> notRedApple = redApple.negate();
 ```
 
-- `and` 메서드를 이용해서 ‘빨간색이면 무거운 사과를 선택’하도록 두 람다를 조합할 수 있다.
+- `and` 메서드를 이용해서 ‘빨간색이면 무거운 사과를 선택’하도록 두 람다를 조합할 수 있다. <br>
 
 ```java
 // 두 프레디케이트를 연결해서 새로운 프레디케이트 객체를 만든다.
@@ -420,7 +435,8 @@ Predicate<Apple> redAndHeavyAppleOrGreen =
 
 - 이것이 대단한 일인 이유가 뭘까 ?
 
-단순한 람다 표현식을 조합해서 더 복잡한 람다  표현식을 만들 수 있기 때문이다. 심지어 람다 표현식을 조합해도 코드 자체가 문제를 잘 설명한다는 점은 변치 않는다.
+단순한 람다 표현식을 조합해서 더 복잡한 람다  표현식을 만들 수 있기 때문이다. <br>
+심지어 람다 표현식을 조합해도 코드 자체가 문제를 잘 설명한다는 점은 변치 않는다. <br>
 
 여기서 소개한 `and`, `or` 등은 왼쪽에서 오른쪽으로 연결되었다. 즉, `a.or(b).and(c)` 는 `(a || b) && c`와 같다.
 
@@ -430,13 +446,14 @@ Predicate<Apple> redAndHeavyAppleOrGreen =
 
 ### Function 조합
 
-Function 인터페이스에서 제공하는 람다 표현식도 조합할 수 있다. Function인터페이스는 Function 인스턴스를 반환하는 `andThen`, `compose` 두 가지 디폴트 메서드를 제공한다.
+Function 인터페이스에서 제공하는 람다 표현식도 조합할 수 있다. <br>
+Function인터페이스는 Function 인스턴스를 반환하는 `andThen`, `compose` 두 가지 디폴트 메서드를 제공한다. <br>
 
 - `andThen` 메서드는 주어진 함수를 먼저 적용한 결과를 다른 함수의 입력으로 전달하는 함수를 반환한다.
 
-예를 들어 숫자를 증가(x → x + 1)시키는 f라는 함수가 있고, 숫자에 2를 곱하는 g라는 함수가 있다고 가정하자.
+예를 들어 숫자를 증가(x → x + 1)시키는 f라는 함수가 있고, 숫자에 2를 곱하는 g라는 함수가 있다고 가정하자.<br>
 
-f와 g를 조합해서 숫자를 증가시킨 뒤 결과에 2를 곱하는 h라는 함수를 만들 수 있다.
+f와 g를 조합해서 숫자를 증가시킨 뒤 결과에 2를 곱하는 h라는 함수를 만들 수 있다. <br>
 
 ```java
 Function<Integer, Integer> f = x ->x + 1;
@@ -460,9 +477,9 @@ int result = h.apply(1); //<-- 3을 반환
 
 ![Untitled 3](https://user-images.githubusercontent.com/56623911/188360413-19a77991-6d9f-429e-a451-989f0a74205f.png)
 
-이해가 안된다!…  다른 예제를 통해서 한번 더 해보자.
+이해가 안된다!…  다른 예제를 통해서 한번 더 해보자. <br>
 
-예를 들어  문자열로 구성된 편지 내용을 변환하느 다양한 유틸리티 메서드가 있다고 가정하자.
+예를 들어  문자열로 구성된 편지 내용을 변환하느 다양한 유틸리티 메서드가 있다고 가정하자. <br>
 
 ```java
 public class Letter{
@@ -480,7 +497,8 @@ public class Letter{
 }
 ```
 
-여러 유틸리티 메서드를 조합해서 다양한 변환 파이프라인을 만들 수 있다. 헤더를 추가(addHeader)한 다음에, 철자검사(checkSpelling)를 하고 마지막에 푸터를 추가(addFooter)할 수 있다.
+여러 유틸리티 메서드를 조합해서 다양한 변환 파이프라인을 만들 수 있다. <br>
+헤더를 추가(addHeader)한 다음에, 철자검사(checkSpelling)를 하고 마지막에 푸터를 추가(addFooter)할 수 있다. <br>
 
 ```java
 Function<String, String> addHeader = Letter::addHeader;
@@ -504,11 +522,11 @@ Function<String, String> transformationPipeline =
 
 ### 적분
 
-다음과 같은 함수 (자바의 함수가 아닌 수학의 함수) f 가 있다고 가정하자.
+다음과 같은 함수 (자바의 함수가 아닌 수학의 함수) f 가 있다고 가정하자. <br>
 
 $f(x) = x + 10$
 
-공학에서는 함수가 차지하는 영역을 묻는 질문이 자주 등장한다.(일반적으로 x축이 기준선이 됨.)
+공학에서는 함수가 차지하는 영역을 묻는 질문이 자주 등장한다.(일반적으로 x축이 기준선이 됨.)  <br>
 
 $\textstyle \int_3^7 f(x)dx$  또는  $\textstyle \int_3^7 (x + 10)dx$
 
@@ -516,13 +534,14 @@ $\textstyle \int_3^7 f(x)dx$  또는  $\textstyle \int_3^7 (x + 10)dx$
 
 ![Untitled 5](https://user-images.githubusercontent.com/56623911/188360416-c38cf961-d2ad-4223-bec6-524871dd2a0a.png)
 
-이 예제에서 함수 f는 직선이므로 사다리꼴 기법(기본적으로 삼각형으로 구성되는)으로 정답을 찾는다.
+이 예제에서 함수 f는 직선이므로 사다리꼴 기법(기본적으로 삼각형으로 구성되는)으로 정답을 찾는다. <br>
 
 $\frac12 \ast ((3 + 10) + (7 + 10)) \ast (7 - 3) = 60$
 
-이 공식을 자바코드로 표현해보자.  우선 dy / dx 기호를 어떻게 처리할 것인가 ?
+이 공식을 자바코드로 표현해보자.  우선 dy / dx 기호를 어떻게 처리할 것인가 ? <br>
 
-우선은 f와 한계값(여기서 3.0과 7.0)을 인수로 받는 integrate라는 함수를 만들어야한다.  즉, 다음처럼 함수 f를 인수로 받는 함수를 자바로 구현할 수 있다.
+우선은 f와 한계값(여기서 3.0과 7.0)을 인수로 받는 integrate라는 함수를 만들어야한다. <br>
+즉, 다음처럼 함수 f를 인수로 받는 함수를 자바로 구현할 수 있다. <br>
 
 ```java
 integrate(f, 3, 7)
@@ -534,15 +553,15 @@ integrate(f, 3, 7)
 integrate(x + 10, 3, 7)
 ```
 
-우선 이  식에서 x의 범위가 불분명하다. 그리고 f를 전달하는 것이 아니라 x + 10 이라는 값을 전달하게 되기 때문에 잘못된 식이다.
+우선 이  식에서 x의 범위가 불분명하다. 그리고 f를 전달하는 것이 아니라 x + 10 이라는 값을 전달하게 되기 때문에 잘못된 식이다. <br>
 
-수학에서 dx는 `‘x를 인수로 받아 x + 10의 결과를 만드는 함수'` 로 정리할 수 있다.
+수학에서 dx는 `‘x를 인수로 받아 x + 10의 결과를 만드는 함수'` 로 정리할 수 있다. <br>
 
 ### 자바 8 람다로 연결 !
 
-자바 8에서는 (double x) → x + 10 같은 람다 표현식을 사용할 수 있다.
+자바 8에서는 (double x) → x + 10 같은 람다 표현식을 사용할 수 있다. <br>
 
-따라서 함수 f를 다음처럼 구현할 수 있다.
+따라서 함수 f를 다음처럼 구현할 수 있다. <br>
 
 ```java
 integrate((double x) -> x + 10, 3, 7)
@@ -554,15 +573,15 @@ integrate((double x) -> x + 10, 3, 7)
 integrate((double x) -> f(x), 3, 7)
 ```
 
-C가 정적 메서드 f를 포함하는 클래스라 가정하면  메서드 참조를 사용해서 코드를 더 간단하게 만들 수 있다.
+C가 정적 메서드 f를 포함하는 클래스라 가정하면  메서드 참조를 사용해서 코드를 더 간단하게 만들 수 있다. <br>
 
-f의 코드를 integrate 메서드로 전달하는 것이 이 예제의 핵심.
+f의 코드를 integrate 메서드로 전달하는 것이 이 예제의 핵심. <br>
 
 ```java
 integrate(C::f, 3, 7)
 ```
 
-이제 integrate 메서드를 구현해보자. f를 선형 함수(직선)이라고 가정하자.
+이제 integrate 메서드를 구현해보자. f를 선형 함수(직선)이라고 가정하자. <br>
 
 ```java
 //틀린 자바 코드 ! 자바코드를 수학 함수처럼 구현할 수 없다.
@@ -571,7 +590,7 @@ public double integrate((double -> double) f, double a, double b) {
 }
 ```
 
-하지만 함수형 인터페이스(여기서는 DoubleFunction)를 기대하는 콘텍스트에서만 람다 표현식을 사용할 수 있으므로 다음처럼 코드를 구현해야 한다.
+하지만 함수형 인터페이스(여기서는 DoubleFunction)를 기대하는 콘텍스트에서만 람다 표현식을 사용할 수 있으므로 다음처럼 코드를 구현해야 한다.<br>
 
 ```java
 public double integrate(DoubleFunction<Double>) f, double a, double b){
@@ -579,7 +598,7 @@ public double integrate(DoubleFunction<Double>) f, double a, double b){
 }
 ```
 
-또는  DoubleUnaryOperator를 이용해도 결과를 박싱할 필요가 없다.
+또는  DoubleUnaryOperator를 이용해도 결과를 박싱할 필요가 없다. <br>
 
 ```java
 public double integrate(DoubleUnaryOperator f, double a, double b){
@@ -587,14 +606,18 @@ public double integrate(DoubleUnaryOperator f, double a, double b){
 }
 ```
 
-참고로 수학처럼 f(a)라는 표현할 수없고 f.apply(a)라고 구현했는데 이는 자바가 진정으로 함수를 허용하지 않고 모든 것을 객체로 여기는 것을 포기할 수 없기 때문이다.
+참고로 수학처럼 f(a)라는 표현할 수없고 f.apply(a)라고 구현했는데 이는 자바가 진정으로 함수를 허용하지 않고 모든 것을 객체로 여기는 것을 포기할 수 없기 때문이다. <br>
 
 ![Untitled 6](https://user-images.githubusercontent.com/56623911/188360418-0a741a05-24af-4034-a168-435f77185bc1.png)
 
 
-회고록
+## 회고록
 
 람다 표현식(2) - 메소드 레퍼런드, 람다 표현식을 조합할 수 있는 유용한 메서드, Comparator, Predicate, Function , 비슷한 수학적 개념 등 을 배웠다.<br>
 이론은 이해는 한걸까? 모르는 사람에게 이해되게 설명해서 체크해봐야겠다. 역시나 어려운 적용 및 응용 하는 …. 계속 예제해보고 내가 만든 것들을 계속해보자. <br>
 천천히 나아가 보자.   배우는 건 상대적으로 늦지만 꾸준히하는 것을 누구보다 잘 할 자신이 있다.
+
+![giphy](https://user-images.githubusercontent.com/56623911/188361072-e734b913-b5e0-49c6-a4c7-85a677e8f4d2.gif)
+
+
 <!-- outline-end -->
