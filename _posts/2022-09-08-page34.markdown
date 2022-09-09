@@ -41,9 +41,10 @@ date: 2022-09-08 23:55:00 +0900
 {%- include util/auto-content-generator.liquid -%}
 
 <!-- outline-start -->
+
 # 리플렉션 API 1부: 클래스 정보 조회
 
-### 리플렉션은  스프링의 Depedency Injection은 어떻게 동작할까 ? 라는 의문점에 시작한다.
+> ***리플렉션은  스프링의 Depedency Injection은 어떻게 동작할까 ? 라는 의문점에 시작한다.***
 
 - BookService.java
 
@@ -55,14 +56,44 @@ public class BookService{
 	BookRepository bookRepository;
 }
 ```
+<br>
 
-### 의문점 1. bookRepository 인스턴스는 어떻게  null이 아닌걸까 ?
 
-### 의문점 2. 스프링은 어떻게 BookService 인스턴스에 BookRepository 인스턴스를 넣어준 것일까 ?
+- null이 아닌걸 확인하기 위해서 테스트코드 작성  → 테스트 성공
+
+```java
+@RunWith(SpringRunner.class)
+@SpringBootTest
+class BookServiceTest {
+
+    @Autowired BookService bookService;
+
+    @Test
+    public void di(){
+        Assert.assertNotNull(bookService);
+        Assert.assertNotNull(bookService.bookRepository);
+    }
+
+}
+```
+<br>
+
+###### 의문점 1. bookRepository 인스턴스는 어떻게  null이 아닌걸까 ?
+
+###### 의문점 2. 스프링은 어떻게 BookService 인스턴스에 BookRepository 인스턴스를 넣어준 것일까 ?
+
+<br>
+> ***리플렉션이란..?***
+구체적인 클래스 타입을 알지 못해도 그 클래스의 정보(메서드, 타입, 변수 …등)에 접근할 수 있게 해주는 Java API이다.
+>
 
 두 가지 의문점을 리플렉션을 학습하고 의문점들을 해소해 나아가보자.!
 
+<br>
+
 ---
+
+<br>
 
 ## 리플렉션의 시작
 
@@ -96,7 +127,7 @@ void printClassName(Object obj) {
 
 클래스 리터럴을 사용하여 명명된 유형(또는 void의 경우)에 대한 Class 객체를 가져올 수도 있습니다.
 
-예를 들어
+➡️예를 들어
 
 ```java
 System.out.println("The name of class Foo is: "+Foo.class.getName());
@@ -106,31 +137,544 @@ System.out.println("The name of class Foo is: "+Foo.class.getName());
 
 ---
 
-### Class<T>에 접근하는 방법
+## 리플렉션이 제공하는 API로 클래스가 갖고 있는 정보를 접근하는 방법
+
+- 예제를 통해서 접근하는 방법을 해보자.
+
+Book 객체를 만들고 다양한 메서드,필드, 변수 ..등을 선언해 놓자
+
+```java
+public class Book{
+    private static String B = " -> private static String B 출력";
+
+    private static final String C = "-> private static final String C 출력 ";
+
+    private String A = " -> private String a 출력";
+
+    public String D = " -> public String d 출력";
+
+    protected String E = " -> protected String e 출력";
+
+    public Book() {
+    }
+
+    public Book(String a, String d, String e) {
+        A = a;
+        D = d;
+        E = e;
+    }
+
+    public void f(){
+        System.out.println("f() 출력");
+    }
+
+    public void g(){
+        System.out.println("g() 출력");
+    }
+
+    public int h(){
+        return 100;
+    }
+}
+```
+
+- MyBook이라는 클래스를 만들어 Book을 상속하고 인터페이스 MyInterface를 만들어서 인터페이스도 상속 받는다.
+
+```java
+public class MyBook extends Book implements MyInterface{
+
+}
+```
+
+<br>
+
+이제 준비는 완료… 접근해보자.!
+
+## Class<T>에 접근하는 방법
+
+### 타입을 통해서 접근할 때 :  `타입.class`
 
 - 모든 클래스를 로딩 한 다음 Class<T>의 인스턴스가 생긴다. `“타입.class”`로 접근할 수 있다.
 
-  ![Untitled](https://user-images.githubusercontent.com/56623911/189153708-22797924-fa4f-4070-a2e5-398a1148e463.png)
+<br>
 
+![Untitled](https://user-images.githubusercontent.com/56623911/189270255-973750d9-d7cc-44eb-8c19-8000d25a15d9.png)
 
+> **※참고**
+타입.class 같은 경우 클래스 로딩이 끝나면 클래스의 타입 인스턴스를 만들어서 heap공간에 넣어준다.
+>
+
+<br>
+
+### 인스턴스를 통해서 접근할 때 :  `getClass()`
 
 - 모든 인스턴스는 getClass() 메서드를 가지고 있다. `“인스턴스.getClass()` 로 접근할 수 있다.
-- 클래스를 문자열로 읽어오는 방법
-  - Class.forName(”FQCN”)
-  - 클래스패스에 해당 클래스가 없다면 ClassNotFoundException이 발생한다.
 
-### Class<T>를 통해 할 수 있는 것?
+```java
+//기존에 있는 클래스에 인스턴스가 있을 경우
+public class Main {
+    public static void main(String[] args) {
+				Book book = new Book();
+        Class<? extends Book> aClass = book.getClass();
+        System.out.println(aClass.getName());
+    }
+}
+```
 
-- 필드 (목록) 가져오기
-- 메소드 (목록) 가져오기
-- 상위 클래스 가져오기
-- 인터페이스 (목록) 가져오기
-- 애노테이션 가져오기
-- 생성자 가져오기
-- …등등
+```java
+결과 : com.example.demospringdi.Book
+```
 
-static 한 것은 언제 초기화 될까 ?
+### 클래스를 문자열로 읽어오는 방법
 
+- Class.forName(”FQCN”)
+
+```java
+// 문자열만 알았을 경우
+public class Main {
+    public static void main(String[] args) throws ClassNotFoundException{
+			Class<?> aClass = Class.forName("com.example.demospringdi.Book"); //둘다 가능
+			System.out.println(Class.forName("com.example.demospringdi.Book")); // 둘다 가능
+    }
+}
+```
+
+```java
+결과 : class com.example.demospringdi.Book
+```
+
+위와 같이 문자열만 갖고 클래스타입의 인스턴스를 구할 수 있다. <br>
+
+- 클래스패스에 해당 클래스가 없다면 `ClassNotFoundException`이 발생한다.
+
+```java
+public class Main {
+    public static void main(String[] args) throws ClassNotFoundException{
+			Class.forName("me.Dante.Book");
+			System.out.println(Class.forName("Book"));
+    }
+}
+```
+<br>
+
+*`throws ClassNotFoundException` 의 예외가 터지는 경우는 위와 같이 경로를 다 적어 주지않고 코드를 작성시*
+
+![Untitled 1](https://user-images.githubusercontent.com/56623911/189270238-4228f9a7-c50c-4927-a7a1-b532b34da5b2.png)
+
+> **※참고**
+FQCN은 Full Qualified Class Name의 약자로 클래스가 속한 패키지명을 모두 포함한 이름을 말한다.
+>
+
+## Class<T>를 통해 할 수 있는 것?
+
+### 필드 (목록) 가져오기
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Class<Book> bookClass = Book.class;
+
+        Arrays.stream(bookClass.getFields()).forEach(System.out::println);
+    }
+}
+```
+
+```java
+결과 : public java.lang.String com.example.demospringdi.Book.D
+```
+
+➡️D라는 Field만 출력이 됐다. ?? 그 많던 필드들은 ???
+
+- 왜 그럴까? `getFields()`안에 내부를 한번 살펴보자.
+
+![Untitled 2](https://user-images.githubusercontent.com/56623911/189270247-683c08c4-a9a0-41f1-98d1-81530d1e019b.png)
+
+![Untitled 3](https://user-images.githubusercontent.com/56623911/189270251-3f98dd61-74bd-4ab8-a69a-b73b8c540384.png)
+
+내부를 보니깐 public fields만 접근 가능하다고 되어있다.  😭 <br>
+
+그렇다면 private 또는 protected 와 같은 접근제어자들은 접근할 수 없는 것일까?<br>
+
+➡️해결 방법 : `getDeclaredFields()` 를 사용하면된다. <br>
+getDeclaredFields() 내부를 살펴보자. <br>
+
+![Untitled 4](https://user-images.githubusercontent.com/56623911/189270252-7a30abad-1f02-479f-a69a-21e4ac4d7317.png)
+
+![Untitled 5](https://user-images.githubusercontent.com/56623911/189270254-b86f67e8-e754-4b3e-a8cc-8b9af531f06f.png)
+
+전부 가져와 보자. <br>
+
+```java
+public class Main {
+ public static void main(String[] args){
+     Class<Book> bookClass = Book.class;
+	   Arrays.stream(bookClass.getDeclaredFields()).forEach(System.out::println);
+   }
+}
+```
+
+```java
+결과 :
+private static java.lang.String com.example.demospringdi.Book.B
+private static final java.lang.String com.example.demospringdi.Book.C
+private java.lang.String com.example.demospringdi.Book.A
+public java.lang.String com.example.demospringdi.Book.D
+protected java.lang.String com.example.demospringdi.Book.E
+```
+
+모든 필드를 다 출력했다. <br>
+
+### 특정 필드만 문자열을 이용해서 가져오는 방법
+
+```java
+public class Main {
+    public static void main(String[] args) throws NoSuchFieldException {
+        Class<Book> bookClass = Book.class;
+
+        Field declaredField = bookClass.getDeclaredField("E");
+        System.out.println(declaredField);
+    }
+}
+```
+
+```java
+결과 : protected java.lang.String com.example.demospringdi.Book.E
+```
+
+### 필드의 값을 가져오고 싶을때
+
+```java
+public class Main {
+    public static void main(String[] args) throws NoSuchFieldException {
+        Class<Book> bookClass = Book.class;
+        Book book = new Book();
+        Arrays.stream(bookClass.getDeclaredFields()).forEach(f -> {
+            try {
+                System.out.printf("%s %s \n", f, f.get(book));
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+}
+```
+
+```java
+//이런 Error가 발생한다.
+
+Caused by: java.IllegalAccessException: class com.example.demospringdi.Main cannot access a member of class com.example.demospringdi.Book with modifiers "private static"
+```
+
+➡️값에 접근을 하지못한다는 뜻이다. <br>
+
+접근을 가능하게 해주면된다.  → 추가 : `f.setAccessible(true)` 접근제어자를 무시한다. <br>
+
+```java
+public class Main {
+    public static void main(String[] args) throws NoSuchFieldException {
+        Class<Book> bookClass = Book.class;
+        Book book = new Book();
+        Arrays.stream(bookClass.getDeclaredFields()).forEach(f -> {
+            try {
+								f.setAccessible(true);
+                System.out.printf("%s %s \n", f, f.get(book));
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+}
+```
+
+```java
+결과 :
+private static java.lang.String com.example.demospringdi.Book.B  -> private static String B 출력
+private static final java.lang.String com.example.demospringdi.Book.C -> private static final String C 출력
+private java.lang.String com.example.demospringdi.Book.A  -> private String a 출력
+public java.lang.String com.example.demospringdi.Book.D  -> public String d 출력
+protected java.lang.String com.example.demospringdi.Book.E  -> protected String e 출력
+```
+
+위 결과를 보면 필드, 필드 값까지 출력되는 걸 볼 수 있다. <br>
+
+> ***리플렉션으로는 접근제어자 같은 것을 무시할 수 있다.***
+>
+
+### 메소드 (목록) 가져오기
+
+```java
+public class Main {
+    public static void main(String[] args) throws NoSuchFieldException {
+        Class<Book> bookClass = Book.class;
+
+        Arrays.stream(bookClass.getMethods()).forEach(System.out::println);
+    }
+}
+```
+
+```java
+결과 :
+public int com.example.demospringdi.Book.h()
+public void com.example.demospringdi.Book.f()
+public void com.example.demospringdi.Book.g()
+public final native void java.lang.Object.wait(long) throws java.lang.InterruptedException
+public final void java.lang.Object.wait(long,int) throws java.lang.InterruptedException
+public final void java.lang.Object.wait() throws java.lang.InterruptedException
+public boolean java.lang.Object.equals(java.lang.Object)
+public java.lang.String java.lang.Object.toString()
+public native int java.lang.Object.hashCode()
+public final native java.lang.Class java.lang.Object.getClass()
+public final native void java.lang.Object.notify()
+public final native void java.lang.Object.notifyAll()
+```
+
+위 결과를 보면 내가 작성한 것 말고도 내부에 있는 메소드 목록들도 출력이 되는 것을 알 수 있다. <br>
+
+<br>
+
+### 상위 클래스 가져오기
+
+SuperClass는 List가 아니다.  상속을 하나 밖에 못받기 때문이다. → `Arrays.stream()`  사용 : X <br>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(MyBook.class.getSuperclass());
+    }
+}
+```
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Class<? super MyBook> superclass = MyBook.class.getSuperclass();
+        System.out.println(superclass);
+    }
+}
+```
+
+```java
+위 두 코드의 결과는 같다.
+결과 :
+class com.example.demospringdi.Book
+```
+
+<br>
+
+### 인터페이스 (목록) 가져오기
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Arrays.stream(MyBook.class.getInterfaces()).forEach(System.out::println);
+    }
+}
+```
+
+<br>
+
+```java
+결과 :
+interface com.example.demospringdi.MyInterface
+```
+
+
+<br>
+
+### 생성자 가져오기
+
+```java
+//생성자를 가져오는 경우
+public class Main {
+    public static void main(String[] args) {
+				Book book = new Book();
+				Arrays.stream(bookClass.getDeclaredConstructors()).forEach(System.out::println);
+    }
+}
+```
+
+```java
+결과 :
+public com.example.demospringdi.Book()
+public com.example.demospringdi.Book(java.lang.String,java.lang.String,java.lang.String)
+```
+
+내가 만든 생성자(디폴트 생성자, 파라미터 3개를 받는 생성자) 위와 같이 출력이 된다. <br>
+
+### 그 외의 것들 ..기타
+
+- `Modifier()`에서 제공하는 static method를 사용하면 접근제어자, static 등을 boolean으로 확인할 수 있다.
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Arrays.stream(Book.class.getDeclaredFields()).forEach(f ->{
+            int modifiers = f.getModifiers();
+
+            System.out.println();
+            System.out.println("-----------------------");
+            System.out.println(f);
+            System.out.println("private : " + Modifier.isPrivate(modifiers));
+            System.out.println("public : " + Modifier.isPublic(modifiers));
+            System.out.println("static : " + Modifier.isStatic(modifiers));
+            System.out.println("-----------------------");
+        });
+    }
+}
+```
+
+```java
+결과 :
+-----------------------
+private static java.lang.String com.example.demospringdi.Book.B
+private : true
+public : false
+static : true
+-----------------------
+
+-----------------------
+private static final java.lang.String com.example.demospringdi.Book.C
+private : true
+public : false
+static : true
+-----------------------
+
+-----------------------
+private java.lang.String com.example.demospringdi.Book.A
+private : true
+public : false
+static : false
+-----------------------
+
+-----------------------
+public java.lang.String com.example.demospringdi.Book.D
+private : false
+public : true
+static : false
+-----------------------
+
+-----------------------
+protected java.lang.String com.example.demospringdi.Book.E
+private : false
+public : false
+static : false
+-----------------------
+```
+
+- 메소드로 `Modifier` 적용
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Arrays.stream(Book.class.getMethods()).forEach(m -> {
+            int modifiers = m.getModifiers();
+            System.out.println();
+            System.out.println("-----------------------");
+            System.out.println(m);
+            System.out.println("파라미터 타입 : "+ modifiers);
+            System.out.println("리턴 타입 : " + m.getReturnType());
+            System.out.println("제네릭 : " + m.toGenericString());
+            System.out.println("-----------------------");
+        });
+    }
+}
+```
+
+```java
+결과 :
+-----------------------
+public int com.example.demospringdi.Book.h()
+파라미터 타입 : 1
+리턴 타입 : int
+제네릭 : public int com.example.demospringdi.Book.h()
+-----------------------
+
+-----------------------
+public void com.example.demospringdi.Book.f()
+파라미터 타입 : 1
+리턴 타입 : void
+제네릭 : public void com.example.demospringdi.Book.f()
+-----------------------
+
+-----------------------
+public void com.example.demospringdi.Book.g()
+파라미터 타입 : 1
+리턴 타입 : void
+제네릭 : public void com.example.demospringdi.Book.g()
+-----------------------
+
+-----------------------
+public final native void java.lang.Object.wait(long) throws java.lang.InterruptedException
+파라미터 타입 : 273
+리턴 타입 : void
+제네릭 : public final native void java.lang.Object.wait(long) throws java.lang.InterruptedException
+-----------------------
+
+-----------------------
+public final void java.lang.Object.wait(long,int) throws java.lang.InterruptedException
+파라미터 타입 : 17
+리턴 타입 : void
+제네릭 : public final void java.lang.Object.wait(long,int) throws java.lang.InterruptedException
+-----------------------
+
+-----------------------
+public final void java.lang.Object.wait() throws java.lang.InterruptedException
+파라미터 타입 : 17
+리턴 타입 : void
+제네릭 : public final void java.lang.Object.wait() throws java.lang.InterruptedException
+-----------------------
+
+-----------------------
+public boolean java.lang.Object.equals(java.lang.Object)
+파라미터 타입 : 1
+리턴 타입 : boolean
+제네릭 : public boolean java.lang.Object.equals(java.lang.Object)
+-----------------------
+
+-----------------------
+public java.lang.String java.lang.Object.toString()
+파라미터 타입 : 1
+리턴 타입 : class java.lang.String
+제네릭 : public java.lang.String java.lang.Object.toString()
+-----------------------
+
+-----------------------
+public native int java.lang.Object.hashCode()
+파라미터 타입 : 257
+리턴 타입 : int
+제네릭 : public native int java.lang.Object.hashCode()
+-----------------------
+
+-----------------------
+public final native java.lang.Class java.lang.Object.getClass()
+파라미터 타입 : 273
+리턴 타입 : class java.lang.Class
+제네릭 : public final native java.lang.Class<?> java.lang.Object.getClass()
+-----------------------
+
+-----------------------
+public final native void java.lang.Object.notify()
+파라미터 타입 : 273
+리턴 타입 : void
+제네릭 : public final native void java.lang.Object.notify()
+-----------------------
+
+-----------------------
+public final native void java.lang.Object.notifyAll()
+파라미터 타입 : 273
+리턴 타입 : void
+제네릭 : public final native void java.lang.Object.notifyAll()
+-----------------------
+```
+
+## 리플렉션을 배우며 회고
+
+리플렉션을 들어보긴 엄청 들어봤다 그리고 어느정도는 알고 있었다.. 하지만 내부 어떤 메소드가 있고 어떻게 작동되는지 잘 모르고 있었다. 이번 기회에 어제의 Dante보다 더 나은 Dante가 되었다..ㅋㅋㅋㅋㅋㅋ 오늘의 내가 리플렉션을 더 잘안다..<br>
+
+내부 작동원리를 하나씩 알게되니깐 처음보다 보기가 더 쉬워진거같다. 꾸준히 보자. 실력이 일취월장 할 것이다..<br>
+
+
+![giphy](https://user-images.githubusercontent.com/56623911/189270045-62a28242-dcc7-41e8-b5a9-1762198a4e5a.gif)
 
 
 ***참고***
