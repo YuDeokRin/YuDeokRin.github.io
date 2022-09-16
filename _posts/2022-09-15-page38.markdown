@@ -69,8 +69,8 @@ date: 2022-09-15 22:45:00 +0900
 List<Dish> vegetarianDishes = new ArrayList<>();
 for(Dish d : menu) {
 	if(d.isVegetarian()){
-		vegetarianDishes.add(d);
-	}
+  vegetarianDishes.add(d);
+  }
 }
 ```
 
