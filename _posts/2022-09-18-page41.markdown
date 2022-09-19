@@ -9,7 +9,7 @@ title: UserModel 만들기
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible`
-tags: [Java, Algorithm]
+tags: [Spring, Web, Java]
 # thumbnail image for post
 img: ":UserModel.jpg"
 # disable comments on this page
