@@ -42,32 +42,43 @@ date: 2022-09-28 20:45:00 +0900
 
 <!-- outline-start -->
 
-<규칙>
 
 은행에서 사용할 이율을 구하는 interestManager라는 클래스를 만들어 보자. <br>
-이 프로그래믕 매달 내는 적립식이 아닌 한번에 목돈을 입금해 놓는 거치식의 이율을 계산한다.<br>
+이 프로그래믕 매달 내는 적립식이 아닌 한번에 목돈을 입금해 놓는 거치식의 이율을 계산한다.
+
+
+- 거치 기간 90일 이내일 경우 -> 0.5%
+- 거치 기간 91 ~ 180일 경우 -> 1%
+- 181 ~ 364일 경우 -> 2%
+- 365 ~ 끝까지 -> 5.6
 
 | 예치 기간 | 이율 |
 | --- | --- |
 | 1일 ~  90일 | 0.5 % |
 | 91일 ~ 180일 | 1 % |
-| 181일 ~ 364일 | 2 % |
-| 365일 ~ | 5. 6 % |
+| 181일 ~ 364일  | 2 % |
+| 365일 ~ 끝까지 | 5. 6 % |
 
+
+dwdw
 
 ```java
-
 public class InterestManager{
+
 public static void main(String[]args) {
-  InterestManager interestManager =newInterestManager();
+  InterestManager interestManager =new InterestManager();
+//        1일 계산으로 할 때
+  /*
+        for (int day = 1; day < 366; day++) {
+            double amount = interestManager.calculateAmount(day, 1000000);
+            System.out.print(day + " : " + amount  + " ");
+            if(day%20==0) System.out.println();
+        }
 
-//        for (int day = 1; day < 366; day++) {
-//            double amount = interestManager.calculateAmount(day, 1000000);
-//            System.out.print(day + " : " + amount  + " ");
-//            if(day%20==0) System.out.println();
-//        }
+   */
 
-  for(intday = 10; day <= 370; day += 10) {
+//       10일 단위로 계산할 때
+  for(int day = 10; day <= 370; day += 10) {
   double amount = interestManager.calculateAmount(day, 1000000);
   System.out.println(day +" : " + amount + " ");
   }
@@ -75,7 +86,7 @@ public static void main(String[]args) {
   }
 
 public double getInterestRate(intday) {
-  doublerate;
+  double rate;
   if(day<= 90) {// 0.5 %이율
   rate = 0.5;
   }else if(day>= 91 &&day<= 180) {// 1%
@@ -86,19 +97,18 @@ public double getInterestRate(intday) {
   rate = 5.6;
   }
 
-  returnrate ;
+  return rate ;
   }
 
-public double calculateAmount(intday,longamount) {
-  doubletotalAmount;//
-  doublerate = getInterestRate(day);//이자 %
-  doubleinterestAmount =amount* rate / 100.0;//이자 금액
-  totalAmount =amount+ interestAmount;//예치금 +이자금액
-  returntotalAmount;
+public doublecalculateAmount(intday,longamount) {
+  double totalAmount;//
+  double rate = getInterestRate(day);//이자 %
+  double interestAmount =amount* rate / 100.0;//이자 금액
+  totalAmount = amount+ interestAmount;//예치금 +이자금액
+  return totalAmount;
 
   }
   }
-
 ```
 
 <!-- outline-end -->
