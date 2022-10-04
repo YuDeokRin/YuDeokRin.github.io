@@ -9,18 +9,18 @@ title: Java Array
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible`
-tags: [Java, Modern Java in action]
+tags: [Java,The Java Manipulation]
 # thumbnail image for post
-img: ":ModernJava.jpg"
+img: ":java.jpg"
 # disable comments on this page
 comments_disable: true
 
 # publish date
-date: 2022-10-02 23:34:00 +0900
+date: 2022-10-03 23:54:00 +0900
 
 # seo
 # if not specified, date will be used.
-#meta_modify_date: 2022-10-02 23:34:00 +0900
+#meta_modify_date: 2022-10-03 23:54:00 +0900
 # check the meta_common_description in _data/lang/[language].yml
 #meta_description: ""
 
@@ -42,11 +42,7 @@ date: 2022-10-02 23:34:00 +0900
 
 <!-- outline-start -->
 
-# 제 7장 여러 데이터를 하나에 넣을 수 는 없을까요?
-
-# 배열의 선언
-
-## 배열
+# 배열
 
 `배열`은 한 가지 타입에 대해서, 하나의 변수에 여러 개의 데이터를 넣을 수 있다.
 
@@ -459,7 +455,7 @@ int twoDim[][];
 **하지만 `2차원 배열에서는 twoDim[0]는 int 값이 아니라 배열이다.` 즉, `twoDim[0][0]의 값이 int 값이다.`**
 >
 
-![Untitled](%E1%84%8C%E1%85%A6%207%E1%84%8C%E1%85%A1%E1%86%BC%20%E1%84%8B%E1%85%A7%E1%84%85%E1%85%A5%20%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%E1%84%85%E1%85%B3%E1%86%AF%20%E1%84%92%E1%85%A1%E1%84%82%E1%85%A1%E1%84%8B%E1%85%A6%20%E1%84%82%E1%85%A5%E1%87%82%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%89%E1%85%AE%20%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%8B%E1%85%B3%E1%86%AF%209d3bc143354349fb99b6c4b7c7fa1792/Untitled.png)
+![Untitled](https://user-images.githubusercontent.com/56623911/193810744-b9b7154e-5e14-4d35-a5f4-e183b3fc7639.png)
 
 ### 2차원 배열의 개수 선언
 
@@ -467,7 +463,7 @@ int twoDim[][];
 twoDim = new int[2][3];
 ```
 
-![Untitled](%E1%84%8C%E1%85%A6%207%E1%84%8C%E1%85%A1%E1%86%BC%20%E1%84%8B%E1%85%A7%E1%84%85%E1%85%A5%20%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%E1%84%85%E1%85%B3%E1%86%AF%20%E1%84%92%E1%85%A1%E1%84%82%E1%85%A1%E1%84%8B%E1%85%A6%20%E1%84%82%E1%85%A5%E1%87%82%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%89%E1%85%AE%20%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%8B%E1%85%B3%E1%86%AF%209d3bc143354349fb99b6c4b7c7fa1792/Untitled%201.png)
+![Untitled 1](https://user-images.githubusercontent.com/56623911/193810721-189f00cc-9944-41ca-88ce-804d8474a055.png)
 
 그림과같이 2차원 배열이 생성된다. 2층으로 되어있고 한층에 3개의 집이 있는 복도식 아파트 같은 공간이 만들어 진다. 총 안에서 거주 할 수 있는 공간은 6개의 공간이다.
 
@@ -508,14 +504,14 @@ twoDim = new int[2];
 
 하지만, 아래와 같이 선언하면 2차원 배열의 공간의 크기가 서로 다르게 지정할 수 있다.
 
-![Untitled](%E1%84%8C%E1%85%A6%207%E1%84%8C%E1%85%A1%E1%86%BC%20%E1%84%8B%E1%85%A7%E1%84%85%E1%85%A5%20%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%A5%E1%84%85%E1%85%B3%E1%86%AF%20%E1%84%92%E1%85%A1%E1%84%82%E1%85%A1%E1%84%8B%E1%85%A6%20%E1%84%82%E1%85%A5%E1%87%82%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%89%E1%85%AE%20%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%8B%E1%85%B3%E1%86%AF%209d3bc143354349fb99b6c4b7c7fa1792/Untitled%202.png)
+![Untitled 2](https://user-images.githubusercontent.com/56623911/193810736-84791379-6ecb-40cc-9ea6-9feae25ba49b.png)
 
 ### 중괄호를 이용한 2차원 배열선언
 
 - 중괄호를 이용한 2차원 배열 선언
 
 ```java
-int[][] twoDim = {{1,2,3}, {4,5,6}};
+int[][] twoDim = {% raw %}{{ 1, 2, 3 }, {4,5,6}}{% endraw %};
 ```
 
 - 위의 한줄을 기존의 표현으로 했을 때
@@ -567,7 +563,7 @@ public class ArrayLength {
 
 ```java
 public void printArray(){
-        int[][] twoDim = {{1,2,3}, {4,5,6}};
+        int[][] twoDim ={% raw %} {{1,2,3}, {4,5,6 }} {% endraw %};
         System.out.println("twoDim.length = " + twoDim.length);
         System.out.println("twoDim[0].length =" + twoDim[0].length);
 
@@ -670,7 +666,7 @@ for (int oneLoop = 0; oneLoop < twoDimLength; oneLoop++) {
 
 ```java
 public void twoDimFor(){
-   int[][] twoDim = {{1, 2, 3}, {4, 5, 6}};
+   int[][] twoDim = {% raw %}{ {1, 2, 3}, {4, 5, 6}}{% endraw %};
    for (int[] dimArray : twoDim) { // 첫 번째
       for (int date : dimArray) { // 두 번째
          System.out.println(date);
@@ -689,7 +685,7 @@ public void twoDimFor(){
 
 ```java
 public void twoDimForWithCounter(){
-    int[][] twoDim = {{1, 2, 3}, {4, 5, 6}};
+    int[][] twoDim = {% raw %}{{1, 2, 3}, {4, 5, 6}}{% endraw %};
     int oneCounter = 0;
     for (int[] dimArray : twoDim) {
       int twoCounter = 0;
@@ -757,5 +753,4 @@ $
 ```
 
 위와 같이 클래스 이름 뒤에 공백으로 분리한 문자열을 나열하면 이 문자열들이 args라는 배열에 전달된다. 그래서   애플리 케이션이 시작할 때 전달해야 할 값들이 있다면, 이와 같은 방법을 사용하면 된다.
-
 <!-- outline-end -->
