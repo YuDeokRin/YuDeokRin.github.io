@@ -16,11 +16,11 @@ img: ":jekyll.jpg"
 comments_disable: true
 
 # publish date
-date: 2022-10-03 23:25:00 +0900
+date: 2022-10-05 23:55:00 +0900
 
 # seo
 # if not specified, date will be used.
-#meta_modify_date: 2022-10-03 23:25:00 +0900
+#meta_modify_date: 2022-10-05 23:55:00 +0900
 # check the meta_common_description in _data/lang/[language].yml
 #meta_description: ""
 
@@ -44,7 +44,8 @@ date: 2022-10-03 23:25:00 +0900
 
 <img width="1256" alt="Screen Shot 2022-10-05 at 8 37 01 AM" src="https://user-images.githubusercontent.com/56623911/194084423-b13b4047-caf3-4770-892c-461c8f2a2755.png">
 
-위와 같은 ***Liquid Warning*** 라는 에러가 나올 때, 처음 보던 에러라서 당황스러웠다. 천천히 에러 글씨를 읽어보고 이해가 되지 않는 것들은 풀어 나가려고 노력했다.
+위와 같은 ***Liquid Warning*** 라는 에러가 나올 때, 처음 보던 에러라서 당황스러웠다.<br>
+천천히 에러 글씨를 읽어보고 이해가 되지 않는 것들은 풀어 나가려고 노력했다.<br>
 
 위의 문제점은 `Liquid`는  중괄호 안에 중괄호를 사용하지 못한다. `{% raw %} {{      }} {% endraw %}`
 
