@@ -9,7 +9,7 @@ title: Java Array
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible`
-tags: [Java,The Java Manipulation]
+tags: [Java]
 # thumbnail image for post
 img: ":java.jpg"
 # disable comments on this page

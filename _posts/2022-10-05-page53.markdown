@@ -9,7 +9,7 @@ title: jekyll Warning 처리
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible`
-tags: [Java,The Java Manipulation]
+tags: [jekyll]
 # thumbnail image for post
 img: ":jekyll.jpg"
 # disable comments on this page
