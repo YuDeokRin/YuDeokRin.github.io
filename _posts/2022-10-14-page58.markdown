@@ -9,9 +9,9 @@ title: 테스트 주도 개발 1주차
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible`
-tags: [OS, Operating System]
+tags: [TDD]
 # thumbnail image for post
-img: ":OperatingSystem2.jpg"
+img: ":testDrivenDevelopment.jpg"
 # disable comments on this page
 comments_disable: true
 
