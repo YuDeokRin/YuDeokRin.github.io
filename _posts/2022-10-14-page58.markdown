@@ -404,15 +404,17 @@ Dollar times(int multiplier){
 }
 ```
 
+---
+
 - 할일 목록
 
-```
-$5 + 10CHF = $10(환율이 2:1일 경우)
-~~$5 * 2 = $10~~
-amount를 private으로 만들기
-~~Dollar 부작용(side effect)?~~
-Money 반올림?
-```
+- [ ]  $5 + 10CHF = $10(환율이 2:1일 경우)
+- [x]  ~~$5 * 2 = $10~~
+- [ ]  amount를 private으로 만들기
+- [x]  ~~Dollar 부작용(side effect)?~~
+- [ ]  Money 반올림?
+
+---
 
 ### 초록 막대를 보기 위한 세 가지 전략
 
@@ -443,16 +445,17 @@ $5가 있을 때  값 객체 패턴으로  $5을 보장 받을 수 있다.
 
 $6 or 7 … 등 원한다면 객체를 새로 만들어야한다.
 
+---
 - 할일 목록  : equals() 추가
 
-```
-$5 + 10CHF = $10(환율이 2:1일 경우)
-~~$5 * 2 = $10~~
-amount를 private으로 만들기
-~~Dollar 부작용(side effect)?~~
-Money 반올림?
-equals()
-```
+- [ ]  $5 + 10CHF = $10(환율이 2:1일 경우)
+- [x]  ~~$5 * 2 = $10~~
+- [ ]  amount를 private으로 만들기
+- [x]  ~~Dollar 부작용(side effect)?~~
+- [ ]  Money 반올림?
+- [ ]  equals()
+---
+
 
 값 객체를 암시하는 것
 
@@ -462,15 +465,13 @@ equals()
 
 - 할일 목록  : hashCode() 추가
 
-```
-$5 + 10CHF = $10(환율이 2:1일 경우)
-~~$5 * 2 = $10~~
-amount를 private으로 만들기
-~~Dollar 부작용(side effect)?~~
-Money 반올림?
-equals()
-hashCode()
-```
+- [ ]  $5 + 10CHF = $10(환율이 2:1일 경우)
+- [x]  ~~$5 * 2 = $10~~
+- [ ]  amount를 private으로 만들기
+- [x]  ~~Dollar 부작용(side effect)?~~
+- [ ]  Money 반올림?
+- [ ]  equals()
+- [ ]  hashCode()
 
 만약 Dollar를 해시 테이블의 키로 쓸 생각이라면 equals( )를 구현할 때에 hashCode( )를 같이 구현해야한다.
 
@@ -526,17 +527,18 @@ public boolean equals(Object object) {
 
 동일성 문제 일시적으로 완료
 
+---
 - 할일 목록  : eqauls() 완료
 
-```
-$5 + 10CHF = $10(환율이 2:1일 경우)
-~~$5 * 2 = $10~~
-amount를 private으로 만들기
-~~Dollar 부작용(side effect)?~~
-Money 반올림?
-~~equals()~~
-hashCode()
-```
+- [ ]  $5 + 10CHF = $10(환율이 2:1일 경우)
+- [x]  ~~$5 * 2 = $10~~
+- [ ]  amount를 private으로 만들기
+- [x]  ~~Dollar 부작용(side effect)?~~
+- [ ]  Money 반올림?
+- [x]  ~~equals()~~
+- [ ]  hashCode()
+
+---
 
 글쓴이는
 
@@ -551,19 +553,21 @@ hashCode()
 
 우선 할일 목록에 추가만 해주자. 바로 필요하지 않기 때문에  써놓기만 한다.
 
+---
+
 - 할일 목록  : Equal null, Equal object 추가
 
-```
-$5 + 10CHF = $10(환율이 2:1일 경우)
-~~$5 * 2 = $10~~
-amount를 private으로 만들기
-~~Dollar 부작용(side effect)?~~
-Money 반올림?
-~~equals()~~
-hashCode()
-Equal null
-Equal object
-```
+- [ ]  $5 + 10CHF = $10(환율이 2:1일 경우)
+- [x]  ~~$5 * 2 = $10~~
+- [ ]  amount를 private으로 만들기
+- [x]  ~~Dollar 부작용(side effect)?~~
+- [ ]  Money 반올림?
+- [x]  ~~equals()~~
+- [ ]  hashCode()
+- [ ]  Equal null
+- [ ]  Equal object
+
+---
 
 ### 정리
 
@@ -577,19 +581,24 @@ Equal object
 
 ## 4. 프라이버시
 
+
+---
+
 - 할일 목록
 
-```
-$5 + 10CHF = $10(환율이 2:1일 경우)
-~~$5 * 2 = $10~~
-amount를 private으로 만들기
-~~Dollar 부작용(side effect)?~~
-Money 반올림?
-~~equals()~~
-hashCode()
-Equal null
-Equal object
-```
+- [ ]  $5 + 10CHF = $10(환율이 2:1일 경우)
+- [x]  ~~$5 * 2 = $10~~
+- [ ]  amount를 private으로 만들기
+- [x]  ~~Dollar 부작용(side effect)?~~
+- [ ]  Money 반올림?
+- [x]  ~~equals()~~
+- [ ]  hashCode()
+- [ ]  Equal null
+- [ ]  Equal object
+
+---
+
+
 
 개념적으로 Dollar.times( ) 연산은 호출을 받은 객체의 값에 인자로 받은 곱수만큼 곱한 값을 갖는 Dollar를 반환해야 한다. 하지만 테스트가 정확히 그것을 말하지는 않는다.
 
