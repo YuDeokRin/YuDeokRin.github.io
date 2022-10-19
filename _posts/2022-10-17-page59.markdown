@@ -241,7 +241,7 @@ Exception Table은 4가지 요소로 구성됨
   - Class 정보와 일치하게 될 경우 → target으로 점프하여 수수행한다.
   - Class 정보와 일치하지 않을 경우 → JVM은 Current Frame을 종료하고 이 Method를 호출한 Method의 Stack Frame에 이 Exception을 다시 전져 처리를 반복한다.
 
-  
+
 
 ## Stack Frame을 마치고..
 
