@@ -42,61 +42,289 @@ date: 2022-10-27 23:55:00 +0900
 
 <!-- outline-start -->
 
-# 스터디 3주차(22.10.23 ~ 22.10.27)
+# 제 13장 인터페이스와 추상클래스, enum
 
-## 11장. 모든 악의 근원
+### 인터페이스와 abstract 클래스를 사용하는 이유
+
+- 설계시 선언해 두면 개발할 때 기능을 구현하는 데에만 집중할 수 있다.
+- 개발자의 역량에 따른 메소드의 이름과 매개 변수 선언의 격치를 줄일 수 있다.
+- 공통적인 인터페이스와 abstract 클래스를 선언해 놓으면, 선언과 구현을 구분할 수 있다.
+
+### 인터페이스 실습
+
+```java
+public interface MemberManager {
+    public boolean addMember(MemberDTO member);
+    public boolean removeMember(String name, String phone);
+    public boolean updateMember(MemberDTO member);
+}
+```
+
+```java
+public class MemberMangerImpl implements MemberManager{
+
+}
+```
+
+
+
+위의 내용을 컴파일해보면 컴파일이 안된다. 그리고 에러가 뜬다.
+
+```java
+에러 메시지 : MemberMangerImpl is not abstract and does not override abstract method updateMember(MemberDTO) in MemberManger
+```
+
+해석하면 “MemberMangerImpl 클래스는 abstract 클래스도 아니고, MemberManger에 정의되어 있는 updateMember()라는 abstrace 메소드도 구현하지 않았다.” 라고 한다.
+
+해결책 : 인터페이스를 구현할 경우(implements)에는 반드시 인터페이스에 정의된 메소드들의 몸통을 만들어 주어야만 한다. 즉, 메소드들을 구현해야한다.
+
+```java
+public class MemberMangerImpl implements MemberManager{
+
+    @Override
+    public boolean addMember(MemberDTO member) {
+        return false;
+    }
+
+    @Override
+    public boolean removeMember(String name, String phone) {
+        return false;
+    }
+
+    @Override
+    public boolean updateMember(MemberDTO member) {
+        return false;
+    }
+}
+```
+
+메소드들을 구현해야지 컴파일 에러가 뜨지않는다.
 
 ---
 
-### 할일 목록
+예제)
 
-- [ ]  $5 + 10CHF = $10(환율이 2:1일 경우)
-- [x]  ~~$5 * 2 = $10~~
-- [x]  amount를 private으로 만들기
-- [x]  ~~Dollar 부작용(side effect)?~~
-- [ ]  Money 반올림?
-- [x]  ~~equals()~~
-- [ ]  hashCode()
-- [ ]  Equal null
-- [ ]  Equal object
-- [x]  5CHF * 2 - 10CHF
-- [ ]  Dollar/Franc 중복
-- [x]  공용 equals
-- [x]  공용 times
-- [x]  Franc과 Dollar 비교하기
-- [x]  통화?
-- [ ]  testFrancMultiplication 제거
+```java
+public class InterfaceExample {
+    public static void main(String[] args) {
+        MemberManager member = new MemberManager();
+    }
+}
+```
+
+위와 같은 코드를 작성시 컴파일 에러가 뜬다.. 왜일까 ?
+
+```java
+에러 메시지 : MemberManager is abstract; cannot be instantiated
+```
+
+해석하면 MemberManager가 abstract이기 때문에 초기화가 되지 않는다는 메시지가 출력된다.
+
+```java
+public class InterfaceExample {
+    public static void main(String[] args) {
+        MemberManager member = new MemberManagerImpl();
+
+    }
+}
+```
+
+위 코드는 `member`의 타입은 `MebmerManager`이다. 그리고, `MemberManagerImpl` 클래스에는 인터페이스에 선언되어 있는 모든 메소드들이 구현되어 있다. 따라서 실제 `member` 의 타입은 `MemberManager` 가 되기 때문에, member에 선언된 메소드들을 실행하면 `MemberManagerImpl` 에 있는 메소드들이 실행된다.
+
+## 일부 완성되어 있는 abstract클래스
+
+`abstract` 클래스는 자바에서 마음대로 초기화하고 실행할 수 없도록 되어있다.
+
+`abstract` 클래스를 구현해 놓은 클래스로 초기화 및 실행이 가능하다.
+
+- abstract 클래스 형식
+
+```java
+접근제어자 abstract class 클래스이름{
+    접근제어자 abstract boolean 메소드이름(); // 추상 메소드 형식
+}
+```
+
+```java
+public abstract class MemberManagerAbstract {
+    public abstract boolean addMember(MemberDTO member);
+    public abstract boolean removeMember(String name, String phone);
+    public abstract boolean updateMember(MemberDTO member);
+
+    public void printLog(String data) {
+        System.out.println("Data =" + data);
+    }
+
+}
+```
+
+`abstract` 클래스는 abstract으로 선언한 메소드가 하나라도 있을 때 선언한다.
+
+`abstract` 정리
+
+- `abstract` 클래스는 클래스 선언시 `abstract`이라는 예약어가 클래스 앞에 추가되면 된다.
+- `abstract` 클래스는 안에는`abstract`으로 선언된 메소드가 0개 이상 있으면 된다.
+- `abstract` 으로 선언된 메소드가 하나라도 있으면, 그 클래스는 반드시 `abstract` 으로 선언되어야만 한다.
+- `abstract` 클래스는 몸통이 있는 메소드가 0개 이상 있어도 전혀 상관 없으며, `static`이나 `final` 메소드가 있어도 된다.
+
+어떤 예약어를 사용하여 이 `abstract` 클래스를 구현한다고 선언할까?
+
+- `extends`라는 예약어 를 사용하여 그 뒤에 확장할 클래스 이름을 명시
+- abstract 클래스에는 구현된 메소드가 있을 수 있기 때문에 확장해서 사용한다고 이야기해 주어야만 한다.
+
+`abstract` 클래스를 구현하는 예시
+
+```java
+public class MemberManagerImpl2 extends MemberManagerAbstract{
+}
+```
+
+위의 코드를 쓰고 컴파일 할 경우 에러가 난다.
+
+이유는 `abstract` 으로 선언되어 있는 메소드들을 구현하지 않았기 때문이다.
+
+```java
+public class MemberManagerImpl2 extends MemberManagerAbstract{
+
+    public boolean addMember(MemberDTO member){
+        return false;
+    }
+
+    public boolean removeMember(String name, String phone){
+        return false;
+    }
+
+    public boolean updateMember(MemberDTO member){
+        return false;
+    }
+
+}
+```
+
+왜? `abstract` 클래스가 있는 것일까?
+
+인터페이스를 선언하면, 어떤 메소드는 미리 만들어 놓아도 전혀 문제가 없는 경우 발생한다. 그렇다고, 해당 클래스를 만들기는 좀 애매할 때가 있다. 그 중 아주 공통적인 기능을 미리 구현해 놓으면 많은 도움이 된다. 이럴때 사용하는 것이 바로 `abstract` 클래스다.
+
+
+
+|  | 인터페이스 | abstract 클래스 | 클래스 |
+| --- | --- | --- | --- |
+| 선언 시 사용하는 예약어 | interface | abstract class | class |
+| 구현 안 된 메소드 포함 가능 여부 | 가능(필수) | 가능 | 불가 |
+| 구현된 메소드 포함 가능 여부 | 불가 | 가능 | 가능(필수) |
+| static 메소드 선언 가능 여부 | 불가 | 가능 | 가능 |
+| final 메소드 선언 가능 여부 | 불가 | 가능 | 가능 |
+| 상속(extends) 가능 | 불가 | 가능 | 가능 |
+| 구현(implements) 가능  | 가능 | 불가 | 불가 |
 
 ---
 
-두 하위클래스 Dollar와 Franc에는 생성자 밖에 없다.
+## 예약어 - final
 
-단지 생성자 때문에 하위 클래스가 있을 필요는 없기 때문에 하위 클래스를 제거하는 게 좋을 것 같다.
+final은 클래스(class), 메소드(Method), 변수(variable)에 선언할 수 있다.
 
-코드의 의미를 변경하지 않으면서도 하위 클래스에 대한 참조를 상위 클래스에 대한 참조로 변경할 수 있다.
+final이 클래스, 메소드, 변수에 사용될 때 어떻게 달라지는지 알아보자.
+
+### 클래스에 final을 선언할 때
+
+- 클래스가 final로 선언되어 있으면 상속을 해줄 수  없다.
+
+- 클래스에 final 형식
 
 ```java
-//Money
-static Money franc(int amoutn){
-    return new Money(amount, "CHF");
+접근제어자 final class 메소드이름{
+}
+```
+
+➡️예제) 클래스에 final을 선언할 때 예제
+
+```java
+//FinalClass
+public final class FinalClass{
 }
 ```
 
 ```java
-//Money
-static Money dollar(int amount){
-    return new Money(amount, "USD");
+//FinalChildClass
+public class FinalChildClass extends FinalClass{
 }
 ```
 
-이제 Dollar에 대한 참조는 하나도 남아 있찌 않으므로 Dollar를 지울 수 있게 됐다. 반면에 Franc은 우리가 작성했던 테스트 코드에서 아직 참조한다.
+➡️`FinalChildClass` 을 컴파일해보면 에러가 난다.
 
 ```java
-public void testDifferentClassEquality(){
-    assertTrue(new Money(10, "CHF").equals(new Franc(10, "CHF")));
+에러 메시지 :
+cannot inherit from final FinalClass
+번역 : final인 FinalClass에서 상속을 받을 수는 없다."
+```
+
+`➡️클래스에 final`을 사용하는 것은 언제인가?
+
+예를들어 String 클래스 상속을 방아서 toString() 메소드에 무조건 1을 리턴하게 한다면 String이라는 클래스에 대한 기본 속성을 변경하는 것이다.
+
+더 이상 확장해서는 안 되는 클래스, 누군가 이 클래스르 상속 받아서 내용을 변경해서는 안되는 클래스를 선언할 때 final로 선언하면 된다.
+
+
+
+### 메소드를 final로 선언할 때
+
+- 메소드를 final로 선언할 경우 `Overriding`을 할 수 없게 된다.
+
+예제를 통해서 알아보자.
+
+➡️예제) 메소드에 final선언할 경우
+
+```java
+public abstract class FinalMehtodClass{
+    public final void printLog(String data){
+        System.out.println("Data=" + data);
+    }
 }
 ```
 
-테스트를 지워도 될 정도
+`➡️FinalMehtodClass` 안에 있는 final로 선언된 메소드 `printLog()` 메소드를 Overriding하려고 할 때
+
+```java
+public class FinalMehtodChildClass extends FinalMehtodClass{
+    public final void printLog(String data){
+        System.out.println("Data=" + data);
+    }
+}
+```
+
+➡️컴파일할 경우 에러가 뜬다.
+
+```
+에러 메시지 :
+printLog(String) in FinalMethodChildClass cannot override printLog(String) in FinalMethodClass
+해석 : FinalMethodChildClass 클래스에 있는 printLog() 메소드는 final이기 때문에 override할 수 없다.
+```
+
+메소드에 final을 넣을 경우 다른 개발자가 그 메소들르 덮어 쓰는 것을 막을 수 있다.
+
+### 변수에서 final을 선언할 때
+
+- 변수에 final을 선언하는 것은 클래스,메소드에 final을 넣는것과는 조금 다르다.
+- `'더 이상 바꿀 수 없다'`의 의미를 내포하고 있다.
+- `인스턴스 변수`나 `static으로 선언된 클래스 변수`는 선언과 함께 값을 지정해야만 한다.
+
+➡️예제) 인스턴스 변수에 final을 선언
+
+```java
+public class FinalVariable{
+    final int instanceVariable;
+}
+```
+
+➡️ 위의 코드를 컴파일 할 경우 어떻게 되는가?  에러가 뜬다.
+
+```
+에러 메시지 :
+variable instanceVariable not initialized in the default constructor
+해석 : 변수 instanceVariable이 기본 생성자에서 초기화되지 않았습니다.
+```
+
+➡️컴파일이 안되는 이유 : final로 선언되어 있는 변수이기 때문이다.
+
 
 <!-- outline-end -->
