@@ -54,9 +54,9 @@ date: 2022-10-27 23:55:00 +0900
 
 ```java
 public interface MemberManager {
-  public boolean addMember(MemberDTO member);
-  public boolean removeMember(String name, String phone);
-  public boolean updateMember(MemberDTO member);
+    public boolean addMember(MemberDTO member);
+    public boolean removeMember(String name, String phone);
+    public boolean updateMember(MemberDTO member);
 }
 ```
 
@@ -377,5 +377,183 @@ public class FinalVariable{
 ```
 
 ### 왜 final이라는 예약어를 사용해서 값을 변경하지 못하게 하는걸까?
+
+![Untitled](https://user-images.githubusercontent.com/56623911/199260736-64adef77-4531-4978-8451-ee943263fc2d.png)
+
+1월과 12월은 31일까지 있다.  어떤 일이 있든 달력은 바뀌지 않는다.  이런 경우 `final`을 사용하면 너무 유용하다.
+
+1월과 12월을 가져다가 쓸 수 있다. 하지만 `final`이 붙어 바꿀 수는 없다.
+
+중요한것은 `final`을 남발해서 사용하면 안된다.
+
+### 참조 자료형 final
+
+```java
+import main.Chapter08.MemberDTO;
+
+public class FinalReferenceType {
+    final MemberDTO dto = new MemberDTO();
+
+    public static void main(String[] args) {
+        FinalReferenceType referenceType= new FinalReferenceType();
+        referenceType.checkDTO();
+
+    }
+
+    public void checkDTO(){
+        System.out.println(dto);
+        dto = new MemberDTO();
+    }
+
+
+}
+```
+
+- 결과는 컴파일 에러가 난다.
+
+➡️에러 메시지
+
+- `Cannot assign a value to final variable 'dto’`
+- `‘dto’` 가 `final` 이기 때문에 값을 할당할 수 없다는 에러
+
+![Untitled 1](https://user-images.githubusercontent.com/56623911/199260706-511d1117-3645-4dd0-8683-db9ab63014e4.png)
+
+dto라는 변수를 final로 선언한 것을 알 수 있다.
+
+기본 자료형과 마찬가지로 참조 자료형도 두 번 이상 값을 할당하거나 새로 생성자를 사용하여 초기화할 수 없다.
+
+```java
+package main.Chapter13;
+
+import main.Chapter08.MemberDTO;
+
+public class FinalReferenceType {
+    final MemberDTO dto = new MemberDTO();
+
+    public static void main(String[] args) {
+        FinalReferenceType referenceType= new FinalReferenceType();
+        referenceType.checkDTO();
+
+    }
+
+    public void checkDTO(){
+        System.out.println(dto);
+//        dto = new MemberDTO();
+        dto.name = "Dante";
+        System.out.println(dto);
+    }
+
+}
+```
+
+```java
+결과 :
+Name =null phone=null eMail=null
+Name =Dante phone=null eMail=null
+```
+
+정리해보자면 final로 선언된  `dto` 객체는 `FinalReferenceType` 에서 두 번 이상 생성할 수 없다.
+
+하지만, 그 객체의 안에 있는 객체들은 `fianl`로 선언된 것이 아니기 때문에 그러한 제약을 받지않는다.
+
+제약을 받지 않는 이유는 `MemberDTO` 에 선언되어 있는 name, phone, email 모두 final이 아니기 때문이다.
+
+해당 클래스가 final이라고 해서 그 안에 있는 인스턴스 변수나 클래스 변수가 final은 아니라는 것이다.
+
+---
+
+## enum 클래스
+
+final과 String과 같은 문자열이나 숫자들을 나타내는 기본 자료형의 값을 고정할 수 있다. 이렇게 고정된 값을 `‘상수(constant)’` 라고 한다.
+
+어떤 클래스가 상수만으로 만들어져 있을 경우에는 반드시 class로 선언할 필요는 없다.
+
+`enum`은 `enumeration` 이라는 뜻에서 “셈, 계산, 열거, 목록, 일람표“ 라는 뜻을 갖고 있음
+
+- enum 클래스는 일종의 클래스이다.
+
+➡️예시를 통해서 알아보자.
+
+```java
+public enum OverTimeValues {
+    THREE_HOUR,
+    FIVE_HOUR,
+    WEEKEND_FOUR_HOUR,
+    WEEKEND_EIGHT_HOUR;
+}
+```
+
+- 급여
+  - 평일 3 시간 이상 ~  5시간 미만일 경우
+  - 주말 4시간 이상 8시간 미만일 때의 휴일 근무 수당
+  - 8시간 이상일 때의 야근 수당이 있다고 가정
+
+```java
+public class OverTimeManager {
+
+    public int getOverTimeAmount(OverTimeValues value){
+        int amount = 0;
+        System.out.println(value);
+        switch(value){
+            case THREE_HOUR:
+                amount = 18000;
+                break;
+
+            case FIVE_HOUR:
+                amount = 30000;
+                break;
+
+            case WEEKEND_FOUR_HOUR:
+                amount = 4000;
+                break;
+
+            case WEEKEND_EIGHT_HOUR:
+                amount = 6000;
+                break;
+        }
+        return amount;
+    }
+}
+```
+
+`getOverTimeAmount()` 메소드를 보면 OverTimeValues라는 enum 타입을 매개 변수로 받고, 변수명은 value로 지정했다. 야근 수당을 리턴할 amount라는 int 타입을 선언하고 0을 기본값으로 선언하고, 가장 마지막에 그 값을 리턴함.
+
+이제 `OverTimeValue` 라는 enum 타입을 어떻게 `getOverTimeAmount()` 메소드에 전달할까?
+
+```java
+public class getOverTimeAmount {
+    public static void main(String[] args) {
+        OverTimeManager manager = new OverTimeManager();
+        int myAmount = manager.getOverTimeAmount(OverTimeValues.THREE_HOUR);
+        System.out.println(myAmount);
+    }
+}
+```
+
+```java
+결과 :
+THREE_HOUR
+18000
+```
+
+밑에서 두 번째 줄을 보면, 별도의 생성자도 필요없고, enum을 넘겨주는것이 아니라는 것을 알 수 있다.
+
+`“enum 클래스이름.상수 이름”` 을 지정함으로써 클래스의 객체 생성이 완료된다고 생각하면된다.
+
+```java
+int myAmount = manager.getOverTimeAmount(OverTimeValues.THREE_HOUR);
+```
+
+위의 코드를 풀어서 쓰면
+
+```java
+OverTimeValues value = OverTimeValues.THREE_HOUR;
+int myAmount = manager.getOverTimeAmount(value);
+```
+
+여기서 value 변수는 OverTimeValues라는 enum 클래스의 객체라고 생각하면 된다.
+
+- enum 클래스는 생성자를 만들 수 있지만, 생성자를 통하여 객체를 생성할 수는 없다.
+
 
 <!-- outline-end -->
