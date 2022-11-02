@@ -52,7 +52,7 @@ version은 13.0 입니다.
 
 업데이트 후 이상한 에러들이 생겨나기 시작했다..
 
-![Untitled](Mac%20%E1%84%8B%E1%85%A5%E1%86%B8%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%B3%20%E1%84%92%E1%85%A2%E1%86%BB%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%84%E1%85%A2%20-%20Console%20output%20during%20zs%206362124cdc504a819faf4b39666bc436/Untitled.png)
+![Untitled](https://user-images.githubusercontent.com/56623911/199447373-23bc1d8b-2571-40bf-bdbb-2a503b86e1d6.png)
 
 업데이트 후 부팅이 되었고 부팅되자마자 이런 에러가 났다. ….이 정도는 알아서 잘 해결했다.
 
@@ -122,11 +122,11 @@ POWERLEVEL9K_INSTANT_PROMPT=off
 
 iterm을 끄고 다시 켜봤다.
 
-![Untitled](Mac%20%E1%84%8B%E1%85%A5%E1%86%B8%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%B3%20%E1%84%92%E1%85%A2%E1%86%BB%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%84%E1%85%A2%20-%20Console%20output%20during%20zs%206362124cdc504a819faf4b39666bc436/Untitled%201.png)
+![Untitled 1](https://user-images.githubusercontent.com/56623911/199447340-ddc14865-d227-4ce2-acb2-ec4e968ea4f8.png)
 
 이건 또 뭐지 ?….
 
-![Untitled](Mac%20%E1%84%8B%E1%85%A5%E1%86%B8%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%B3%20%E1%84%92%E1%85%A2%E1%86%BB%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%84%E1%85%A2%20-%20Console%20output%20during%20zs%206362124cdc504a819faf4b39666bc436/Untitled%202.png)
+![Untitled 2](https://user-images.githubusercontent.com/56623911/199447344-5cda7210-9612-4baa-b6df-ba2deffe641c.png)
 
 `오류: 유효하지 않은 활성 개발자 경로` 라는 에러가 떴다..  안 된다.
 
@@ -147,9 +147,9 @@ xcode-select --install
 
 위의 명령으로 CommandLineTools(command line developer tools)를 설치하여 문제를 해결 할 수 있다.
 
-![Screenshot 2022-11-02 at 5.11.24 PM.png](Mac%20%E1%84%8B%E1%85%A5%E1%86%B8%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%B3%20%E1%84%92%E1%85%A2%E1%86%BB%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%84%E1%85%A2%20-%20Console%20output%20during%20zs%206362124cdc504a819faf4b39666bc436/Screenshot_2022-11-02_at_5.11.24_PM.png)
+<img width="490" alt="Screenshot_2022-11-02_at_5 11 24_PM" src="https://user-images.githubusercontent.com/56623911/199447322-f6b49d67-bce9-42ac-85a7-f4b7c1e653c1.png">
 
-![Untitled](Mac%20%E1%84%8B%E1%85%A5%E1%86%B8%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%B3%20%E1%84%92%E1%85%A2%E1%86%BB%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%84%E1%85%A2%20-%20Console%20output%20during%20zs%206362124cdc504a819faf4b39666bc436/Untitled%203.png)
+![Untitled 3](https://user-images.githubusercontent.com/56623911/199447352-ab846912-59c6-4135-bae3-c9f2163f4a74.png)
 
 완료 되었다.
 
@@ -157,11 +157,11 @@ xcode-select --install
 
 깔끔히 완료 되었다.
 
-![Untitled](Mac%20%E1%84%8B%E1%85%A5%E1%86%B8%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%B3%20%E1%84%92%E1%85%A2%E1%86%BB%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%84%E1%85%A2%20-%20Console%20output%20during%20zs%206362124cdc504a819faf4b39666bc436/Untitled%204.png)
+![Untitled 4](https://user-images.githubusercontent.com/56623911/199447361-2f14b0d1-2296-4bbc-bdf3-dc58dc17aff0.png)
 
 `git` 도 완벽히 된다.
 
-![Untitled](Mac%20%E1%84%8B%E1%85%A5%E1%86%B8%E1%84%83%E1%85%A6%E1%84%8B%E1%85%B5%E1%84%90%E1%85%B3%20%E1%84%92%E1%85%A2%E1%86%BB%E1%84%8B%E1%85%B3%E1%86%AF%20%E1%84%84%E1%85%A2%20-%20Console%20output%20during%20zs%206362124cdc504a819faf4b39666bc436/Untitled%205.png)
+![Untitled 5](https://user-images.githubusercontent.com/56623911/199447367-692ee0ac-c37b-44a3-9a44-45ea5d571aa8.png)
 
 ## 회고
 
