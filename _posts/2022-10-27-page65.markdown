@@ -99,5 +99,714 @@ public void testDifferentClassEquality(){
 
 테스트를 지워도 될 정도로 다른 곳에서
 
+```java
+public void testEquality(){
+    assertTrue(Money.dollar(5).equals(Money.dollar(5)));
+    assertFalse(Money.dollar(5).equals(Money.dollar(6)));
+    assertTrue(Money.franc(5).equals(Money.franc(5)));
+}
+```
+
+---
+
+### 할일 목록  : testFrancMultiplication 제거 - 완료
+
+- [ ]  $5 + 10CHF = $10(환율이 2:1일 경우)
+- [x]  ~~$5 * 2 = $10~~
+- [x]  amount를 private으로 만들기
+- [x]  ~~Dollar 부작용(side effect)?~~
+- [ ]  Money 반올림?
+- [x]  ~~equals()~~
+- [ ]  hashCode()
+- [ ]  Equal null
+- [ ]  Equal object
+- [x]  5CHF * 2 - 10CHF
+- [ ]  Dollar/Franc 중복
+- [x]  공용 equals
+- [x]  공용 times
+- [x]  Franc과 Dollar 비교하기
+- [x]  통화?
+- [x]  testFrancMultiplication 제거
+
+---
+
+클래스 대신 currency를 비교하도록 강요하는 테스트 코드는 여러 클래스가 존재할 때만 의미가 있다. Franc 클래스를 제거하려는 중이기 때문에 Franc이 있을 경우 시스템이 작동하는지 확인하는 테스트는 도움이 안되고 오히려 짐이 된다.
+
+Franc과 함께 testDifferentClassEquality()를 보내버리자.
+
+### 11장 정리
+
+- 하위 클래스의 속을 들어내는 걸 완료  → 하위 클래스를 삭제했다.
+- 기존의 소스 구조에서는 필요했지만 새로운 구조에서는 필요 없게 된 테스트를 제거
+
+---
+
+## 12장. 드디어, 더하기
+
+---
+
+### 할일 목록
+
+- [ ]  $5 + 10CHF = $10 (환율이 2:1일 경우)
+
+---
+
+10프랑은 5달러와 같다.
+
+따라서
+
+`$5 + $5 = $5` 가 나온다.
+
+더하기(plus) 기능을 이야기 해보자.
+
+- 우선 간단한 테스크 코드를 만들어 보자.
+
+```java
+public void testSimpleAddition(){
+    Money sum = Money.dollar(5).plus(Money.dollar(5));
+    assertEquals(Money.dollar(10), sun);
+}
+```
+
+간단하게 덧셈 기능을 만들었다.
+
+`plus`를 만들어보자.
+
+```java
+//Money
+public plus(Money addend){
+    return new Moeny(amount + addend.amount, curreny);
+}
+```
+
+- 환율의 이용해서 연산의 결과 `Expression`  즉, Expression을 단일 통화로 축약
+
+```java
+public void testSimpleAddition() {
+    ...
+    assertEquals(Money.dollar(10), reduced);
+}
+```
+
+- reduced(축약된) : Expression은 Expression에 환율을 적용함으로써 얻어진다.
+  - 실세계에서 환율이 적용되는곳 : 은행
+
+```java
+public void testSimpleAddition() {
+    ...
+    Money reduced = bank.reduce(sum, "USD");
+    assertEquals(Money.dollar(10, reduced);
+}
+```
+
+설계 상 단순히 `‘…reduce = sum reduce(”USD”, bank)’` 라고도 쓸 수 있다.
+
+하지만 Bank가 (reduce()를 수행할) 책일을 맡게한건가 ??
+
+왜? 축약이 수식이 아닌 은행의 책임이어야 한다는 생각이 머리에 떠올랐을까?
+
+- `Expression`은 우리가 하려고 하는 일의 해당함. 켄트백은 핵심이 되는 객체가 다른 부분에 대해서 될 수 있는 한 모르도록 노력한다고 한다. 그렇게 한다면 핵심 객체가 가능한 오랫 동안 유연할 수 있기 때문이라고 한다. 뿐만 아니라, 테스트하기에도 쉽고 , 재활용하거나 이해하기에 쉽다고 한다.
+
+- `Expression` 과 관련이 있는 오퍼레이션이 많을 거라고 상상할 수 있다. 만약에 모든 오퍼레이션을 Expression에만 추가한다면 Expression은 무한히 커질 것이라고 한다.
+
+- 우선 Bank가 할 일은 없음. 객체만 하나 만들자.
+
+```java
+public void testSimpleAddition() {
+    ...
+    Bank bank = new Bank();
+    Money reduced = bank.reduce(sum, "USD");
+    assertEquals(Money.dollar(10), reduced);
+}
+```
+
+- 두 Money의 합은 Expression이어야 한다.
+
+```java
+public void testSimpleAddition() {
+    ...
+    Expression sum = five.plus(five);
+    Bank bank = new Bank();
+    Money reduceed = bank.reduce(sum, "USD");
+    assertEquals(Money.dollar(10), reduceed);
+}
+
+```
+
+- $5 만들기
+
+```java
+public void testSimpleaAddition(){
+    Money five = Money.dollar(5);
+    Expression sum = five.plus(five);
+    Bank bank = new Bank();
+    Money reduceed = bank.reduce(sum, "USD");
+    assertEquals(Money.dollar(10), reduced);
+}
+```
+
+위의 것을 컴파일 하려면 Expression 인터페이스가 필요하다 (클래스로 만들어도 되지만 인터페이스가 더 가볍다)
+
+```java
+//Expression
+interface Expression
+```
+
+- Money.plus()는 Expression을 리턴해야한다.
+
+```java
+//Money
+Expression plus(Money addend){
+    return new Money(amount + added.amount, currency);
+}
+```
+
+- Money 클래스가 Expression 구현
+
+```java
+//Money
+class Money implements Expression
+```
+
+- 빈  Bank 클래스를 생성
+
+```java
+//Bank
+class Bank
+```
+
+- Bank 클래스에는 reduce() 스텁이 있어야한다.
+
+```java
+//Bank
+Money reduce(Expression source, String to) {
+    return null;
+}
+```
+
+캄파일은 되지만 실패한다.  그렇다면 가짜 구현이 가능해졌다.
+
+```java
+//Bank
+Money reduce(Expression source, String to){
+    return Money.dollar(10);
+}
+```
+
+### 12장 정리
+
+- 큰 테스트를 작은 테스트($5 + 10CHF에서(from) $5 + $5로(to))로 줄여서 발전을 나타낼 수 있도록 했다.
+- 필요한 계산(computation)에 대한 가능한 메타포들을 신중히 생각함
+- 새 메타포에 기반하여 기존의 테스트를 재작성
+- 테스트를 빠르게 컴파일했다. 그리고 테스트를 실행함.
+- 진짜 구현을 만들기 위해 필요한 리팩토링을 약간의 전율과 함께 기대했다.
+
+---
+
+## 13장. 진짜로 만들기
+
+이 장에서는 앞서만든 가짜를 진짜로 만드는 작업을 할 예정
+
+---
+
+### 할일 목록
+
+- [ ]  $5 + 10CHF = $10(환율이 2 : 1일 경우)
+- [ ]  $5 + $5 = $10
+
+---
+
+모든 중복을 제거하기 전까지는 $5 + $5 테스트에 완료 표시를 할 수 없다.
+
+코드의 중복은 없지만 데이터 중복이 있다. 가짜 구현에 있는 $10는 테스크 코드에 있는 $5 + $5와 같다.
+
+```java
+//Bank
+Money reduce(Expression source, String to){
+    return Money.dollar(10);
+}
+```
+
+- 테스트 코드
+
+```java
+public void testSimpleAddition(){
+    Money five = Money.dollar(5);
+    Expression sum = five.plus(five);
+    Bank bank = new Bank();
+    Money reduced = bank.reduce(sum, "USD");
+    assertEquals(Money.dollar(10), reduced);_
+}
+
+```
+
+이전에는 가짜 구현이 있을 때 진짜 구현으로 거꾸로 작업해 가는것이 명확했다. (상수 → 변수 치환)
+
+하지만
+
+어떻게 거꾸로 작업해야 할지 분명하지 않아 순방향대로 작업 진행
+
+---
+
+### 할일 목록  : $5 + $5에서 Money 반환하기 - 추가
+
+- [ ]  $5 + 10CHF = $10(환율이 2 : 1일 경우)
+- [ ]  $5 + $5 = $10
+- [ ]  $5 + $5에서 Money 반환하기
+
+---
+
+먼저 `Money.plus()` 는 Money가 아닌 Expression(Sum)을 반환해야 한다.
+
+두 Money의 합은 Sum이어야 한다.
+
+```java
+public void testPlus(ReturnsSum){
+    Money five = Money.dollar(5); // five에 5달러 넣어준다.
+    Expression result = five.plus(five);
+    Sum sum = (Sum)result;
+    assertEquals(five, sum.augend) //덧셈의 첫 인자를 피가산수(augend)라고 한다.
+    assertEquals(five, sum.addend)
+
+}
+```
+
+위의 연산은 외부 행위가 아닌 내부 구현에 대해 관여하고 있기 때문에 오래가지 못한다.
+
+위 코드를 컴파일하기 위해선 `augend`와 `addend` 필드를 가지고 있는 `Sum클래스` 필요하다. 만들어주자.
+
+```java
+//Sum
+class Sum{
+    Money augend;
+    Money addend;
+}
+```
+
+`Money.plus()` 는 Money를 반환하고 있다.
+
+- 기존
+
+```java
+//Money
+Expression plus(Money addend){
+    return new Money(amount + addend.amount, currency);
+}
+```
+
+- 변경
+
+```java
+//Money
+Expression plus(Money addend){
+    return new Sum(this, addend);
+}
+```
+
+Sum 생성자도 만들어 주자. 필요하다.
+
+- Sum 생성자
+
+```java
+Sum(Money augend, Money addend){
+}
+```
+
+- Sum은 Expression의 일종이여야 한다.
+
+```java
+class Sum implements Expression // Expression : 연산결과들의 집합
+```
+
+컴파일되는 상태가 되었다.  하지만 테스트는 실패한다.
+
+이유 : Sum 생성자에서 필드를 설정하지 않기 때문이다.
+
+```java
+//Sum
+Sum(Money augend, Money addend){
+    this.augend = augend;
+    this.addend = addend;
+}
+```
+
+---
+
+### 중간 나의 생각
+
+정말 많이 하나하나 하는 것이 제대로하는구나.. 위와 같이 정말 꼼꼼하게 책을 쓰신거같다.
+
+다른 관점에서는 이렇게 꼼꼼하게 할 필요가 ? 이럴수도 있는데 난 너무 좋다.
+
+구체적으로 컴파일 에러가 뜨고 에러가나고 테스트 코드가 실패하고를 꼼꼼히 알려주시는 것 같다.
+
+자 ! 다시 시작해보자.
+
+---
+
+생성자 필드를 설정해줬다.  그럼 `Bank.reduce()` 는 Sum을 전달 받게 된다.
+
+만약 Sum이 가지고 있는 Money의 통화가 모두 동일하고, reduce를 통해 얻어내고자 하는 Money의 통화 역시 같다면, 결과는 Sum 내에 있는 Money들의 amount를 합친 값을 갖는 Money 객체여야 한다.
+
+```java
+public void testReduceSum(){
+    Expression sum = new Sum(Money.dollar(3), Money.dollar(4));
+    Bank bank = new Bank();
+    Money result = bank.reduce(sum, "USD");
+    assertEquals(Money.dollar(7), result);
+}
+```
+
+Sum을 계산하면 결과는 Money가 되어야한다.  또한 Money의 양은 두 Money 양의 합이고, 통화는 우리가 축약하는 통화여야 한다.
+
+```java
+//Bank
+Money reduce(Expression source, String to){
+    Sum sum = (Sum)source;
+    int amount = sum.augend.amount + sum.addend.amount;
+    return new Money(amount, to);
+}
+```
+
+위 코드가 지저분한 두 가지 이유
+
+1. 캐스팅(형변환). 이 코든느 모든 Expression에 대해 작동해야 한다.
+2. 공용(public) 필드와 그 필드들에 대한 두 단계에 걸친 레퍼런스.
+
+```java
+//Bank
+Money reduce(Expression source, String to){
+    Sum sum = (Sum) source;
+    return sum.reduce(to);
+}
+```
+
+```java
+//Sum
+public Money reduce(String to){
+    int amount = augend.amount + addend.amount;
+    return new Money(amount, to);
+}
+```
+
+---
+
+### 할일 목록  : Bank.reduce(Money) - 추가
+
+- [ ]  $5 + 10CHF = $10(환율이 2 : 1일 경우)
+- [ ]  $5 + $5 = $10
+- [ ]  $5 + $5에서 Money 반환하기
+- [ ]  Bank.reduce(Money)
+
+`Bank.reduce(Money)` 추가한 이유는 Bank.reduce()의 인자로 Money를 넘겼을 경우를 어떻게 구현과 테스트할 것인지 상기시키기 위해 추가했다.
+
+---
+
+- 테스트 작성
+
+```java
+public void testReduceMoney(){
+    Bank bank = new Bank();
+    Money result = bank.reduce(Money.dollar(1), "USD");
+    aassertEquals(Money.dollar(1), result);
+}
+```
+
+```java
+//Bank
+Money reduce(Expression source, String to){
+    if(source instanceof Money) return (Money) source;
+    Sum sum = (Sum) source;
+    return sum.reduce(to);
+}
+
+```
+
+- 위의 코드는 지저분한 편이다.
+- **클래스를 명시적으로 검사하는 코드가 있을 때에는 항상 다형성을 사용하도록 바꾸는 것이 좋다.**
+
+Sum은 reduce(String)를 구현하므로, Money도 그것을 구현하도록 만든다면 reduce()를 Expression 인터페이스에도 추가할 수 있게 된다.
+
+```java
+//Bank
+Money reduce(Expression source, String to){
+    if(source instanceof Money)
+      return (Money) source.reduce(to);
+    Sum sum = (Sum) source;
+    return sum.reduce(to);
+}
+
+```
+
+```java
+//Money
+public Money reduce(String to){
+    return this;
+}
+```
+
+- Expression 인터페이스에 reduce(String)를 추가
+
+```java
+Expression reduce(String to);
+```
+
+- 추가하게 되면 캐스팅과 클래스 검사 코드를 제거할 수 있다.
+
+```java
+//Bank
+Money reduce(Expression soruce, String to){
+    return source.reduce(to);
+}
+```
+
+---
+
+### 할일 목록  :
+
+- [ ]  $5 + 10CHF = $10(환율이 2 : 1일 경우)
+- [ ]  $5 + $5 = $10
+- [ ]  $5 + $5에서 Money 반환하기
+- [x]  Bank.reduce(Money)
+- [ ]  Money에 대한 통화 변환을 수행하는 Reduce
+- [ ]  Reduce(Bank, String)
+
+---
+
+### 13장 정리
+
+- 모드 중복이 제거되기 전까지는 테스트를 통과한 것으로 치지 않았다.
+- 구현하기 위해서 역방향이 아닌 순방향으로 작업했다.
+- 앞으로 필요한 것으로 예상되는 객체(Sum)의 생성를 강요하기 위한 테스트를 작성함
+- 명시적 클래스 검사를 제거하기 위해 다형성을 사용했다.
+
+---
+
+## 14. 바꾸기
+
+---
+
+### 할일 목록  :
+
+- [ ]  $5 + 10CHF = $10(환율이 2 : 1일 경우)
+- [ ]  $5 + $5 = $10
+- [ ]  $5 + $5에서 Money 반환하기
+- [x]  Bank.reduce(Money)
+- [ ]  Money에 대한 통화 변환을 수행하는 Reduce
+- [ ]  Reduce(Bank, String)
+
+---
+
+### 요구사항
+
+- 2프랑 → 달러로 바꾸고 싶다.
+
+바로 테스트 케이스를 만들어보자.
+
+- 테스트 케이스 작성
+
+```java
+public void testReduceMoneyDifferentCurrency(){
+    Bank bank = new Bank();
+    bank.addRate("CHF", "USD", 2);
+    Money result = bank.reduce(Money.franc(2), "USD");
+    assertEquals(Money.dollar(1), result);
+}
+```
+
+프랑으로 변환할 때 `나누기(/) 2` 를 하면되나? 결과 하드코딩이 된다.
+
+일단 해보자.
+
+```java
+//Money
+public Money reduce(String to){
+    int rate = (currency.equals("CHF") && to.equals("USD")) ? 2 : 1 ;
+
+    return new Money(amount / rate, to);
+
+}
+```
+
+이렇게 되면 Money가 환율에 대해 알게 돼 버린다.
+
+환율에 대한 일은 모두 Bank가 처리해야 한다.  `Expression.reduce()`의 인자로 `Bank`를 넘겨야 할 것이다.
+
+- 호출하는 부분
+
+```java
+//Bank
+Money reduce(Expression source, String to){
+    return source.reduce(this, to);
+}
+```
+
+- 구현
+
+```java
+//Expression
+Money reduce(Bank bank, String to);
+```
+
+```java
+//Sum
+public Money reduce(Bank bank, String to){
+    int amount = augend.amount + addend.amount;
+    return new Money(amount, to);
+]
+```
+
+```java
+//Money
+public Money reduce(Bank bank, String to){
+    int rate = (currency.equals("CHF") && to.equals("USD")) ? 2 : 1 ;
+    return new Money(amount / rate, to);
+}
+```
+
+인터페이스에 선언된 메서드는 공용이어야 하므로 Money의 reduce()도 공용이여야 한다.
+
+이제 환율을 Bank에서 계산할 수 있게 된다.
+
+```java
+//Bank
+int rate(String from, String to){
+    return(from.equals("CHF") && to.equals("USD")) ? 2 : 1;
+}
+```
+
+올바른 환율을 bank에게 물어보기
+
+```java
+//Money
+public Money reduce(Bank bank, String to){
+    int rate = bank.rate(currency, to);
+    return new Money(amount / rate, to);
+}
+```
+
+`Bank` 에서 환율표를 가지고 있다가 필요할 때 찾아볼 수 있게 해야한다.  두 개의 통화와 환율을 매핑시키는 해시 테이블을 사용할 수 있겠다.
+
+통화 쌍을 해시 테이블의 키로 쓰기 위해 배열을 사용할 수 있을까?
+
+Array.equals()가 각각의 원소에 대한 동치성 검사를 수행하는지 확인해보자.
+
+```java
+public void testArrayEquals(){
+    assertEquals(new Object[] {"abc"), new Object[] {"abc"});
+}
+```
+
+테스트 실패 → 안 된다.
+
+해결 : 키를 위한 객체를 따로 만들기
+
+- 키를위한 객체 만들기 →Pair
+
+```java
+private class Pair{
+    private String from;
+    private String to;
+
+    Pair(String from, String to){
+     this.from = from;
+     this.to = to;
+    }
+}
+```
+
+Pair를 키로 쓰기위해 `equals()`와 `hashCode()` 를 구현해야 한다.
+
+```java
+//Pair
+public boolean equals(Object object){
+    Pair pair = (Pair)object;
+    return from.equals(pair.from) && to.equals(pair.to);
+}
+
+public int hashCode(){
+    return 0;
+}
+```
+
+`‘0’`은 해시 코드 중 최악이다. 그렇다면 `‘0’`을 반환해준 이유가 있을까?
+
+구현하기 쉽고 빨리 달릴수 있도록 도와준다는 장점이 있기 때문이다.
+
+해시 코드를 이대로 둔다면 해시 테이블애서의 검색이 마치 선형 검색과 비슷하게 수행될 것이라고 한다.
+
+- 환율을 저장할 것 마련해주기
+
+```java
+//Bank
+private Hashtable rates = new Hashtable();
+```
+
+- 환율을 설정할 수 도있게 해준다.
+
+```java
+void addRate(String from, String to, int rate){
+    rates.put(new Pair(from, to), new Integer(rate));
+}
+```
+
+- 필요할 때 환율을 얻어낼 수도 있게 해야한다.
+
+```java
+//Bank
+int rate(String from, String to){
+    Integer rate = (Integer) rates.get(new Pair(from, to));
+    return rate.intValue();
+}
+```
+
+- USD에서 USD로의 환율을 요청하면 그 값이 1이 되어야한다.
+
+```java
+public void testIndentityRate(){
+    assertEquals(1, new Bank().rate("USD", "USD"));
+}
+```
+
+- 마지막 과정
+
+```java
+//Bank
+int rate(String from, String to){
+    if(from.equals(to) return 1;
+    Integer rate = (Integer) rates.get(Pair(from, to));
+    return rate.intValue();
+}
+```
+
+---
+
+### 할일 목록  :
+
+- [ ]  $5 + 10CHF = $10(환율이 2 : 1일 경우)
+- [ ]  $5 + $5 = $10
+- [ ]  $5 + $5에서 Money 반환하기
+- [x]  Bank.reduce(Money)
+- [x]  Money에 대한 통화 변환을 수행하는 Reduce
+- [x]  Reduce(Bank, String)
+
+---
+
+### 14장 정리
+
+- 필요한 거라고 생각하고 인자를 빠르게 추가
+- 코드와 테스트 사이에 있는 데이터 중복을 끄집어냄
+- 자바의 오퍼레이션에 대한 가정을 검사해보기 위한 테스트(testArrayEqauls)를 작성
+- 별도의 테스트 없이 전용(private) 도우미(helper) 클래스를 만들었다.
+
+## 11장 부터 14장까지 회고
+
+정리를 보시다시피 정말 엉망이다.  정말 어려운 것같다. 자세히 해주지만 빠른 속도로 달리고 있는 열차 갔다.
+
+나는 계속 타려고 시도하지만 팅겨져 나가는 느낌이다. 이상 혼자할 때의 느낌이였는데 스터디를 하면서 여러 사람들의 이야기를 들어보고 종합해보니깐 기차가 느리게 보이기도 하는 것 같다.
+
+정리를 잘 못했지만 이렇게 날 것의 모습도 나의 모습이다.
+
+포스팅하는데 엄청 정제할 필요 없이 나도 성장해 가는모습을 올려보자. 몇 년후 나는 과거의 나를 보고 웃고 있겠지? 라고 생각한다.
 
 <!-- outline-end -->
