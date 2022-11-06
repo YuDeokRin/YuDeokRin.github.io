@@ -230,4 +230,7 @@ Money를 Expression으로 일반화하는 작업을 마무리할 준비가 되�
 - 조금 더 추상적인 선언을 통해 가지에서뿌리로 일반화했다.
 - 변경 후(Expresion fiveBucks), 그 영향을 받은 다른 부분들을 변경하기 위해 컴파일러의 지시를 따랐다.(Expression에 plus()를 추가하기 등..)
 
+
+
+
 <!-- outline-end -->
