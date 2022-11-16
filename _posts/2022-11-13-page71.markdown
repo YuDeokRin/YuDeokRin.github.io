@@ -111,6 +111,911 @@ String name = null; |
 | byte[] | getByte(Charset charset | 지정한 캐릭터 셋 객체 타입으로 바이트 배열을 생성한다. |
 | byte[] | getBytes(String charsetName) | 지정한 이름의 캐릭터 셋을 갖는 바이트 배열 생성한다. |
 
+`“캐릭터 셋”` 에 대해서 좀 자세히 살펴보면..
 
+한글은 기본적으로 알파벳이 아니기 때문에 고유의 캐릭터 셋을 가진다.
+
+가끔 웹 페이지를 서핑하다가 보면 한글이 깨지는 경우를 보았을 것이다.
+
+한글이 깨지는 이유는 브라우저에서 생각하는 캐릭터 셋과 웹 페이지에 지정된 캐릭터 셋이 다르기 때문이다.
+
+`java.nio.Charset` 클래스 API에는 표준 캐릭터 셋이 정해져 있다.
+
+- 목록 표
+
+| 캐릭터 셋 이름 | 설명 |
+| --- | --- |
+| US-ASCII | 7비트 아스키 |
+| ISO-8859-1 | ISO 리턴 알파벳 |
+| UTF-8 | 8비트 UCS 변환 포맷 |
+| UTF-16BE | 16비트 UCS 변환 포맷, big-endian 바이트 순서를 가진다. |
+| UTF-16LE | 16비트 UCS 변환 포맷, little-endian 바이트 순서를 가진다. |
+| UTF-16 | 16비트 UCS 변환 포맷, 바이트 순서는 byte-order mark 라는 것에 의해서 정해진다. |
+| EUC-KR | 8비트 문자 인코딩으로, EUC의 일종이며 대표적인 “한글 완성형” 인코딩 |
+| MS9949 | MIcrosoft에서 만든 “한글 확장 완성형” 인코딩 |
+
+<aside>
+💡 참고
+
+UCS(Unicode Character Set)  : 유니코드 캐릭터 셋의 약자
+
+</aside>
+
+- `getBytes()` 메소드와 String 생성자 예제
+
+```java
+public class StringSample{
+
+    public static void main(String[] args){
+        StringSample sample = new Stringsample();
+        sample.convert();
+    }
+
+    public void convert() {
+        try {
+            String korean = "한글";
+            byte[] array1 = korean.getBytes();
+            for (byte data : array1) {
+                System.out.print(data + " ");
+        }
+            System.out.println();
+            String korean2 = new String(array1);
+            System.out.print(korean2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+1. “한글” 이라는 값을 String 객체인 korean을 생성했다.
+2. `getBytes()` 라는 메소드를 사용하여 korean을 byte 배열로 만들었다.
+3. 만들어진 byte 배열에 어떤 값들이 있는지 살펴보기 위해서 for 루프를 사용하여 각각의 byte값을 출력하도록 해 놓았다.
+4. byte 배열을 갖고 String객체를 만들기 위해서 byte배열(array1)을 매개 변수로 갖는 String 객체를 생성하고, 그 문자열을 출력했다.
+
+- 결과
+
+```java
+-19 -107 -100 -22 -72 -128
+한글
+```
+
+나의 개발툴에서 캐릭터 셋은 UTF-8로 설정되어 있어서 위와 같은 값이 나온다.
+
+만약 UTF-16으로 해놨다면 어떤 결과가 나올까 ?
+
+- 결과
+
+```java
+-57 -47 -79 -37
+한글
+```
+
+이제 `“UTF-16”` 이라는 캐릭터 셋으로 변환해보자.
+
+- UTF-16으로 변환
+
+```java
+public void convertUTF16(){
+    try {
+        String korean = "자바의 신 최고!!!";
+        byte[] array1 = korean.getBytes("UTF-16");
+        printByteArray(array1);
+        String korean2 = new String(array1);
+        System.out.print(korean2);
+    }catch(Exception e) {
+        e.printStackTrace();
+    }
+}
+```
+
+- 결과
+
+```java
+-2 -1 -43 92 -82 0
+���\�
+```
+
+한글 이라는 글자가 위와 같이 깨져서 보인다.
+
+이런 현상을 방지하기 위해서는 byte 배열로 생성할 때 사용한 캐릭터 셋을 문자열로 다시 전환할 때에도 동일하게 사용해야만 한다.
+
+따라서 `convertUTF16()` 메소드는 다음과 같이 변경해야만 한다.
+
+```java
+public void convertUTF16(){
+    try {
+        String korean = "자바의 신 최고!!!";
+        byte[] array1 = korean.getBytes("UTF-16");
+        printByteArray(array1);
+        String korean2 = new String(array1, "UTF-16");
+        System.out.print(korean2);
+    }catch(Exception e) {
+        e.printStackTrace();
+    }
+}
+```
+
+- `UTF-16` 의 결과
+  - `6 바이트` 를 사용한다.
+
+```java
+-2 -1 -43 92 -82 0
+한글
+```
+
+한글을 byte 배열로 만들 때 어떤 캐릭터 셋을 쓰느냐에 따라서 배열의 크기가 다르다.
+
+- `EUC-KR` 의 결과
+  - `EUC-KR` 의 경우 한글 두 글자를 표현하기 위해서 `4 바이트`를 사용한다.
+
+```java
+-57 -47 -79 -37
+한글
+```
+
+- `UTF-8`의 결과
+  - `UTF-8` 의 경우 한글 두 글자를 표현하기 위해서 `4 바이트` 를 사용한다.
+
+```java
+-19 -107 -100 -22 -72 -128
+한글
+```
+
+
+
+---
+
+## 객체의 Null 체크는 반드시 필요
+
+```java
+public class StringNull{
+    public static void main(String[] args){
+        StringNull sample = new StringNull();
+        sample.nullCheck(null);
+    }
+    public boolean nullCheck(String text) { // text = null
+        int textLength = text.length(); // text.length()는 Error
+        System.out.println(textLength);
+        if(text == null) return true; // text 값이 null이면 true
+        else return false; // 아니면 false
+    }
+}
+```
+
+- 결과
+
+```java
+Exception in thread "main" java.lang.NullPointerException
+	at main.Chapter15.StringNull.nullCheck(StringNull.java:11)
+	at main.Chapter15.StringNull.main(StringNull.java:6)
+```
+
+`NullPointerException` 뜬다.  즉, null인 객체의 메소드에 접근하면 이런 에러를 발생시킨다.
+
+- `nullCheck` 를 체크 예제
+
+```java
+public class StringNull{
+    public static void main(String[] args){
+        StringNull sample = new StringNull();
+        sample.nullCheck2(null);
+    }
+    public boolean nullCheck2(String text) {
+        if (text == null) {
+            return true;
+        } else{
+            int textLength = text.length();
+            System.out.println(textLength);
+            return false;
+        }
+    }
+}
+```
+
+- 결과
+
+```java
+true 이므로 함수 종료가 된다.
+```
+
+null 체크하는 습관은 무지 중요하다. 얼핏 들었다. 이 에러가 얼마나 무서운건지…
+
+메소드의 매개 변수로 넘어오는 객체가 널이 될 확률이 조금이라도 있다면 반스디 한 번씩 확인하는 습관을 갖고 있어야만 한다.
+
+---
+
+## String 클래스에 메소드들
+
+### String의 내용을 비교하고 검색하는 메소드들
+
+String 클래스 객체의 내용을 비교하고 검색하는 메소드들을 알아보자. 이 메소드들을 조금 더 세밀하게 분류하면 다음과 같다
+
+- 문자열의 길이를 확인하는 메소드
+- 문자열이 비어 있는지 확인하는 메소드
+- 문자열이 같은지 비교하는 메소드
+- 특정 조건에 맞는 문자열이 있는지를 확인하는 메소드
+
+```java
+public class StringCompare {
+    public static void main(String[] args){
+        StringCompare sample = new StringCompare();
+    }
+}
+```
+
+
+
+### ➡️문자열의 길이를 확인하는 메소드
+
+| 리턴타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| int | length() | 문자열의 길이를 리턴한다. |
+
+문자열의 길이를 확인할 때에는 `length()` 메소드를 사용하면된다.
+
+배열도 객체이긴 하지만 메소드는 없는 특수한 객체다.
+
+그래서 배열의 크기를 확인할 때에는 괄호가 없는 length를 사용한다.
+
+하지만 그 이외의 클래스는 메소드를 호출해야하며, String 객체의 길이를 확인하기 위해서는 `length()` 라는 메소드를 사용해야만 한다.
+
+```java
+public void checkString(){
+     String text = "You must know String class";
+     System.out.println("text.length() =" + text.length());
+}
+```
+
+- 결과
+
+```java
+text.length() =27
+```
+
+### ➡️문자열이 비어 있는지 확인하는 메소드
+
+| 리턴타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| boolean | isEmpty() | 문자열이 비어 있는지를 확인한다. 비어 있으면 true를 리턴한다. |
+
+문자열의 길이가 0인지 아닌지를 확인하는 것보다, 이 메소드를 이용하는 것이 훨씬 간단함.
+
+```java
+System.out.println("text.isEmpty()=" + text.isEmpty());
+```
+
+- 결과
+
+```java
+text.isEmpty() = false
+```
+
+### ➡️문자열이 같은지 비교하는 메소드
+
+String 클래스에서 제공하는 문자열이 같은지 비교하는 메소드들은 많다.
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 |
+| --- | --- |
+| boolean | equals(Object anObject) |
+| boolean | equalsIgnoreCase(String anotherStr) |
+| int | compareTo(String anotherStr) |
+| int | compareToIgnoreCase(String str) |
+| boolean | contentEquals(CharSequence cs) |
+| boolean | contentEquals(StringBuffer sb) |
+
+모든 메소드들은 매개 변수로 넘어온 값과 String 객체가 같은지 비교하기 위한 메소드다.
+
+IgnoreCase가 붙은 메소드들은 대소문자 구분을 할지 안할지 여부만 다르다.
+
+### ➡️equals()
+
+- `equals()` 예제
+
+```java
+public void checkCompare(){
+    String text = "Check value";
+    String text2 = "Check value";
+
+    if (text == text2) {
+         System.out.println("text==text2 result is same.");
+    }else{
+         System.out.println("text==text2 result is different");
+    }
+
+    if(text.equals("Check value")){
+        System.out.println("text.equals(text2) result is same");
+    }
+}
+```
+
+- 결과
+
+```java
+text==text2 result is same.
+text.equals(text2) result is same
+```
+
+`equals()` 메소드는 메소드로 비교해야하는게 아닌가 ?
+
+`String` 클래스도 기본적으로 == 비교가 아닌 equals() 메소드를 사용해서 비교를 해야만 한다.
+
+하지만..
+
+이렇게 결과가 나오는 이유는 자바에서 `Constant Pool`이라느 것이 존재하기 때문이다.
+
+`Constant Pool` 은 자바에서 객체들을 재사용하기 위해서 만들어져 있고, String의 경우 동일한 값을 갖는 객체가 있으면 이미 만든 객체를 재사용한다.
+
+따라서 `text`와 `text2`객체는 실제로는 같은 객체다.
+
+- String text2 = "Check value" → String text2 = new String("Check value");  변경
+
+```java
+public void checkCompare(){
+    String text = "Check value";
+    String text2 = new String("Check value"); // String text2 = "Check value"; 에서 변경
+
+    if (text == text2) {
+        System.out.println("text==text2 result is same.");
+    }else{
+        System.out.println("text==text2 result is different");
+    }
+
+    if(text.equals("Check value")){
+        System.out.println("text.equals(text2) result is same");
+    }
+}
+```
+
+- 결과
+
+```java
+text==text2 result is different
+text.equals(text2) result is same
+```
+
+### equalsIgnoreCase()
+
+```java
+String text3 = "check value";
+if(text.equalsIgnoreCase(text3)){
+    System.out.println("text.equalsIgnoreCase(text3) result is same.");
+}
+```
+
+- 결과
+
+```java
+text.equalsIgnoreCase(text3) result is same.
+```
+
+### ➡️String 클래스의 compareTo() 메소드
+
+`compareTo()` 메소드는 `Compareable` 인터페이스에 선언되어 있다.
+
+```java
+public void checkCompareTo(){
+    String text = "a";
+    String text2 = "b";
+    String text3 = "c";
+
+    System.out.println(text2.compareTo(text));
+    System.out.println(text2.compareTo(text3));
+    System.out.println(text.compareTo(text3));
+}
+```
+
+- 결과
+
+```java
+1
+-1
+-2
+```
+
+`compareTo()` 메소드는 보통 정렬(sorting)을 할 때 사용한다.
+
+따라서 true, false의 결과가 아니라 비교하려는 매개 변수로 넘겨준 String 객체가 알파벳 순으로 앞에 있으면 양수를, 뒤에 있으면 음수를 리턴한다.
+
+그리고 알파벳 순서만큼 그 숫자값은 커진다.
+
+`CompareToIgnoreCase()` 메소드는 `equalsIgnoreCase()` 메소드와 마찬가지로, 대소문자 구분을 하지 않고 `compareTo()` 메소드를 수행하는 것과 같다.
+
+### ➡️특정 조건에 맞는 문자열이 있는지를 확인하는 메소드
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 |
+| --- | --- |
+| boolean | startWith(String prefix) |
+| boolean | startsWith(String prefix, int toffset) |
+| boolean | endsWith(String suffix) |
+| boolean | contains(CharSequence s) |
+| boolean | matches(String regex) |
+| boolean | regionMatches(boolean ignoreCase, int toffset, String other, int ooffset, int len) |
+| boolean | regionMatches(int toffset, String other, int ooffset, int len) |
+
+- `startsWith()` 와 `endsWith()` 메소드를 이용하여 문자열로 시작하는 시작하는 개수와 끝나는 개수를 세어 보는 예제
+
+```java
+public class StringCheck {
+    public static void main(String[] args) {
+        StringCheck sample = new StringCheck();
+
+        String addresses[] = new String[]{
+          "서울시 구로구 신림동",  "경기도 성남시 분다옹 정자동 개발 공장", "서울시 구로구 개봉동",
+        };
+
+        sample.checkAddress(addresses);
+
+    }
+
+    public void checkAddress(String[] addresses){
+        int startCount = 0;
+        int endCount = 0;
+        String startText = "서울시";
+        String endText = "동";
+
+        for (String address : addresses) {
+            if (address.startsWith(startText)) {
+                startCount++;
+            }
+            if (address.endsWith(endText)) {
+                endCount++;
+            }
+        }
+
+        System.out.println("Start with " + startText + " count is " + startCount);
+        System.out.println("Ends with " + endText + " count is " + endCount);
+    }
+}
+```
+
+`startsWith(”서울시”)`를 호출하면 `“서울시”` 의 주소를 갖는 모든 문자열을 쉽게 찾을 수 있다.
+
+`endsWith("동")` 메소드는  매개 변수로 넘어온 값으로 해당 문자열을 끝나는지를 확인하는 메소드다.
+
+- 결과
+
+```java
+Start with 서울시 count is 2
+Ends with 동 count is 2
+```
+
+“서울시” 로 시작하는 문자열  2개, “동”으로 끝나는 문자열 2개를 카운팅한 결과다.
+
+그렇다면 중간값을 찾는 메소드도 있을까?  있다.
+
+- contains() 메소드
+
+```java
+public void containsAddress(String[] adresses){
+    int containCount = 0;
+    String containText = "구로";
+    for(String address : adresses){
+        if(address.contains(containText)){
+            containCount++;
+        }
+    }
+     System.out.println("Contains " + containText + " count is " + containCount);
+}
+```
+
+`regionMatches()` 메소드는 문자열 중에서 특정 영역이 매개 변수로 넘어온 문자열과 동일한지를 확인하는 데 사용된다.
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 |
+| --- | --- |
+| boolean | regionMatches(boolean ignoreCase, int toffset, String other, int ooffset, int len) |
+| boolean | regionMatches(int toffset, String other, int ooffset, int lne) |
+
+1. 첫 번째 형태는  대소문자를 구분할지  여부를 지정할 수 있다.
+2. 두 번째 형태는 지정 자체가 불가능하다.
+
+매개 변수 어떤 값을 뜻하는지 알아보자.
+
+| 매개 변수 | 의미 |
+| --- | --- |
+| ignoreCase | true일 경우 대소문자 구분을 하지 않고, 값을 비교한다. |
+| toffset | 비교 대상 문자열의 확인 시작 위치를 지정한다. |
+| other | 존재하는지를 확인할 문자열을 의미한다. |
+| ooffset | other 객체의 확인 시작 위치를 지정한다. |
+| len | 비교할 char의 개수를 지정한다. |
+
+```java
+public void checkMatch(){
+    String text = "This is a text";
+    String compare1 = "is";
+    String compare2 = "this";
+    System.out.println(text.regionMatches(2, compare1, 0, 1)); // 매개 변수가 4개인 메소드
+    System.out.println(text.regionMatches(5, compare1, 0, 2)); // 매개 변수가 4개인 메소드
+    System.out.println(text.regionMatches(true, 0, compare2, 0, 4)); // 매개 변수가 5개인 메소드
+}
+```
+
+| T | h | i | s |   | i | s |  | a |  | t | e | x | t |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
+
+`text` 값이 있고, 비교할 `compare1`과 `compare2`가 있다.
+
+```java
+text.regionMatches(2, compare1, 0, 1);
+```
+
+첫 번째 `regionMatch()` 메소드를 자세히 살펴보자. 첫 번째 매개 변수인 2라는 위치 값은 제대로 맞았다.
+
+비교하려고 하는 `compare1`의 값이 `“is”`다.
+
+그런데 세 번째 매개 변수가 0이고, 네 번째 매개 변수가 1이기 때문에 비교하려는 것은 `“i”` 인지 아닌지만 확인하면 된다.
+
+따라서 첫 번째 출력문의 결과는 `true`이다.
+
+- 결과
+
+```java
+true
+true
+true
+```
+
+그런데 `regionMatches()` 메소드를 잘못 사용하면, 원하는 결과를 얻지 못할 수도 있다.
+
+```java
+regionMatchs(boolean ignoreCase, int toffset, String other, int ooffset, int len)
+```
+
+여러 매개 변수 중에서 값이 다음과 같은 경우에는 “무조건 false”로 나온다.
+
+- toffset이 음수일 때
+- ooffset이 음수일 때
+- toffset + len이 비교 대상의 길이보다 클 때
+- ooffset + len이 other 객체의 길이보다 클 때
+- ignoreCase가 false인 경우에는 비교 범위의 문자들 중 같은 위치(index)에 있는 char가 다를 때
+- ignoreCase가 true인 경우에는 비교 범위의 문자들을 모두 소문자로 변경한 후 같은 위치(index)에 있는 char가 달라야 한다.
+
+---
+
+## String내에서 위치를 찾아내는 방법은 여러 가지이다.
+
+“Java technology is both a programming language and a platform.”
+
+- 이 문장에서 “both”라는 단어가 시작하는 위치를 알고 싶을때 어떻게 해야할까 ?
+
+indexOf라는 단어가 포함되어 있는 메소드를 제공한다.
+
+이 메소드를 사용하면 해당 객체의 특정 문자열이나 char가 있는 위치를 알 수 있다.
+
+찾고자 하는 문자열이 char가 없으면 이 메소드는 -1을 리턴한다.
+
+- 위치를 찾는 메소드
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 |
+| --- | --- |
+| int | indexOf(int ch ) |
+|  | indexOf(int ch, int fromIndex) |
+|  | indexOf(String str) |
+|  | indexOf(String str, int fromIndex) |
+|  | lastIndexOf(int ch) |
+|  | lastIndexOf(int ch, int fromIndex) |
+|  | lastIndexOf(String str) |
+|  | lastIndexOf(String str, int fromIndex) |
+
+- indexOf() : 앞에서부터(가장 왼쪽부터) 문자열이나 char를 찾는다.
+- lastIndexOf() : 뒤에서부터(가장 오른쪽부터) 찾는다.
+
+int를 매개 변수로 갖는 메소드는 어떻게 사용해야 할까 ?
+
+이 메소드의 매개 변수로 char를 넘겨주면 자동으로 형 변환이 일어난다.
+
+```java
+public void checkIndexOf() {
+        String text = "Java technology is both a programming language and a platform.";
+        System.out.println(text.indexOf('a'));
+        System.out.println(text.indexOf("a "));
+        System.out.println(text.indexOf('a', 20));
+        System.out.println(text.indexOf("a ", 20));
+        System.out.println(text.indexOf('z'));
+
+}
+```
+
+1. 필자가 말 한대로, ‘a’의 형태로 매개 변수를 넘겨주어도 컴파일 및 실행하는 데 전혀 문제가 발생하지 않는다.
+2. String 타입의 매개 변수를 넘겨 주었으며, a 뒤에는 공백이 하나 있다.
+3. 세 번째와 네 번째 출력문은 모두 text 문자열의 20번째 자리부터 값을 확인한다.
+4. 마지막에 있는 출력문은 이 문장에 없는 “z”를 찾은 결과를 출력한다.
+
+|  | J | a | v | a |  | t | e | c | h | n | o | … |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | … |
+- 결과
+
+```java
+1
+3
+24
+24
+-1
+```
+
+“Java”의 “a” 중 첫 번째 “a”가 가장 앞에 있는 “a”이므로 첫 출력문의 결과는 1이다.
+
+두 번째 출력문은 a 다음에 공백이 있는 위치를 찾는 것이므로, “java” 단어 뒤에 공백이 있으므로 3이다.
+
+세 번째와 네 번째의 결과는 20번째 자리부터 찾는 작업을 하고, 제일 처음 나온 관사 a의 위치가 24번째이므로 결과가 동일하다.
+
+| b | o | t | h |  | a |  | p | r | o | g | … |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | … |
+
+마지막 `indexOf()` 의 경우 z가 문장에 없으므로 -1을 출력하였다.
+
+- 문자열의 가장 뒤부터(오른쪽부터) 검색하는 `lastIndexOf()` 메소드의 예제
+
+```java
+public void checklastIndexOf(){
+    String text = "Java technology is both a programming language and a platform.";
+    System.out.println(text.lastIndexOf('m'));
+    System.out.println(text.lastIndexOf("a "));
+    System.out.println(text.lastIndexOf('a', 20));
+    System.out.println(text.lastIndexOf("a ", 20));
+    System.out.println(text.lastIndexOf('z'));
+}
+```
+
+| a |  | f | l | a | t | f | o | r | m | . |  |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 | 61 | 62 |
+- 결과
+
+```java
+55
+51
+3
+3
+-1
+```
+
+- 검색 시작 위치(fromIndex)는 무엇인가 ?
+
+시작 위치는 가장 왼쪽에서부터의 위치를 말한다. 그 위치부터 왼쪽으로 값을 찾는다.
+
+---
+
+## String의 값을 일부를 추출하기
+
+위에서 문자열을 찾는 방법을 했다. 이제는 찾는 부분을 추출하고 그 값이 존재하는지를 알 수 있는 메소드를 알아보자.
+
+- char 단위의 값을 추출하는 메소드
+- char 배열의 값을 String으로 변환하는 메소드
+- String의 값을 char 배열로 변환하는 메소드
+- 문자열의 일부 값을 잘라내는 메소드
+- 문자열을 여러 개의 String배열로 나누는 메소드
+
+### ➡️char 단위의 값을 추출하는 메소드
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| char | charAt(int index) | 특정 위치의 char 값을 리턴한다. |
+| void | getChars(int srcBegin, int srcEnd, char[] dst, int dstBegin) | 매개 변수로 넘어온 dst라는 char 배열 내에 srcBegin에서 srcEnd에 있는 char를 저장한다. 이때 dst 배열의 시작위치는 dstBegin이다. |
+| int | codePointAt(int index) | 특정 위치의 유니코드 값을 리턴한다. 리턴 타입은 int지만, 이 값을 char로 형 변환하면 char 값을 출력할 수 있다. |
+| int | codePointBefore(int index) | 특정 위치 앞에 있는 char의 유니코드 값을 리턴한다. 리턴 타입은 int지만, 이 값을 char로 형 변환하면 char 값을 출력할 수 있다. |
+| int | codePointCount(int beginIndex, int endIndex) | 지정한 범위에 있는 유니코드 개수를 리턴한다. |
+| int | offsetByCodePoints(int index, int codePointOffset) | 지정한 index 부터 오프셋(offset)이 설정된 인덱스를 리턴한다. |
+
+`offsetByCodePoints()` 메소드는 문자열 인코딩과 관련된 문제를 해결하기 위해서 사용된다.
+
+보통 자주 사용되는 메소드는 `charAt()` 메소드다.
+
+`charAt()` 메소드를 사용하여 `indexOf()` 로 탐색한 위치에 있는 값을 확인하는 작업
+
+```java
+public void charAtIndexOf(){
+    String text = "한글";
+    char ch = text.charAt(text.indexOf("한"));
+    char ch2 = text.charAt(1);
+
+    System.out.println(ch);
+    System.out.println(ch2);
+}
+```
+
+- 결과
+
+```java
+한
+글
+```
+
+### ➡️char 배열의 값을 String으로 변환하는 메소드
+
+| 리턴 타입  | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| static String | copyValueOf(char[] data) | char 배열에 있는 값을 문자열로 변환한다. |
+| static String | copyValueOf(char[] data, int offset, in count) | char 배열에 있는 값을 문자열로 변환한다. 단 offset 위치부터 count까지의 개수만큼만 문자열로 변환한다. |
+
+`copyValueOf()` 라는 메소드는 사용 빈도수가 많지 않다. 하지만 알면 유용하게 쓸 수 있다.
+
+이 메소드는 `static` 메소드이기 때문에 현재 사용하는 문자열을 참조하여 생성하는 것이 아닌, static하게 호출하여 사용해야 한다.
+
+예제를 통해서 알아보기
+
+```java
+char values[] = new char[]{'J','a','v','a'};
+String javaText = String.copyValueOf(values);
+```
+
+- 결과
+
+```java
+Java
+```
+
+### ➡️String의 값을 char 배열로 변환하는 메소드
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| char[] | toCharArray() | 문자열을 char 배열로 변환하는 메소드 |
+
+### ➡️문자열의 일부 값을 잘라내는 메소드
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| String | substring(int beginIndex) | beginIndex부터 끝까지 대상 문자열을 잘라 String으로 리턴한다. |
+| String | substring(int beginIndex, int endIndex) | beginIndex부터 endIndex까지 대상 문자열을 잘라 String으로 리턴한다. |
+| CharSequence | subSequence(int beginIndex, int endIndex) | beginIndex부터 endIndex까지 대상 문자열을 잘라 CharSequence 타입으로 리턴한다. |
+
+- 예제
+
+```java
+public void checkSubstring(){
+    String text = "Java technology";
+    String technology = text.substring(5);
+    System.out.println(technology);
+}
+```
+
+- 결과
+
+```java
+technology
+```
+
+| J | a | v | a |  | t | e | c | h | n | o | l | o | g | y |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 |
+
+요구 사항 중 tech라는 단어만 잘라달라고한다. 그렇다면 어떻게 해야할까 ?
+
+```java
+public String checkSubstring2(){
+    String text = "Java technology";
+    String tech = text.substring(5, 4);
+    return tech;
+}
+```
+
+- 결과
+
+```java
+Exception in thread "main" java.lang.StringIndexOutOfBoundsException: String index out of range: -1
+	at java.base/java.lang.String.checkBoundsBeginEnd(String.java:3319)
+	at java.base/java.lang.String.substring(String.java:1874)
+```
+
+예외가 발생한다. → 왜?
+
+예외를 읽어보면 첫 번째 매개 변수는 beginIndex이고, 두 번째 매개 변수는 데이터의 길이가 아닌 substring이 끝나는 위치를 말한다.
+
+따라서 다음과 같이 끝나느 위치를 5+4인 9로 지정해줘야한다.
+
+```java
+String tech = text.substring(5,9);
+```
+
+### ➡️문자열을 여러 개의 String 배열로 나누는 split 메소드
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| String[]  | split(String regex) | regex에 정규 표현식에 맞추어 문자열을 잘라 String의 배열로 리턴한다. |
+| String[] | split(String regex, int limit | regex에 있는 정규 표현식에 맞추어 문자열을 잘라 String의 배열로 리턴한다. 이때 String 배열의 크기는 limit보다 커서는 안된다. |
+
+문자열을 여러 개의 문자열의 배열로 나누는 방법은 String 클래스에 선언된 `split()` 메소드를 사용하는 것과 `java.util.StringTokenizer` 라는 클래스를 사용하는 것이다.
+
+정규 표현식을 사용하여 문자열을 나누려고 한다면 String 클래스의 `split()` 메소드를 사용하면 된다.
+
+그렇지 않고 특정 String으로 문자열을 나누려고 한다면 `StringTokenizer`클래스를 사용하는 것이 편리하다.
+
+1. 정규 표현식 사용 문자열 나누기 → String 클래스의 split() 사용
+2. String문자열을 나누기 → `StringTokenizer` 클래스 사용
+3. 특정 알파벳이나 기호 하나로 문자열을 나누려고한다면 → 둘 다 사용해도 됨. 상관없음
+
+```java
+public void checkSplit() {
+    String text ="Java technology is both a programming language and a platform.";
+    String[] splitArray = text.split(" ");
+    for (String temp : splitArray) {
+        System.out.println(temp);
+    }
+}
+```
+
+- 결과
+
+```java
+Java
+technology
+is
+both
+a
+programming
+language
+and
+a
+platform.
+```
+
+---
+
+## String 값을 바꾸는 메소드
+
+String 값을 바꾸는 메소드는 무엇이 있을까 ?
+
+- 문자열을 합치는 메소드와 공백을 없애는 메소드
+- 내용을 교체(replace)하는 메소드
+- 특정 형식에 맞춰 값을 치환하는 메소드
+- 대소문자를 바꾸는 메소드
+- 기본 자료형을 문자열로 변환하는 메소드
+
+### ➡️문자열을 합치는 메소드와 공백을 없애는 메소드
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| String | concat(String str) | 매개 변수로 받은 str을 기존 문자열의 우측에 붙인 새로운 문자열 객체를 생성하여 리턴한다. |
+| String | trim() | 문자열의 맨 앞과 맨 뒤에 있는 공백들을 제거한 문자열 객체를 리턴한다. |
+
+`concat()` 메소드는 잘 사용하지 않는다. 대체제로는 StringBuffer나 StringBuilder클래스를 사용한다.
+
+`trim()` 메소드는 공백을 제거할 때 매우 유용하게 사용된다.
+
+- `trim()` 메소드 예제
+
+```java
+public void checkTrim() {
+    String strings[] = new String[]{" a", " b ", "     c", "d   ", "e   f", "    "};
+    for (String string : strings) {
+        System.out.print("[" + string + "]" + ", ");
+    }
+
+    System.out.println();
+
+    for(String string: strings) {
+        System.out.print("[" + string.trim() + "]" + ", ");
+    }
+}
+```
+
+- 결과
+
+```java
+[ a] [ b ] [     c] [d   ] [e   f] [    ]
+[a] [b] [c] [d] [e   f] []
+```
+
+- `trim()` 메소드의 용도
+  - 작업하려는 문자열이 공백으로만 이루어진 값인지, 아니면 공백을 제외한 값이 있는지 확인하기에 딱 좋은 용도이다.
+
+
+- if문을 통과하여 “OK”를 출력하면 해당 문자열은 공백을 제외한 char 값이 하나라도 존재함.
+
+```java
+String text = " a ";
+if(text != null && text.trim().length() > 0 ){
+    System.out.println("OK");
+}
+```
+
+- 결과
+
+```java
+OK
+```
 
 <!-- outline-end -->
