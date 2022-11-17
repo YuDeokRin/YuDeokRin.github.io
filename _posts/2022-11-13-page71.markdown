@@ -1018,4 +1018,349 @@ if(text != null && text.trim().length() > 0 ){
 OK
 ```
 
+null 체크를 하지않으면, 값이 null인 객체의 메소드를 호출하면 `NullPointerException` 이 발생한다.
+
+String을 조작하기 전에 null 체크하는 습관을 들이자.
+
+### ➡️내용을 교체(replace)하는 메소드
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| String | replace(char oldChar, char new Char) | 해당 문자열에 있는 oldChar의 값을 new Char로 대치한다. |
+| String | replace(CharSequence target, charSequence replacement) | 해당 문자열에 있는 target과 같은 값을 replacement로 대치한다. |
+| String | replaceAll(String regex, String replacement) | 해당 문자열의 내용 중 regex에 표현된 정규 표현식에 포함되는 첫번째 내용을 replacement로 대치한다. |
+| String | replaceFirst(String regex, String replacement) | 해당 문자열의 내용 중 regex에 표현된 정규 표현식에 포함되는 첫번째 내용을 replacement로 대치한다. |
+
+`replace` 메소드를 수행한다고 해서, 기존 문자열의 값은 바뀌지 않는다.
+
+- replace 예제
+
+```java
+public void checkReplace(){
+     String text = "The String class represents character strings.";
+     System.out.println(text.replace('s', 'z')); // `s` -> `z` 로 바꿔서 출력
+     System.out.println(text); // 원래 text가 바뀌었는지, 안바뀌었는지 확인하기
+     System.out.println(text.replace("tring", "trike"));
+     System.out.println(text.replaceAll(" ", "|"));
+     System.out.println(text.replaceFirst(" ", "|"));
+}
+```
+
+1. text 객체에 있는 char ‘s’ 를 ‘z’로 변환하는 작업을 수행한다.
+2. `replace()` 메소드를 수행한 후에 기존의 값이 변경되는지를 확인하기 위해서 현재 값을 출력한다.
+3. `CharSequence` 타입의 매개 변수를 사용하여 값을 변경한다.
+4. 정규 표현식을 사용하는 `replaceAll()` 메소드의 예이며, 공백을 파이프(|)로 변환한다.
+5. `replaceFirst()` 메소드를 사용하여 첫 번째 공백만 파이프로 변환한다.
+
+- 결과
+
+```java
+The String clazz reprezentz character ztringz.
+The String class represents character strings.
+The Strike class represents character strikes.
+The|String|class|represents|character|strings.
+The|String class represents character strings.
+```
+
+<aside>
+💡 참고
+
+replace관련 메소드는 대소문자를 구분한다.
+
+</aside>
+
+### ➡️ 특정 형식에 맞춰 값을 치환하는 메소드
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| static String | format(String format, Object… args) | format에 있는 문자열의 내용 중 변환해야 하는 부분을 args의 내용으로 변경한다. |
+| static String | format(Locale l, String format, Object… args) | format에 있는 문자열의 내용 중 변환해야 하는 부분을 args 의 내용으로 변경한다. 단 첫 매개 변수인 Locale 타입의 1애 선언된 지역에 맞추어 출력한다. |
+
+<aside>
+💡 참고
+
+Locale은 지역적으로 다른 표현 형식을 제공하기 위한 것이다. 보통 Locale을 지정하지 않으면 기본적으로 자바 프로그램이 수행되는 OS의 지역 정보를 기본으로 따른다.
+
+</aside>
+
+`format()` 메소드는 정해진 기준에 맞춘 문자열이 있으면, 그 기준에 있는 내용을 변환한다.
+
+- %s : String
+- %d : 정수형
+- %f : 소수점이 있는 숫자
+- %% : %를 의미
+
+`format` 을 더 알기 위해서는 `java.util.Fomatter` 클래스의 API문서에 자세히 나와있음
+
+- Format 예제
+
+```java
+public void checkFormat(){
+    String text = "제 이름은 %s입니다. 지금까지 %d 권의 책을 썻고, " + "하루에 %f %%의 시간을 책을 쓰는데 할애하고 있습니다.";
+    String realText = String.format(text, "dante", 7,10.5);
+    System.out.println(realText);
+}
+```
+
+- 결과
+
+```java
+제 이름은 dante입니다. 지금까지 7 권의 책을 썻고, 하루에 10.500000 %의 시간을 책을 쓰는데 할애하고 있습니다.
+```
+
+- 주의 사항
+
+대치해야할 문자열이 3개이다. 그러면 format은 3개를 나열한다. 3개 이상 나열해도 상관없다. 알아서 개수에 맞게 처리한다.
+
+하지만
+
+2개 이하로 매개 변수만 명시할 경우 예외가 발생한다.
+
+```java
+String realText = String.format(text, "dante", 7); // 2개 매개 변수
+```
+
+- 결과
+
+```java
+Exception in thread "main" java.util.MissingFormatArgumentException: Format specifier '%f'
+	at java.base/java.util.Formatter.format(Formatter.java:2672)
+	at java.base/java.util.Formatter.format(Formatter.java:2609)
+```
+
+### ➡️대소문자를 바꾸는 메소드
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| String | toLowerCase() | 모든 문자열의 내용을 소문자로 변경한다. |
+| String | toLowerCase(Locale locale) | 지정한 지역 정보에 맞추어 모든 문자열의 내용을 소문자로 변경한다. |
+| String | toUpperCase() | 모든 문자열의 내용을 대문자로 변경한다. |
+| String | toUpperCase(Locale locale) | 지정한 지역 정보에 맞추어 모든 문자열의 내용을 소문자로 변경한다. |
+
+- 대소문자 변환 예제
+
+```java
+public void checkToCase(){
+    String text = "jAVA IS GOOD.";
+    String toLowerText = text.toLowerCase();
+    System.out.println(toLowerText);
+}
+```
+
+### ➡️기본 자료형을 문자열로 변환하는 메소드
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 |
+| --- | --- |
+| static String | valueOf(boolean b) |
+| static String | valueOf(char c) |
+| static String | valueOf(char[] data) |
+| static String | valueOf(char[] data, int offset, int count |
+| static String | valueOf(double d) |
+| static String | valueOf(float f) |
+| static String | valueOf(int i) |
+| static String | valueOf(long l) |
+| static String | valueOf(Object obj) |
+
+메소드를 이용해서 기본자료형을  String 타입으로 변환가능하다.
+
+그리고 다른 방법도 있다.
+
+```java
+byte b = 1;
+String byte1 = String.valueOf(b);
+String byte2 = b + " ";
+```
+
+byte1 처럼 변환하거나, byte2 처럼 변환하거나 출력해 보면 동일한 값이 나온다.
+
+대부분 기본 자료형을 String타입으로 변환할 필요가 있을 때에는 String과 합치는 과정을 거친다.
+
+그럴경우 `valueOf()` 메소드를 사용할 필요까지는 없다.
+
+하지만 `String` 으로 변환만 해놓고 별도의 문자열과 합치는 과정이 없을 경우에는 `valueOf()` 메소드를 사용하는 것을 권장한다.
+
+- 기억해야할 것
+  - valueOf() 메소드의 매개 변수로 객체(Object)가 넘어 왔을 경우
+    - toString()을 구현한 객체나, 정상적인 객체를 valueOf() 메소드에 넘겨주면 toString()의 결과를 리턴한다.
+  - null인 객체의 경우
+    - null인 객체는 `toString()` 메소드를 사용할 수 없다. → `NullPointerException` 에러 나온다.
+    - 만약 null 아니면 toString() 메소드를 호출한 결과가 리턴한다.
+    - 해결방법 : 객체를 출력할 때 `valueOf()` 메소드를 사용하면 좋다. valueOf() 는 `“null”`이라는 문자열을 리턴해준다.
+
+
+`System.out.print()`, `System.out.println()` 메소드에서 null인 객체를 출력했을 때 `NullPointerException` 이 발생하지 않는 이유이기도하다 .
+
+### ➡️System.out.println() 내부
+
+- println()의 구조
+
+![Untitled](https://user-images.githubusercontent.com/56623911/202345939-dfabb64d-1d6b-404f-941f-0d7685babb16.png)
+
+- println() → print()구조 → `String.valueOf(s)` 발견
+
+![Untitled 1](https://user-images.githubusercontent.com/56623911/202345935-a97d2626-a9f9-4bbe-926b-c77aeb7dac2a.png)
+
+### ➡️절대로 사용하면 안되는 메소드
+
+- `intern()`  메소드는 절대 사용하면 안 된다.
+
+이 메소드는 자바로 구현되지 않고 C로 구현되어 있는 native 메소드 중 하나이다.
+
+native라서 사용 하지말라는 것이 아니고 시스템의 심각한 성능 저하를 발생 시킬 수도 있기 때문이다.
+
+- `intern()` 예제
+
+```java
+String text1 = "Java Basic";
+    String text2 = "Java Basic";
+    String text3 = new String("Java Basic");
+    System.out.println(text1 == text2); // true
+    System.out.println(text1 == text3); // false
+    System.out.println(text1.equals(text3)); // true
+}
+```
+
+- 결과
+
+```java
+true
+false
+true
+```
+
+text1 과 text2와 같이 객체를 생성하면, String 클래스에서 관리하는 Constant Pool에 해당 값이 있으면 기존에 있는 객체를 참조한다.
+
+text3는 String 객체를 생성하면 같은 문자열이 풀에 있든 말든 새로운 객체를 생성한다.
+
+```java
+String text1 = "Java Basic";
+    String text2 = "Java Basic";
+    String text3 = new String("Java Basic");
+    text3 = text3.intern();
+    System.out.println(text1 == text2);
+    System.out.println(text1 == text3);
+    System.out.println(text1.equals(text3));
+}
+```
+
+- 결과
+
+```java
+true
+true
+true
+```
+
+```java
+text3.intern()
+```
+
+new String(String)으로 생성한 문자열 객체라고 할지라도, 풀에 해당 값이 있으면, 풀에 있는 값을 참조하는 객체를 리턴한다.
+
+만약 동일한 문자열이 존재하지 않으면 풀에 해당 값을 추가한다.
+
+`intern()` 메소드를 수행한 뒤에 문자열은 equals()메소드가 아닌, ==으로 동일한지 비교할 수가 있다.
+
+- equals() 메소드로 비교하는 것과 ==으로 비교하는것
+  - == 으로 비교하는 것이 훨씬 빠르다.
+
+그렇다면 `intern()` 를 사용하면 좋은 것이 아닌가?  아니다..
+
+가정을 해보면 새로운 문자열을 쉴새 없이 만드는 프로그램에서 `intern()` 메소드를 사용하여 억지로 문자열 풀에 값을 할당하도록 만들면, 저장되는 영역은 한계가 있기 때문에 그 영역에 대해서 별도로 메모리를 청소하는 단계를 거친다.
+
+작은 연산 하나를 빠르게 하기 위해서 전체 자바의 시스템의 성능에 악영향을 주게 되는것이다…
+
+그래서 쓰지말라는것…
+
+### immutable한 String의 단점을 보완하는 클래스 - StringBuffer와 StringBuilder
+
+String은 immutable한 객체다.
+
+더하기하면 더해지면서 바뀌는것 그럼 immutable하지 않는 것아닌가 ? 라고 생각할 수 있다.
+
+하지만 String 문자열을 더하면 새로운 String객체가 생성되고 , 기존의 객체를 버려진다.
+
+```java
+String text = "Hello";
+text = text + "world";
+```
+
+위와 같은 경우 “Hello”라는 단어를 갖고 있는 객체는 더 이상 사용할 수 없다. GC(Garbage Collection)이 처리한다.
+
+이러한 String 클래스의 단점을 보완하기 위해서 나온 클래스가 `StringBuffer` 와 `StringBuilder` 이다.
+
+두 클래스에서 제공하는 메소드는 동일하다.
+
+그럼 무엇이 다를까 ?
+
+간략히 말하면 아래와 같다.
+
+- StringBuffer는 `Thread safe`하다
+- StringBuilder는 `Thread safe`하지 않다.
+
+이제 메소드를 알아보자.
+
+- 추가하는 메소드 append()
+
+- append() 메소드 예제
+
+```java
+StringBuilder sb = new StringbBuilder();
+sb.append("Hello");
+sb.append(" world");
+```
+
+append() 메소드는 매개 변수로 모든 기본형 자료형과 참조 자료형을 모두 포함한다.
+
+append() 메소드는 매개 변수가 변수로 받은(항상 변하는) 값이라면 매우 유용하다.
+
+```java
+StringBuilder sb = new StringbBuilder();
+sb.append("Hello").append(" world");
+```
+
+세미콜론이 나오기 전에 계속 append() 메소드를 붙여도 상관없다.
+
+append() 메소드를 수행한 후에는 해당 StringBuilder 객체가 리턴되므로, 그 객체에 계속 붙이는 작업을 해도 상관없다.
+
+<aside>
+💡 참고
+
+JDK 5  이상에서는 String의 더하기 연산을 할 경우, 컴파일할 때 자동으로 해당 연산을 `StringBuilder`로 변환해 준다. 따라서 일일이 더하는 작업을 변환해 줄 필요는 없다.
+하지만 for 루프와 같이 반복 연산을 할 때에는 자동으로 변환을 해주지 않으므로, 꼭 필요하다.
+
+</aside>
+
+### String, StringBuffer, StringBuilder 클래스들의 공통점
+
+- 모든 문자열을 다룬다.
+- CharSequence 인터페이스를 구현함
+  - 세 가지 중 하나의 클래스를 사용하여 매개 변수로 받는 작업을 할 때 String이나 StringBuilder타입으로 받는 것 보다는 CharSequence타입으로 받는 것이 좋다.
+
+### StringBuilder, StringBuffer 클래스를 언제 사용할까 ?
+
+1. 하나의 메소드 내에서 문자열을 생성하여 더할 경우에는 StringBuilder를 사용해도 상관없다.
+2. 어떤 클래스에 문자열을 생성하여 더하기 위한 문자열을 처리하기 위한 인스턴스 변수가 선언되었고, 여러 쓰레드에서 이 변수를 동시에 접근하고 있을 경우 `StringBuffer`를 사용해야만한다.
+
+---
+
+## String회고
+
+어마어마한 양이다. 정리하는데 너무 오랜 시간이 걸렸다.
+
+이제 스스로의 자바 중간 점검일이 얼마 안남았다.
+
+String은 정말 중요하다고 생각한다. 뭐 다른 분들도 그렇게 생각하는 것 같다.
+
+String 클래스를 배우면서도 아는 것들도 많았지만 새로 알게된 사실도 많았다.
+
+알고리즘 문자열 부분에서 많이 쓰는 메소드들이 나와서 반가웠다.
+
+다음 장도 열심히 해보자..
+
+![giphy](https://user-images.githubusercontent.com/56623911/202345923-63dd7d0b-1f2f-4478-8e28-4a56c59e9a06.gif)
+
+### 참고 자료
+- 자바의 신
+
 <!-- outline-end -->
