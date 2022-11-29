@@ -42,8 +42,6 @@ date: 2022-11-28 22:05:00 +0900
 
 <!-- outline-start -->
 
-# 가장 많이 쓰는 패키지는 자바랭
-
 # java.lang
 
 ## ➡️lang 패키지가 제공하는 것들
@@ -59,26 +57,48 @@ date: 2022-11-28 22:05:00 +0900
   - 런타임 관련
 
 
+---
+
+| 구분       | 타입      | 항목들                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+|----------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 언어 관련 기본 | 인터페이스   | Cloneable, Comparable, Iterable, Readable                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|          | 클래스     | Class, ClassLoader, Compiler, Enum, Object, Package, SecurityManager, StackTraceElement, System, Void                                                                                                                                                                                                                                                                                                                                                                              |
+|          | 예외 및 에러 | ArrayIndexOutOfBoundsException, ArraysStoreException, ClassCastException, <br/>ClassNotFoundException, CloneNotSupportedException, EnumConstantNotPresentException, IllegalAccessException, IllegalArgumentException,<br/> IndexOutOfBoundsException, InstantiationException, NegativeArraySizeException, NoSuchFieldException,<br/> NoSuchNethodException, NullPointerException, RuntimeException,<br/> SecurityException, TypeNotPresentException, UnsupportedOperationException |
+
+---
+
 | 구분 | 타입 | 항목들 |
 | --- | --- | --- |
-| 언어 관련 기본  | 인터페이스 | Cloneable, Comparable, Iterable, Readable |
-|  | 클래스 | Class, ClassLoader, Compiler, Enum, Object, Package, SecurityManager, StackTraceElement, System, Void |
-|  | 예외 및 에러 | ArrayIndexOutOfBoundsException, ArraysStoreException, ClassCastException, ClassNotFoundException, CloneNotSupportedException, EnumConstantNotPresentException, IllegalAccessException, IllegalArgumentException, IndexOutOfBoundsException, InstantiationException, NegativeArraySizeException, NoSuchFieldException, NoSuchNethodException, NullPointerException, RuntimeException, SecurityException, TypeNotPresentException, UnsupportedOperationException |
-|  |  |  |
 | 문자열 관련 | 인터페이스 | Appendable, CharSequence |
 |  | 클래스 | String, StringBuffer, StringBuilder |
 |  | 예외 및 에러 | StringIndexOutOfBoundsException |
-|  |  |  |
+
+---
+
+| 구분 | 타입 | 항목들 |
+| --- | --- | --- |
 | 기본 자료형 및 숫자 관련 | 클래스 | Boolean, Byte, Character, Character.Subset, Character, UnicodeBlock, Double, Float, Integer, Long, Math, Number, Short, StrictMath |
 |  | 예외 및 에러 | ArithmeticException, NumberFormatException |
-|  |  |  |
+
+---
+
+| 구분 | 타입 | 항목들 |
+| --- | --- | --- |
 | 쓰레드 관련 | 인터페이스 | Runnable, Thread.UncaughtExceptionHandler |
 |  | 클래스 | InheritableThreadLocal, Thread, ThreadGroup, ThreadLocal, Thread.State(Enum 타입임) |
 |  | 예외 및 에러 | IllegalMonitorStateException, IllegalThreadStateException, InterruptedException |
-|  |  |  |
+
+---
+
+| 구분 | 타입 | 항목들 |
+| --- | --- | --- |
 | 예외 관련 | 클래스 | Throwable |
 |  | 예외 및 에러 | Exception |
-|  |  |  |
+
+---
+
+| 구분 | 타입 | 항목들 |
+| --- | --- | --- |
 | 런타임 관련 | 클래스 | Process, ProcessBuilder, Runtime, RuntimePermission |
 |  | 예외 및 에러 | IllegalStateException |
 
@@ -580,8 +600,8 @@ pubic void printNullToString(){
 
 ```java
 Exception in thread "main" java.lang.NullPointerException
-	at main.Chapter20.JavaLangSystemPrint.printNull(JavaLangSystemPrint.java:27)
-	at main.Chapter20.JavaLangSystemPrint.main(JavaLangSystemPrint.java:7)
+  at main.Chapter20.JavaLangSystemPrint.printNull(JavaLangSystemPrint.java:27)
+  at main.Chapter20.JavaLangSystemPrint.main(JavaLangSystemPrint.java:7)
 ```
 
 obj 자체가 null이고, 이 객체의 toString()이라는 메소드를 호출하게 되면 예외가 발생할 수 밖에 없다.
@@ -593,6 +613,9 @@ obj 자체가 null이고, 이 객체의 toString()이라는 메소드를 호출�
 
 </aside>
 
+---
 
+## 참고 자료
+- 자바의 신 2<개정판>
 
 <!-- outline-end -->
