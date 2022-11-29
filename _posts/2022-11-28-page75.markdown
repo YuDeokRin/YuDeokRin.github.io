@@ -46,6 +46,8 @@ date: 2022-11-28 22:05:00 +0900
 
 # java.lang
 
+## ➡️lang 패키지가 제공하는 것들
+
 - java.lang 패키지에 있는 클래스들은 import를 안해줘도 사용할 수 있다.
 
 - lang 패키지가 제공하는 인터페이스, 클래스, 예외 클래스 등은 다음과 같다
@@ -59,25 +61,538 @@ date: 2022-11-28 22:05:00 +0900
 
 | 구분 | 타입 | 항목들 |
 | --- | --- | --- |
-| 언어 관련 기본  | 인터페이스 |  |
-|  | 클래스 |  |
-|  | 예외 및 에러 |  |
+| 언어 관련 기본  | 인터페이스 | Cloneable, Comparable, Iterable, Readable |
+|  | 클래스 | Class, ClassLoader, Compiler, Enum, Object, Package, SecurityManager, StackTraceElement, System, Void |
+|  | 예외 및 에러 | ArrayIndexOutOfBoundsException, ArraysStoreException, ClassCastException, ClassNotFoundException, CloneNotSupportedException, EnumConstantNotPresentException, IllegalAccessException, IllegalArgumentException, IndexOutOfBoundsException, InstantiationException, NegativeArraySizeException, NoSuchFieldException, NoSuchNethodException, NullPointerException, RuntimeException, SecurityException, TypeNotPresentException, UnsupportedOperationException |
 |  |  |  |
-| 문자열 관련 | 인터페이스 |  |
-|  | 클래스 |  |
-|  | 예외 및 에러 |  |
+| 문자열 관련 | 인터페이스 | Appendable, CharSequence |
+|  | 클래스 | String, StringBuffer, StringBuilder |
+|  | 예외 및 에러 | StringIndexOutOfBoundsException |
 |  |  |  |
-| 기본 자료형 및 숫자 관련 | 클래스 |  |
-|  | 예외 및 에러 |  |
+| 기본 자료형 및 숫자 관련 | 클래스 | Boolean, Byte, Character, Character.Subset, Character, UnicodeBlock, Double, Float, Integer, Long, Math, Number, Short, StrictMath |
+|  | 예외 및 에러 | ArithmeticException, NumberFormatException |
 |  |  |  |
-| 쓰레드 관련 | 인터페이스 |  |
-|  | 클래스 |  |
-|  | 예외 및 에러 |  |
+| 쓰레드 관련 | 인터페이스 | Runnable, Thread.UncaughtExceptionHandler |
+|  | 클래스 | InheritableThreadLocal, Thread, ThreadGroup, ThreadLocal, Thread.State(Enum 타입임) |
+|  | 예외 및 에러 | IllegalMonitorStateException, IllegalThreadStateException, InterruptedException |
 |  |  |  |
-| 예외 관련 | 클래스 |  |
-|  | 예외 및 에러 |  |
+| 예외 관련 | 클래스 | Throwable |
+|  | 예외 및 에러 | Exception |
 |  |  |  |
-| 런타임 관련 | 클래스 |  |
-|  | 예외 및 에러 |  |
+| 런타임 관련 | 클래스 | Process, ProcessBuilder, Runtime, RuntimePermission |
+|  | 예외 및 에러 | IllegalStateException |
+
+---
+
+## ➡️숫자를 처리하는 클래스
+
+자바에서 자료형은 기본자료형, 참조자료형이 있다.
+
+`기본자료형(Primitive Type)`은 Stack 영역에 저장된다.  반면 `참조 자료형(Reference Type)`은 Heap 영역에 저장된다.
+
+기본 자료형으로 계산되는 것이 참조 자료형보다 계산을 빠르게 처리한다.
+
+간략한 이유는 기본 자료형은 값을 저장하는 반면 참조 자료형은 주소값을 저장하기 때문에  주소를 한번 더 걸친다. 따라서 더 느리다.
+
+기본자료형의 숫자를 객체로 처리해야할 때가 있다.
+
+그래서
+
+자바에서는 기본 자료형으로 선언되어 있는 타입의 클래스들이 선언되어 있다.
+
+- Byte
+- Short
+- Integer
+- Long
+- Float
+- Double
+- Character
+- Boolean
+
+Character 클래스를 제외하고 나머지 클래스들은 각 기본 자료형의 이름에서 첫 문자만 대문자로 바뀌었다고 보면 된다.
+
+Character와 Boolean 을 제외한 숫자를 처리하는 클래스들은 `감싼 클래스(Wrapper class)`라고 불린다.
+
+- 모두 Number라는 abstract 클래스를 확장(extends)한다.
+
+![Untitled](%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A1%E1%86%BC%20%E1%84%86%E1%85%A1%E1%86%AD%E1%84%8B%E1%85%B5%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A2%E1%84%8F%E1%85%B5%E1%84%8C%E1%85%B5%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8C%E1%85%A1%E1%84%87%E1%85%A1%E1%84%85%E1%85%A2%E1%86%BC%20933be8efe0fe4cf597d798707e1d2733/Untitled.png)
+
+![Untitled](%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A1%E1%86%BC%20%E1%84%86%E1%85%A1%E1%86%AD%E1%84%8B%E1%85%B5%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A2%E1%84%8F%E1%85%B5%E1%84%8C%E1%85%B5%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8C%E1%85%A1%E1%84%87%E1%85%A1%E1%84%85%E1%85%A2%E1%86%BC%20933be8efe0fe4cf597d798707e1d2733/Untitled%201.png)
+
+- abstract 클래스인 `Number` 의 구조
+
+```java
+public abstract class Number implements java.io.Serializable {
+
+    public abstract int intValue();
+
+    public abstract long longValue();
+
+    public abstract float floatValue();
+
+    public abstract double doubleValue();
+
+    public byte byteValue() {
+        return (byte)intValue();
+    }
+
+    public short shortValue() {
+        return (short)intValue();
+    }
+
+    private static final long serialVersionUID = -8742448824652078965L;
+}
+```
+
+- Character 클래스를 제외하고는 `Wrapper 클래스`는 공통적인 메소드를 제공한다.
+  - parse타입이름()
+  - valueOf()
+
+- 예)
+
+```java
+public class JavaLangNumber {
+    public static void main(String[] args){
+       JavaLangNumber sample = new JavaLangNumber();
+       sample.numberTypeCheck();
+    }
+
+   public void numberTypeCheck(){
+       String value1 = "3";
+       String value2 = "5";
+
+       System.out.println(value1 + value2); // 35
+
+       // ① String -> byte로 변환
+       byte byte1 = Byte.parseByte(value1);
+       byte byte2 = Byte.parseByte(value2);
+
+       System.out.println(byte1 + byte2); // ② 8
+
+       // ③ valueOf() 메소드 사용
+       Integer refInt1 = Integer.valueOf(value1);
+       Integer refInt2 = Integer.valueOf(value2);
+
+       //3 + 5 = 8
+       //④ 8 + "7" = 87
+       System.out.println(refInt1 + refInt2 + "7"); //결과: 87
+   }
+}
+```
+
+1. “3”과 “5”라는 String 값을 parseByte() 메소드를 사용하여 byte로 변환 → 3 , 5
+2. 두 값을 더한 결과를 출력 → 8
+3. valueOf() 메소드를 사용하여 Integer 타입으로 변환한 후 두 값을 더한다. → 3 + 5 = 8
+4. “7” 이라는 String을 더하여 출력한다.
+
+parse타입이름()와 valueOf()
+
+- parse타입이름() : 기본 자료형을 리턴한다.
+- valueOf() : 참조 자료형을 리턴한다.
+
+![Untitled](%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A1%E1%86%BC%20%E1%84%86%E1%85%A1%E1%86%AD%E1%84%8B%E1%85%B5%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A2%E1%84%8F%E1%85%B5%E1%84%8C%E1%85%B5%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8C%E1%85%A1%E1%84%87%E1%85%A1%E1%84%85%E1%85%A2%E1%86%BC%20933be8efe0fe4cf597d798707e1d2733/Untitled%202.png)
+
+참조 자료형 중에서 더하기 연산이 가능한 것은 `String` 뿐이다.
+
+그런데 참조 자료형 중에서 Byte, Short, Integer, Long, Float, Double 타입들은 필요시 기본 자료형처럼 사용할 수 있다.
+
+따라서 **new를 사용하여 객체를 만들지 않아도 값을 할당할 수 있다.**
+
+```java
+public void numberTypeCheck2(){
+    Integer refInt1;
+    refInt1 = 100;
+    System.out.println(refInt1.doubleValue()); //100.0 -> 타입은 double
+```
+
+![Untitled](%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A1%E1%86%BC%20%E1%84%86%E1%85%A1%E1%86%AD%E1%84%8B%E1%85%B5%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A2%E1%84%8F%E1%85%B5%E1%84%8C%E1%85%B5%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8C%E1%85%A1%E1%84%87%E1%85%A1%E1%84%85%E1%85%A2%E1%86%BC%20933be8efe0fe4cf597d798707e1d2733/Untitled%203.png)
+
+- **이러한 숫자를 처리하는 참조 자료형을 만든 이유는 무엇일까?**
+  - 매개 변수를 참조 자료형으로만 받는 메소드를 처리하기 위해서
+  - 제네릭과 같이 기본 자료형을 사용하지 않는 기능을 사용하기 위해서
+  - MIN_VALUE(최소값), MAX_VALUE(최대값) 같이 클래스에 선언된 상수 값을 사용하기 위해서
+  - 문자열을 숫자로, 숫자를 문자열로 쉽게 변환하고, 2,8,10,16, 진수 변환을 쉽게 처리하기 위해서
+
+
+- 기본 자료형을 참조 자료형으로 만든 클래스들은 Boolean 클래스를 제외하고 모두 MIN_VALUE와 MAX_VALUE라는 상수를 갖고 있다.
+
+해당 타입이 나타낼 수 있는 값의 범위를 확인하려면 static으로 선언되어 있는 것을 사용하면된다.
+
+```java
+public void numberMinMaxCheck() {
+    System.out.println("byte min = " + Byte.MIN_VALUE + " max = " + Byte.MAX_VALUE);
+    System.out.println("Short min = " + Short.MIN_VALUE + " max = " + Short.MAX_VALUE);
+    System.out.println("Integer min = " + Integer.MIN_VALUE + " max = " + Integer.MAX_VALUE);
+    System.out.println("Long min = " + Long.MIN_VALUE + " max = " + Long.MAX_VALUE);
+    System.out.println("Float min = " + Float.MIN_VALUE + " max = " + Float.MAX_VALUE);
+    System.out.println("Double min = " + Double.MIN_VALUE + " max = " + Double.MAX_VALUE);
+    System.out.println("Character min = " + (int)Character.MIN_VALUE + " max = " + (int)Character.MAX_VALUE);
+}
+```
+
+Character의 경우 출력할 경우 char 타입으로 출력되므로 알아보기가 힘들다. 따라서 int로 형변환하여 그 값을 확인 할 수 있게 된다.
+
+```java
+결과 :
+byte min = -128 max = 127
+Short min = -32768 max = 32767
+Integer min = -2147483648 max = 2147483647
+Long min = -9223372036854775808 max = 9223372036854775807
+Float min = 1.4E-45 max = 3.4028235E38
+Double min = 4.9E-324 max = 1.7976931348623157E308
+Character min = 0 max = 65535
+```
+
+결과를 보면 Integer, Long 타입을 읽기가 어렵다.  이럴 때 더 보기 편하게 보는 방법이 있다.
+
+값을 2진수나 16진수로 표현해서 값을 표현하면 더 보기 편하다.
+
+```java
+public void integerMinMaxCheckBinary(){
+    System.out.println("Integer BINARY = " + Integer.toBinaryString(Integer.MIN_VALUE));
+    System.out.println("Integer BINARY = " + Integer.toBinaryString(Integer.MAX_VALUE));
+
+    System.out.println("Integer HEX min = " + Integer.toHexString(Integer.MIN_VALUE));
+    System.out.println("Integer EHX MAX_VALUE = " + Integer.toHexString(Integer.MAX_VALUE));
+}
+```
+
+```java
+결과 :
+Integer BINARY = 10000000000000000000000000000000
+Integer BINARY = 1111111111111111111111111111111
+Integer HEX min = 80000000
+Integer EHX MAX_VALUE = 7fffffff
+```
+
+---
+
+## System 클래스
+
+학부 시절 System 클래스를 처음 접한 건 JAVA 처음 배울 때 콘솔 창에 출력하기 위해서`‘System.out.println()’` 를 사용해서 출력했다.
+
+그래서인지 친근한 느낌이 있다. 하지만  위에 처럼 세트로 사용했지 `System` 이라는 것을 자세히 공부해 본 적이 없다.
+
+오늘 정리로 오래된 궁금증을 풀어보자.
+
+| 선언 및 리턴 타입 | 변수명  | 설명 |
+| --- | --- | --- |
+| static PrintStream | err | 에러 및 오류를 출력할 때 사용한다. |
+| static InputStream | in | 입력값을 처리할 때 사용한다. |
+| static PrintStream | out | 출력값을 처리할 때 사용한다. |
+
+`System`클래스는 이름 그대로 시스템에 대한 정보를 확인하는 클래스이다.  이 클래스에서 제공되는 메소드를 분류해보면… 아래와 같이 분류할 수 있다.
+
+### System의 역할
+
+- 시스템 속성(Property)값 관리
+- 시스템 환경(Environment)값 조회
+- GC수행
+- JVM 종료
+- 현재 시간 조회
+- 기타 관리용 메소드들
+
+### 시스템속성(Property)값 관리
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| static String | clearProperty(String key) | key에 지정된 시스템 속성을 제거한다. |
+| static Properties | getProperties() | 현재 시스템 속성을  Properties 클래스 형태로 제공한다. |
+| static String | getProperty(String key) | key에 지정된 문자열로 된 시스템 속성값(value)을 얻는다. |
+| static String | getProperty(String key, String def) | key에 지정된 문자열로된 시스템 속성값(value)을 얻고 만약 없으면, def에 지정된 값을 리턴한다. |
+| static void  | setProperties(Properties props) | Properties 타입으로 넘겨주는 매개 변수에 있는 값들을 시스템 속성에 넣는다. |
+| static String | setProperty(String key, String value) | key에 지정된 시스템 속성의 값을 value로 대체한다. |
+
+- getProperty 예시
+
+```java
+public class JavaLangSystem {
+    public static void main(String[] args) {
+        JavaLangSystem sample = new JavaLangSystem();
+        sample.systemPropertiesCheck();
+    }
+
+    public void systemPropertiesCheck() {
+        System.out.println("java.version = " + System.getProperty("java.version"));
+    }
+}
+```
+
+- 결과
+
+```java
+java.version = 11.0.13
+```
+
+현재 내가 쓰고 있는 java version은 11이고 JDK 11의 update13이라는 버전을 사용하고 있다는 뜻이다.
+
+---
+
+### 시스템 환경(Environment)값 조회
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| static Map<String,String> | getenv() | 현재 시스템 환경에 대한 Map 형태의 리턴값을 받는다. |
+| static String | getenv(String name) | 지정한 name에 해당하는 값을 받는다. |
+
+```java
+System.out.println("JAVA_HOME =" + System.getenv("JAVA_HOME"));
+```
+
+- 결과
+
+```java
+JAVA_HOME =null
+```
+
+만약 이 JAVA_HOME이 설정되어 있지 않으면 `null`
+
+매개 변수가 없는 getenv() 메소드는 리턴 타입이 Map<String, String> 이다.
+
+---
+
+System 클래스에서 호출하면 무서운 광경이 펼쳐지는 메소드
+
+- GC수행 메소드 - gc(), runFinalization()
+- JVM 종료 메소드 - exit()
+
+### GC 수행
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| static void | gc() | 가비지 컬렉터를 실행한다. |
+| static void | runFinalization() | GC 처리를 기다리는 모든 객체에 대하여 finalize()메소드를 실행한다. |
+
+자바에서는 메모리 처리를 개발자가 별로도 하지 않는다.
+
+- `System.ge()` 라는 메소드를 호출하면 가비지 컬렉션을 명시적으로 처리하도록 할 수 있다.
+
+- Object클래스에 선언되어 있는 finalize() 메소드를 명시적으로 수행하도록 하는 `runFinalization()` 메소드.
+
+위의 두 개 메소드들을 호출하지 않아도 알아서 JVM이 더이상 필요 없는개체를 처리하는 GC 작업과 finalization 작업을 실행한다.
+
+명시적으로 이 메소드들을 호출하게 된다면 시스템은 하려던 일들을 멈추고 이 작업을 실행한다.
+
+그렇기 때문에 조심하자…!!
+
+---
+
+### JVM 종료
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| static void  | exit(int status) | 현재 수행중인 JVM을 멈춘다. |
+
+안드로이드 앱이나 웹 애플리케이션에서 이 메소드를 사용하면 해당 애플리케이션의 JVM이 죽어버린다.
+
+바로 장애로 이어진다.
+
+매개 변수로 넘어가는 정수는 0일 경우에만 정상적인 종료를 의미한다. 그 외의 숫자는 비정상적인 종료를 의미한다.
+
+---
+
+### 현재 시간 조회
+
+| 리턴 타입 | 메소드 이름 및 매개 변수 | 설명 |
+| --- | --- | --- |
+| static long | currentTimeMillis() | 현재 시간을 밀리초 단위로 리턴한다. |
+| static long | nanoTime() | 현재 시간을 나노초 단위로 리턴한다. |
+
+- `currentTimeMillis()`
+  - 메소드는 현재 시간을 나타낼 때 유용한 메소드이다.
+  - UTC라는 Universal time 기준으로 1970년 1월 1일 00:00부터 지금까지 밀리초 단위의 차이를 출력한다.
+  - 밀리초는 1/1000 초 이므로 1000 밀리초는 1000ms라고 표시하며 1초와 동일하다.
+
+- `nanoTime()`
+  - 메소드는 시간의차이를 측정하기 위한 용도의 메소드다.
+  - 1/1,000,000,000초를 의미한다.
+
+
+- 예시
+
+```java
+public void numberMinMaxElapsedCheck(){
+    JavaLangNumber numberSample = new JavaLangNumber();
+    long startTime = System.currentTimeMillis();
+    long startNanoTime = System.nanoTime();
+    numberSample.numberMinMaxCheck();
+    System.out.println("Milli second =" + (System.currentTimeMillis() - startTime));
+    System.out.println("Nano second = " + (System.nanoTime() - startNanoTime));
+}
+```
+
+- 결과
+
+```java
+byte min = -128 max = 127
+Short min = -32768 max = 32767
+Integer min = -2147483648 max = 2147483647
+Long min = -9223372036854775808 max = 9223372036854775807
+Float min = 1.4E-45 max = 3.4028235E38
+Double min = 4.9E-324 max = 1.7976931348623157E308
+Character min = 0 max = 65535
+Milli second =0
+Nano second = 33390792
+```
+
+```java
+Milli second =0
+Nano second = 33390792
+```
+
+Milli second = 0 으로 출력되었다.
+
+하지만 Nano second는 매우 큰 숫자로 출려된다.
+
+실제로 나노초를 밀리초로 확인하기 위해서 1/1,000,000으로 나누면 0.5ms다. 어떤 값이 더 정확하다고 이야기하기는 어렵다.
+
+하지만 시간을 측정할 필요가 있을 때는 나노초를 이용하는 것을 권장한다고 한다.
+
+nanoTime()가 만들어진 목적이 시간 측정을 위해서 이기 때문이다.
+
+---
+
+## System.out 이란 ?
+
+![Untitled](%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A1%E1%86%BC%20%E1%84%86%E1%85%A1%E1%86%AD%E1%84%8B%E1%85%B5%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A2%E1%84%8F%E1%85%B5%E1%84%8C%E1%85%B5%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8C%E1%85%A1%E1%84%87%E1%85%A1%E1%84%85%E1%85%A2%E1%86%BC%20933be8efe0fe4cf597d798707e1d2733/Untitled%204.png)
+
+System 클래스에 선언되어 있는 변수 `out` , `err` 는 PrintStream이라는 동일한 클래스의 객체다.
+
+정상적인 출력인지, 에러가 났을 때의 출력 결과인지의 차이만 존재한다.
+
+- 아래와 같이 되어 있다.
+
+![Untitled](%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A1%E1%86%BC%20%E1%84%86%E1%85%A1%E1%86%AD%E1%84%8B%E1%85%B5%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A2%E1%84%8F%E1%85%B5%E1%84%8C%E1%85%B5%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8C%E1%85%A1%E1%84%87%E1%85%A1%E1%84%85%E1%85%A2%E1%86%BC%20933be8efe0fe4cf597d798707e1d2733/Untitled%205.png)
+
+`PrintStream` 클래스의 출력을 위한 주요 메소드의 이름들
+
+- print()
+- println()
+- format()
+- printf()
+- write()
+
+총 다섯 가지이고 가장 많이 쓰는 것은 println(), print()인 것 같다. 두 가지의 차이는 줄바꿈을 갖고 있는지 안 갖고 있는지 이다.
+
+- println()와 print() 내부를 살펴보자.
+
+![Untitled](%E1%84%80%E1%85%A1%E1%84%8C%E1%85%A1%E1%86%BC%20%E1%84%86%E1%85%A1%E1%86%AD%E1%84%8B%E1%85%B5%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A2%E1%84%8F%E1%85%B5%E1%84%8C%E1%85%B5%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8C%E1%85%A1%E1%84%87%E1%85%A1%E1%84%85%E1%85%A2%E1%86%BC%20933be8efe0fe4cf597d798707e1d2733/Untitled%206.png)
+
+println()는 newLine() 메소드가 포함되어 있어서 다음라인으로 넘어간다. 즉 줄바꿈이 된다.
+
+print() 같은 경우 줄바꿈을 포함하는 메소드는 없다.
+
+- print()와 println()가 어떤 매개 변수를 받는지
+
+| print(boolean b) | print(char c) | print(char[] c) | print(double d) | print(float f) |
+| --- | --- | --- | --- | --- |
+| print(int i) | print(long l) | print(Object obj) | print(String s) |  |
+| println(boolean b) | println(char c) | println(char[] s) | println(double d) | println(float f) |
+| println(int i) | println(long l) | println(Object obj) | println(String s) | println() |
+
+byte타입, short타입을 매개 변수로 받는 메소드가 선언되어 있지 않다.
+
+두 개 모두 정수형이기 때문에 전혀 문제 없이 출력된다.
+
+byte나 short타입을 print()나 println() 메소드에 넘겨주면 int 타입을 매개 변수로 받는 메소드에서 알아서 처리해준다.
+
+- 예제)
+
+```java
+public class JavaLangSystemPrint {
+    public static void main(String[] args) {
+        JavaLangSystemPrint sample =  new JavaLangSystemPrint();
+        sample.printStreamCheck();
+    }
+
+    public void printStreamCheck() {
+        byte b = 127;
+        short s= 32767;
+        System.out.println(b);
+        System.out.println(s);
+        printInt(b);
+        printInt(s);
+
+    }
+
+    public void printInt(int value) {
+        System.out.println(value);
+    }
+}
+```
+
+- 결과
+
+```java
+127
+32767
+127
+32767
+```
+
+추가로
+
+- null을 출력하는 메소드
+
+```java
+public void printNull(){
+    Object obj = null;
+    System.out.println(obj);
+    System.out.println(obj + " is object's value");
+}
+```
+
+- 결과
+
+```java
+null
+null is object's value
+```
+
+위의 예제에서 중요한점은 obj객체가 null이라는 것이다.
+
+객체를 출력할 때 toString() 메소드를 단순히 호출한다고 생각하고 있었다면, null인 obj의 toString()을 호출하는 셈이다.
+
+null인 obj는 아무런 할당이 되어 있지 않기 때문에 메소드를 호출할 수가 없다.
+
+따라서 컴파일은 제대로 되지만 실행시 예외가 발생한다.
+
+하지만 printNull() 메소드는 컴파일도 잘 된다.
+
+null을 그냥 출력하고 더한 값이 출력된다…
+
+이런 결과가 출력된 이유는 print() 메소드와 println()메소드에서는 단순히 toString() 메소드 결과를 출력하지 않기 때문이다.
+
+String의 valueOf()라는 static메소드를 호출하여 결과를 받은 후 출력한다.
+
+String.valueOf(obj)가 호출된 것이다.
+
+- 예제) toString()으로 처리한 메소드
+
+```java
+pubic void printNullToString(){
+    Object obj = null;
+    System.out.println(obj.toString());
+}
+```
+
+실행을 하게되면 예외가 발생한다. → `NullPointerException`
+
+```java
+Exception in thread "main" java.lang.NullPointerException
+	at main.Chapter20.JavaLangSystemPrint.printNull(JavaLangSystemPrint.java:27)
+	at main.Chapter20.JavaLangSystemPrint.main(JavaLangSystemPrint.java:7)
+```
+
+obj 자체가 null이고, 이 객체의 toString()이라는 메소드를 호출하게 되면 예외가 발생할 수 밖에 없다.
+
+<aside>
+💡 객체를 출력할 때 → `toString();`
+
+하지만 객체를 출력할 때에는 `valueOf()` 메소드를 사용하는 게 더 안전하다.
+
+</aside>
+
+
 
 <!-- outline-end -->
