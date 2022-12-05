@@ -42,33 +42,262 @@ date: 2022-11-30 23:30:00 +0900
 
 <!-- outline-start -->
 
-# 실수를 방지하기 위한 제네릭이라는 것도 있어요.
-
 # 제네릭(Generic)
 
-- 제네릭(Generic)이란?
-  - 제네릭(Generic)은 클래스 내부에서 사용할 데이터 타입을 외부에서 지정하는 기법을 의미한다
+## 제네릭(Generic)이란?
 
+- `제네릭(Generic)`은 클래스 내부에서 사용할 데이터 타입을 외부에서 지정하는 기법을 의미한다.
+- `제네릭(Generic)` Javc 5부터 새롭게 추가되었다.
 
-![Untitled](%E1%84%89%E1%85%B5%E1%86%AF%E1%84%89%E1%85%AE%E1%84%85%E1%85%B3%E1%86%AF%20%E1%84%87%E1%85%A1%E1%86%BC%E1%84%8C%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%20%E1%84%8B%E1%85%B1%E1%84%92%E1%85%A1%E1%86%AB%20%E1%84%8C%E1%85%A6%E1%84%82%E1%85%A6%E1%84%85%E1%85%B5%E1%86%A8%E1%84%8B%E1%85%B5%E1%84%85%E1%85%A1%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%80%E1%85%A5%E1%86%BA%E1%84%83%E1%85%A9%20%E1%84%8B%E1%85%B5%E1%86%BB%E1%84%8B%205a082928595e473e912ebba5aea9b64d/Untitled.png)
+- 제네릭 구조
+
+![Untitled](https://user-images.githubusercontent.com/56623911/205624001-4295c0a4-6916-41ca-ae37-b420dc2404eb.png)
 
 1. `Class Person2`가 있다.  클래스의 필드 안에 info에 데이터 타입은 명시적으로 지정되어있지 않다.
 
-   ![Untitled](%E1%84%89%E1%85%B5%E1%86%AF%E1%84%89%E1%85%AE%E1%84%85%E1%85%B3%E1%86%AF%20%E1%84%87%E1%85%A1%E1%86%BC%E1%84%8C%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%20%E1%84%8B%E1%85%B1%E1%84%92%E1%85%A1%E1%86%AB%20%E1%84%8C%E1%85%A6%E1%84%82%E1%85%A6%E1%84%85%E1%85%B5%E1%86%A8%E1%84%8B%E1%85%B5%E1%84%85%E1%85%A1%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%80%E1%85%A5%E1%86%BA%E1%84%83%E1%85%A9%20%E1%84%8B%E1%85%B5%E1%86%BB%E1%84%8B%205a082928595e473e912ebba5aea9b64d/Untitled%201.png)
+![Untitled 1](https://user-images.githubusercontent.com/56623911/205623945-6b4c3db1-a706-4eca-a090-0c561a82bbfc.png)
 
 2. `Person2<String> p1 = new Person2<String>();` 이라는 코드가 될 때, 즉 인스턴스화(`new Person2<String>()`) 할 때  `< >` 안에 구체적으로 명시된 타입이 `class Person2<String>` 이 된다.
    따라서 Person2 클래스 안에 info는 String이라는 타입을 갖게 된다.
 
-![Untitled](%E1%84%89%E1%85%B5%E1%86%AF%E1%84%89%E1%85%AE%E1%84%85%E1%85%B3%E1%86%AF%20%E1%84%87%E1%85%A1%E1%86%BC%E1%84%8C%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%20%E1%84%8B%E1%85%B1%E1%84%92%E1%85%A1%E1%86%AB%20%E1%84%8C%E1%85%A6%E1%84%82%E1%85%A6%E1%84%85%E1%85%B5%E1%86%A8%E1%84%8B%E1%85%B5%E1%84%85%E1%85%A1%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%80%E1%85%A5%E1%86%BA%E1%84%83%E1%85%A9%20%E1%84%8B%E1%85%B5%E1%86%BB%E1%84%8B%205a082928595e473e912ebba5aea9b64d/Untitled%202.png)
+![Untitled 2](https://user-images.githubusercontent.com/56623911/205623958-7007b047-561f-4a19-8004-eb40d40f0360.png)
 
-1. GenericDemo2 클래스 안에 p1의 데이터 타입도 String 타입이 지정되어야 한다.
+1. `GenericDemo2` 클래스 안에 p1의 데이터 타입도 String 타입이 지정되어야 한다.
 
 
 
 - 두번째 객체의 타입을 StringBuilder로  생성할때
   - 위의 예시와 같이 동작된다.
 
-![Untitled](%E1%84%89%E1%85%B5%E1%86%AF%E1%84%89%E1%85%AE%E1%84%85%E1%85%B3%E1%86%AF%20%E1%84%87%E1%85%A1%E1%86%BC%E1%84%8C%E1%85%B5%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5%20%E1%84%8B%E1%85%B1%E1%84%92%E1%85%A1%E1%86%AB%20%E1%84%8C%E1%85%A6%E1%84%82%E1%85%A6%E1%84%85%E1%85%B5%E1%86%A8%E1%84%8B%E1%85%B5%E1%84%85%E1%85%A1%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%80%E1%85%A5%E1%86%BA%E1%84%83%E1%85%A9%20%E1%84%8B%E1%85%B5%E1%86%BB%E1%84%8B%205a082928595e473e912ebba5aea9b64d/Untitled%203.png)
+![Untitled 3](https://user-images.githubusercontent.com/56623911/205623962-5b793419-f34b-4f35-971f-a558687f80b0.png)
+
+---
+
+## 제네릭 타입의 이름 정하기
+
+`<>` 안에 어떤 단어가 들어가도 상관이 없긴하다.
+
+하지만 마음대로 넣는다면 코드의 가독성이 엄청 떨어질 것이다.
+
+따라서 일반적으로 사용하는 제네릭 타입을 알아보자.
+
+- E : 요소 (Element, 자바 컬렉션(Collection)에서 주로 사용된다.)
+- K :  키
+- N : 숫자
+- T : 타입
+- V : 값
+- S, U, V : 두 번째, 세 번째, 네 번째에 선언된 타입
+
+---
+
+## 제네릭 `?` 는 무엇일까?
+
+### 메소드의 매개 변수로 넘어가는 제네릭
+
+```java
+public class WildcardGeneric<W>{
+    W wildcard;
+
+    public void setWildcard(W wildcard){
+        this.wildcard = wildcard;
+    }
+
+    public W getWildcard(){
+        return wildcard;
+    }
+}
+```
+
+![Untitled 4](https://user-images.githubusercontent.com/56623911/205623968-dcbda625-5edd-47ff-843a-c1672102d12e.png)
+
+1. `callWildcardMethod()` 메소드에서는 방금 만든 `WildcardGeneric`이라는 클래스에 `String`을 사용하는 제네릭한 객체를 생성한다.
+2. 생성한 객체로 `wildcardStringMethod()`를 호출할 때 넘겨준다.
+3. `wildcardStringMethod()`에서는 해당 매개 변수를 받아서 결과를 출력한다.
+
+`wildcardStringMethod()` 메소드의 매개 변수는 반드시 `String`을 사용하는 `WildcardGeneric` 객체만 받을 수 있다.
+
+- 만약 다른 타입으로 선언된 `WildcardGeneric` 객체를 받으려면 어떻게 해야할까?
+- 가능한 예)
+
+![Untitled 5](https://user-images.githubusercontent.com/56623911/205623972-401e44c7-1f6f-4105-a922-05f25bf00ec9.png)
+
+- 컴파일 에러가 뜨는 예시)
+  - 다른 타입으로 바꾸면 컴파일 에러가 난다. 이유는 제네릭한 클래스의 타입만 바꾼다고 `Overloading` 이 불가능하기 때문이다.
+
+![Untitled 6](https://user-images.githubusercontent.com/56623911/205623976-becbeb13-a4b3-45e5-80d9-19c173c7f597.png)
+
+
+
+- 위의 컴파일 에러를 고치는 방법은 `String` → `Object` 로 타입을 바꾸면된다.
+- `String` 대신에 `?` 적어주면 어떤 타입이 제네릭 타입이 되더라도 상관 없다.  하지만 메소드 내부에서는 해당 타입을 정확히 모르기 때문에 앞서 사용한 것처럼 String으로 값을 받을 수는 없고, Obejct로 처리해야만 한다.
+
+![Untitled 7](https://user-images.githubusercontent.com/56623911/205623979-87940375-adc2-496f-8fe7-b057c4800e01.png)
+
+- 넘어오는 타입이 다수로 정해져 있다면, instanceof예약어를 사용하여 해당 타입을 확인하면 된다.
+
+```java
+public void wildcardStringMethod(WildcardGeneric<?> c){
+    Object value = c.getWildcard();
+    if(value instanceof String){
+        System.out.println(value); //결과 : A, 즉 value는 String 타입이다.
+    }
+}
+```
+
+<aside>
+💡 **`wildcard`는 메소드의 매개 변수로만 사용하는 것이 좋다.**
+
+</aside>
+
+`wildcardStringMethod()` 를 호출한 `callWildcardMethod()` 에서 아래와 같이 사용하면
+
+```java
+public void callWildcardMethod(){
+    WildcardGeneric<?> wildcard = new WildcardGeneric<String>();
+    wildcard.setWildcard("A");
+    wildcardStringMethod(wildcard);
+}
+```
+
+- 아래와 같이 컴파일 에러가 난다.
+
+![Untitled 8](https://user-images.githubusercontent.com/56623911/205623984-d0948a60-1d24-4eec-b23c-b99f8400cf94.png)
+
+- 알 수 없는 타입에 `String`을 지정할 수 없다. 다시말해서 어떤 객체를 `wildcard`로 선언하고, 그 객체의 값을 가져올 수 있지만, 와일드 카드로 객체를 선언했을 때에는 특정 타입으로 값을 지정하는 것을 `“불가능”`하다.
+
+---
+
+## 제네릭 선언에 사용하는 타입의 범위 지정
+
+`<>` 안에 어떤 타입이 와도 상관이 없다. 하지만 wildcard로 사용하는 타입을 제한할 수 있다.
+
+- Bounded Wildcards
+
+```
+? extends 타입
+```
+
+예제를 통해서 알아보자.
+
+- Car 클래스
+
+```java
+public class Car{
+    protected String name;
+
+    public Car(String name){
+        this.name = name;
+    }
+
+    public String toString(){
+        return "Car name = " + name;
+    }
+}
+```
+
+- Car를 상속받은 Bus 클래스
+
+```java
+public class Bus extends Car{
+    public Bus(String name){
+        super(name);
+    }
+
+    public String toString(){
+        return "Bus name = " + name;
+    }
+}
+```
+
+- CarWildcardSample 클래스  → 메소드를 추가하자.
+
+```java
+public class CarWildcardSample{
+    public static void main(String[] args){
+        CarWildSample sample = new CarWildSample();
+        sample.callBoundedWildcardMethod();
+    }
+
+    public void callBoundedWildcardMethod(){
+        WildcardGeneric<Car> wildcard = new WildcardGeneric<Car>();
+        wildcard.setWildcard(new Car("Mustang"));
+        boundedWildcardMethod(wildcard);
+    }
+
+    public void boundedWildcardMethod(WildcardGeneric<? extends Car> c{
+        Car value = c.getWildcard();
+        System.out.println(value);
+    }
+}
+```
+
+![Untitled 9](https://user-images.githubusercontent.com/56623911/205623990-ac77a1f0-0244-488f-963c-13e7b5225e7a.png)
+
+`boundedWildcardMethod()` 메소드에는 `“? extends Car”` 라고 적어줬다.
+
+이렇게 정의하므로 제네릭 타입으로 Car를 상속받은 모든 클래스를 사용할 수 있다는 의미다.
+
+따라서 `boundedWildcardMethod()` 의 매개 변수에는 다른 타입을 제네릭 타입으로 선언한 객체가 넘어올 수 없다.  컴파일 에러가 발생한다.
+
+반드시 `Car 클래스` 와 관련되어 있는 상속한 클래스가 넘어와야만 한다.
+
+```java
+public void callBusBoundedWildcardMethod(){
+    WildcardGeneric<Bus> wildcard = new WildcardGeneric<Bus>();
+    wildcard.setWildcard(new Bus("22"));
+    boundedWildcardMethod(wildcard);
+}
+```
+
+- 결과
+
+```java
+22
+```
+
+`? extends 타입` 를 Bounded Wildcards라고 한다. Bound는 경계라는 뜻이다. 매개 변수로 넘어오는 제네릭 타입의 경계를 지정하는 데 사용한다는 의미이다.
+
+---
+
+## 메소드를 제네릭하게 선언하기
+
+wildcard로 메소드를 선언하는 방법은 단점이 있다.
+
+- 매개 변수로 사용된 객체에 값을 추가할 수가 없다는 것이다.
+
+그렇다면 매개 변수로 사용된 객체에 값을 추가할 수 없을까 ?
+
+있다.  예시를 통해서 알아보자
+
+- 매개 변수로 사용된 객체에 값을 추가하는 방법
+
+![Untitled 10](https://user-images.githubusercontent.com/56623911/205623993-a9562c4d-6848-4c7d-a900-68bddfd58f2d.png)
+
+위의 코드는 컴파일은 잘 된다.
+
+메소드 선언시 리턴 타입 앞에 제네릭한 타입을 선언해 주고, 그 타입을 매개 변수에서 사용하면 컴파일할 때 전혀 문제가 없다.
+
+추가로 값도 할당할 수 있다.
+
+- 실행 → 결과 : Data
+
+![Untitled 11](https://user-images.githubusercontent.com/56623911/205623997-52fc1722-e29b-469a-9e65-eada29055470.png)
+
+- `?` 를 사용하는 wildcard 처럼 타입을 두리뭉실하게 하는 것보다는 명시적으로 메소드 선언시 타입을 지정해 주면 보다 더 견고한 코드를 작성할 수 있다.
+
+```java
+public <T extends Car> void boundedGenericMethod(WildcardGeneric<T> c, T addValue)
+```
+
+이와 같이 선언한다.
+
+제네릭 타입이 여러 개 일때 선언하는 방법
+
+```java
+public <S, T extends Car> void multiGenericMethod(WildcardGeneric<T> c, T addValue, S anther))
+```
+
+
 
 ---
 
@@ -76,5 +305,4 @@ date: 2022-11-30 23:30:00 +0900
 
 - 자바의 신
 - 생활 코딩 : ****Java - 제네릭(1~ 5)****
-
 <!-- outline-end -->
