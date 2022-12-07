@@ -304,5 +304,5 @@ public <S, T extends Car> void multiGenericMethod(WildcardGeneric<T> c, T addVal
 ## 참고
 
 - 자바의 신
-- 생활 코딩 : ****Java - 제네릭(1~ 5)****
+- 생활 코딩 : **Java - 제네릭(1~ 5)**
 <!-- outline-end -->
