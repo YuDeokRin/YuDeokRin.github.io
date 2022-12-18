@@ -399,6 +399,7 @@ int area = bounds.area()
 
 다음에 다시 좋은 기회가 된다면 다시만나길... 기도하며 !
 
-![giphy.gif](..%2F..%2F..%2F..%2F..%2FDownloads%2Fgiphy.gif)
+![giphy](https://user-images.githubusercontent.com/56623911/208300791-067c6484-4227-4629-bd33-3b0a900dd27f.gif)
+
 
 <!-- outline-end -->
