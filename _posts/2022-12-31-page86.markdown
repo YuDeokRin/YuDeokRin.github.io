@@ -115,19 +115,244 @@ protected Object clone() throws CloneSupportedException {
 어떤 클래스(Object)를 상속받아서 Overriding을 할 때, 접근 지시자는 상위 클래스에 있는 접근지시자와 같거나 더 넓은 범위의 접근 지시자를 가져야한다.
 
 <aside>
-💡 **공변 반환 타이핑(convariant return typing)
-
-메서드를 Overriding(재정의)할 때 재정의 된 메서드의 반환 타입이 상위 클래스의 메서드가 반환하는 하위 유형이 될 수 있다 라는 것**
+💡 **공변 반환 타이핑(convariant return typing)**
+메서드를 Overriding(재정의)할 때 재정의 된 메서드의 반환 타입이 상위 클래스의 메서드가 반환하는 하위 유형이 될 수 있다 라는 것
 
 </aside>
 
 - 공변 반환 타이핑 예제
 
-![Untitled](https://user-images.githubusercontent.com/56623911/210131061-c6b17294-908b-4064-8df4-9dce280c9253.png)
-
+![Untitled](item%2013%20clone%20%E1%84%8C%E1%85%A2%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%8B%E1%85%B4%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%B4%E1%84%92%E1%85%A2%E1%84%89%E1%85%A5%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%92%E1%85%A2%E1%86%BC%E1%84%92%E1%85%A1%E1%84%85%E1%85%A1%20e00769e1a3474e108c35f20a4f828627/Untitled.png)
 
 ### 공변 반환 타이핑의 장점
 
 - clone()이라는 메소드를 호출하는 부분에서 `타입 캐스팅`을 하지 않아도된다.
+
+---
+
+## 가변 객체를 참조하는 clone 메소드 재정의
+
+- 아래의 예제(서적에 나온 예제)로 설명을 하겠습니다.
+
+```java
+import java.util.Arrays;
+
+// Stack의 복제 가능 버전 (80-81쪽)
+public class Stack implements Cloneable {
+    private Object[] elements;
+    private int size = 0;
+    private static final int DEFAULT_INITIAL_CAPACITY = 16;
+
+    public Stack() {
+        this.elements = new Object[DEFAULT_INITIAL_CAPACITY];
+    }
+
+    public void push(Object e) {
+        ensureCapacity();
+        elements[size++] = e;
+    }
+
+    public Object pop() {
+        if (size == 0)
+            throw new EmptyStackException();
+        Object result = elements[--size];
+        elements[size] = null; // 다 쓴 참조 해제
+        return result;
+    }
+
+    public boolean isEmpty() {
+        return size ==0;
+    }
+
+    // 원소를 위한 공간을 적어도 하나 이상 확보한다.
+    private void ensureCapacity() {
+        if (elements.length == size)
+            elements = Arrays.copyOf(elements, 2 * size + 1);
+    }
+
+    @Override public Stack clone() {
+        try {
+            Stack result = (Stack) super.clone();
+            return result;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
+}
+```
+
+### 가변 객체의 clone 구현하는 방법
+
+1. `Cloneable` 인터페이스를 구현해야한다.
+2. `clone()` 메소드를 재정의해야한다. → 재정의할 때, `protected` → `public` 으로 변경해주고, return 타입을 `Object` 에서 클래스 타입으로 변경해준다.
+3. `super.clone()` 호출해준다.
+
+3번까지는 `가변 상태를 참조하지 않는 clone` 하고 같다.
+
+이제 아래부터는 가변 객체의 clone 구현 방법을 알아보자.
+
+1. `stack, copy -> elementsS[0, 1]`  → stack과 copy(result) 동일한 elements를 참조한다. 즉, 다른 인스턴스에서 동일한 배열을 참조하는 것이 된다.
+
+따라서 원본이나 복제본 중 하나를 수정하게 된다면 다른 하나도 수정되어 불변식의 깨뜨린다.  → 불안한 코드다.
+
+![Untitled](item%2013%20clone%20%E1%84%8C%E1%85%A2%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%8B%E1%85%B4%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%B4%E1%84%92%E1%85%A2%E1%84%89%E1%85%A5%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%92%E1%85%A2%E1%86%BC%E1%84%92%E1%85%A1%E1%84%85%E1%85%A1%20e00769e1a3474e108c35f20a4f828627/Untitled%201.png)
+
+```java
+public static void main(String[] args) {
+    Object[] values = new Object[2];
+    values[0] = new PhoneNumber(123, 456, 7890);
+    values[1] = new PhoneNumber(321, 764, 2341);
+
+    Stack stack = new Stack();
+    for (Object arg : values)
+        stack.push(arg);
+
+    Stack copy = stack.clone();
+
+    System.out.println("-----pop from stack-----");
+    while (!stack.isEmpty())
+        System.out.println(stack.pop() + " ");
+
+    System.out.println("-----pop from copy-----");
+    while (!copy.isEmpty())
+        System.out.println(copy.pop() + " ");
+
+    System.out.println("-----같은 인스턴스 인가요?-----");
+    System.out.println(stack.elements[0] == copy.elements[0]); // 같은 인스턴스 확인 하는 코드
+}
+```
+
+```java
+결과 :
+-----pop from stack-----
+321-764-2341
+123-456-7890
+-----pop from copy-----
+null
+null
+-----같은 인스턴스 인가요?-----
+true
+```
+
+위와 같이 결과가 stack에서 pop을 했는데 copy에도 영향을 준다.
+
+---
+
+1. 4번을 극복하려면 `result.elements = elements.clone()` 를 추가 해준다.   → `얕은 복사`
+
+코드를 추가해주면, 인스턴스는 동일하지만 각각 배열을 만들어서 복사를 한다. 하지만 얕은 복사이기때문에 인스턴스는 같다.  실제 배열 안에 인스턴스까지 완전히 새로운 복사를 하는 것이 아니다.
+
+따라서 인스턴스를 조작한다면, `copy()`를 갖고 있는 `PhoneNumber`클래스에 영향을 준다. → 불안한 코드
+
+```java
+@Override
+public Stack clone() {
+    try {
+        Stack result = (Stack) super.clone();
+        result.elements = elements.clone(); // 추가된 소스 코드
+        return result;
+    } catch (CloneNotSupportedException e) {
+        throw new AssertionError();
+    }
+}
+```
+
+- `result.elements = elements.clone()` 추가할 경우 결과
+
+```java
+-----pop from stack-----
+321-764-2341
+123-456-7890
+-----pop from copy-----
+321-764-2341
+123-456-7890
+-----같은 인스턴스 인가요?-----
+true
+```
+
+같은 인스턴스이지만 각각 배열을 만드는 방식으로 바뀐다.
+
+---
+
+### **가변 상태를 갖는 클래스용 재귀적 clone메서드 재정의**
+
+1. 5번째를 극복하는방법 → `깊은 복사(deep copy)` 를 한다.
+
+```java
+package me.chapter03.item13;
+
+public class HashTable implements Cloneable {
+    private Entry[] buckets = new Entry[10];
+
+    private static class Entry{
+        final Object key;
+        Object value;
+        Entry next;
+
+        public Entry(Object key, Object value, Entry next) {
+            this.key = key;
+            this.value = value;
+            this.next = next;
+        }
+
+        public void add(Object key, Object value) {
+            this.next = new Entry(key, value, null);
+        }
+
+        public Entry deepCopy(){
+            return new Entry(key, value, next == null ? null : next.deepCopy());
+        }
+
+//    shallow copy
+//    @Override
+//    protected HashTable clone() {
+//        HashTable result = null;
+//        try{
+//            result = (HashTable) super.clone();
+//            result.buckets = this.buckets.clone(); // p82. shallow copy이기 때문에 위험하다.
+//            return result;
+//        }catch(CloneNotSupportedException e){
+//            throw new AssertionError();
+//        }
+//    }
+
+//  deep copy
+    @Override
+    protected Object clone() {
+        HashTable result = null;
+        try {
+            result = (HashTable) super.clone(); // 배열을 clone이 아닌 직접만듬.
+            result.buckets = new Entry[this.buckets.length]; // clone용 buckets 배열
+            for (int i = 0; i < this.buckets.length; i++) {
+                if (buckets[i] != null) {
+                    result.buckets[i] = this.buckets[i].deepCopy(); // p83. deep copy
+                }
+            }
+            return result;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
+    public static void main(String[] args) {
+        HashTable hashTable = new HashTable();
+        Entry entry = new Entry(new Object(), new Object(), null);
+        hashTable.buckets[0] = entry;
+        HashTable clone = hashTable.clone();
+        System.out.println(hashTable.buckets[0] == entry);
+        System.out.println(hashTable.buckets[0] == clone.buckets[0]);
+    }
+}
+```
+
+```java
+public Entry deepCopy(){
+    return new Entry(key, value, next == null ? null : next.deepCopy());
+}
+```
+
+Entry의 deepCopy 메서드는
+
 
 <!-- outline-end -->
