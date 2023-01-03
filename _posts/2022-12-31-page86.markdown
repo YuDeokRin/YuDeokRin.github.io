@@ -62,11 +62,14 @@ clone() 메소드를 배우기에 앞서 얕은 복사와 깊은 복사의 개�
 
 - cloneable은 클래스을 복제를 할 수 있는지 확인하기위한 용도로 쓰인다. → 이런 인터페이스를  `minxin interface` 라고 부른다.
 
-<aside>
-💡 **mixin (믹스인)이란?**
-클래스가 본인의 기능 이외에 추가로 구현할 수 있는 자료형으로, 어떤 선택적 기능을 제공한다는 사실을 선언하기 위해 쓰인다.
+<details>
+<summary>💡  mixin (믹스인)이란? </summary>
+<div markdown="1">
 
-</aside>
+- 클래스가 본인의 기능 이외에 추가로 구현할 수 있는 자료형으로, 어떤 선택적 기능을 제공한다는 사실을 선언하기 위해 쓰인다.
+
+</div>
+</details>
 
 ## clone의 규약
 
@@ -114,15 +117,19 @@ protected Object clone() throws CloneSupportedException {
 
 어떤 클래스(Object)를 상속받아서 Overriding을 할 때, 접근 지시자는 상위 클래스에 있는 접근지시자와 같거나 더 넓은 범위의 접근 지시자를 가져야한다.
 
-<aside>
-💡 **공변 반환 타이핑(convariant return typing)**
-메서드를 Overriding(재정의)할 때 재정의 된 메서드의 반환 타입이 상위 클래스의 메서드가 반환하는 하위 유형이 될 수 있다 라는 것
+<details>
+<summary>💡  공변 반환 타이핑(convariant return typing) </summary>
+<div markdown="1">
 
-</aside>
+- 메서드를 Overriding(재정의)할 때 재정의 된 메서드의 반환 타입이 상위 클래스의 메서드가 반환하는 하위 유형이 될 수 있다 라는 것
+
+
+</div>
+</details>
 
 - 공변 반환 타이핑 예제
 
-![Untitled](item%2013%20clone%20%E1%84%8C%E1%85%A2%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%8B%E1%85%B4%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%B4%E1%84%92%E1%85%A2%E1%84%89%E1%85%A5%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%92%E1%85%A2%E1%86%BC%E1%84%92%E1%85%A1%E1%84%85%E1%85%A1%20e00769e1a3474e108c35f20a4f828627/Untitled.png)
+![Untitled](https://user-images.githubusercontent.com/56623911/210301920-857fc61b-a045-43cc-ac4b-9070fc23d52a.png)
 
 ### 공변 반환 타이핑의 장점
 
@@ -190,13 +197,17 @@ public class Stack implements Cloneable {
 
 3번까지는 `가변 상태를 참조하지 않는 clone` 하고 같다.
 
+---
+
 이제 아래부터는 가변 객체의 clone 구현 방법을 알아보자.
 
-1. `stack, copy -> elementsS[0, 1]`  → stack과 copy(result) 동일한 elements를 참조한다. 즉, 다른 인스턴스에서 동일한 배열을 참조하는 것이 된다.
+### 가변 객체에서 clone을 구현할 떄 주의해야할 것들.
+
+- `stack, copy -> elementsS[0, 1]`  → stack과 copy(result) 동일한 elements를 참조한다. 즉, 다른 인스턴스에서 동일한 배열을 참조하는 것이 된다.
 
 따라서 원본이나 복제본 중 하나를 수정하게 된다면 다른 하나도 수정되어 불변식의 깨뜨린다.  → 불안한 코드다.
 
-![Untitled](item%2013%20clone%20%E1%84%8C%E1%85%A2%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%8B%E1%85%B4%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8C%E1%85%AE%E1%84%8B%E1%85%B4%E1%84%92%E1%85%A2%E1%84%89%E1%85%A5%20%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%92%E1%85%A2%E1%86%BC%E1%84%92%E1%85%A1%E1%84%85%E1%85%A1%20e00769e1a3474e108c35f20a4f828627/Untitled%201.png)
+![Untitled 1](https://user-images.githubusercontent.com/56623911/210301909-f4bc0bd8-3c83-4466-91c5-5575f5d7350f.png)
 
 ```java
 public static void main(String[] args) {
@@ -239,7 +250,7 @@ true
 
 ---
 
-1. 4번을 극복하려면 `result.elements = elements.clone()` 를 추가 해준다.   → `얕은 복사`
+- 위의 코드를 극복하려면 `result.elements = elements.clone()` 를 추가 해준다.   → `얕은 복사`
 
 코드를 추가해주면, 인스턴스는 동일하지만 각각 배열을 만들어서 복사를 한다. 하지만 얕은 복사이기때문에 인스턴스는 같다.  실제 배열 안에 인스턴스까지 완전히 새로운 복사를 하는 것이 아니다.
 
@@ -273,11 +284,13 @@ true
 
 같은 인스턴스이지만 각각 배열을 만드는 방식으로 바뀐다.
 
+불안전한 방법이다. 다른 방법을 알아보자.
+
 ---
 
 ### **가변 상태를 갖는 클래스용 재귀적 clone메서드 재정의**
 
-1. 5번째를 극복하는방법 → `깊은 복사(deep copy)` 를 한다.
+- 위의 코드보다 나은 방법 → `깊은 복사(deep copy)`
 
 ```java
 package me.chapter03.item13;
@@ -300,11 +313,12 @@ public class HashTable implements Cloneable {
             this.next = new Entry(key, value, null);
         }
 
+//      재귀적 방법
         public Entry deepCopy(){
             return new Entry(key, value, next == null ? null : next.deepCopy());
         }
 
-//    shallow copy
+//    ---------shallow copy---------
 //    @Override
 //    protected HashTable clone() {
 //        HashTable result = null;
@@ -317,9 +331,9 @@ public class HashTable implements Cloneable {
 //        }
 //    }
 
-//  deep copy
+//  ---------deep copy---------
     @Override
-    protected Object clone() {
+    public HashTable clone() {
         HashTable result = null;
         try {
             result = (HashTable) super.clone(); // 배열을 clone이 아닌 직접만듬.
@@ -340,8 +354,8 @@ public class HashTable implements Cloneable {
         Entry entry = new Entry(new Object(), new Object(), null);
         hashTable.buckets[0] = entry;
         HashTable clone = hashTable.clone();
-        System.out.println(hashTable.buckets[0] == entry);
-        System.out.println(hashTable.buckets[0] == clone.buckets[0]);
+        System.out.println(hashTable.buckets[0] == entry); // true
+        System.out.println(hashTable.buckets[0] == clone.buckets[0]); //true
     }
 }
 ```
@@ -352,7 +366,140 @@ public Entry deepCopy(){
 }
 ```
 
-Entry의 deepCopy 메서드는
+Entry의 deepCopy 메서드는  재귀적 방법을 사용하고 있다.
 
+이때 Entry의 deepCopy 메서드는 자신이 가리키는 연결 리스트 전체를 복사하기 위해 재귀방법을 쓴다.
+
+하지만
+
+이 방법에는 `문제점`이 있다.
+
+재귀 호출 때문에 리스트의 원소 수만큼 스택 프레임을 소비하여, 리스트가 길면 스택 오버플로를 일으킬 위험이 있기 때문이다.
+
+이 방법을 피하기 위해 사용하는 것이 `반복자` 를 사용하는 것이다.
+
+- Entry 자신이 가리키는 연결 리스트를 반복적으로 복사한 코드
+
+```java
+public Entry deepCopy(){
+    Entry result = new Entry(key, value, next);
+    for(Entry p = result ; p.next != null ; p = p.next){
+        p.next = new Entry(p.next.key, p.next.value, p.next.next);
+    }
+    return result;
+}
+```
+
+- 반복자를 사용한 결과
+
+```java
+public static void main(String[] args) {
+    HashTable hashTable = new HashTable();
+    Entry entry = new Entry(new Object(), new Object(), null);
+    hashTable.buckets[0] = entry;
+    HashTable clone = hashTable.clone();
+    System.out.println(hashTable.buckets[0] == entry); // true
+    System.out.println(hashTable.buckets[0] == clone.buckets[0]); // false
+}
+```
+
+---
+
+## Clone 메서드 주의 사항
+
+- 일반적으로 상속용 클래스에 Clonealbe 인터페이스 사용을 권장하지 않는다. 해당 클래스를 확장하려는 프로그래머에게 많은 부담을 주기 때문이다.
+
+상속을 쓰기 위한 클래스 설계 방식 두 가지가 있다. 알아보자…
+
+### 1️⃣Cloneable을 직접 구현해주고 하위클래스가 구현을 안해도 되게하는 방법
+
+```java
+/**
+ * p84, p126 일반적으로 상속용 클래스에 Clonealbe 인터페이스 사용을 권장하지 않는다.
+ * 해당 클래스를 확장하려는 프로그래머에게 많은 부담을 주기 때문이다.
+ *
+ */
+public abstract class Shape implements Cloneable {
+    private int area;
+
+    public abstract int getArea();
+
+    /**
+     * p84. 부담을 덜기 위해서는 기본 clone() 구현체를 제공하여, Cloneable 구현 여부를 서브(하위) 클래스가 선택할 수 있다.
+     * @return
+     * @throws CloneNotSupportedException
+     */
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+}
+```
+
+### 2️⃣하위 클래스에서 Cloneable을 구현을 못하게 하는 방법  → final
+
+```java
+@Override
+protected final Object clone() throws CloneNotSupportedException {
+    return super.clone();
+}
+```
+
+### 3️⃣clone()을 구현할 때 고수준의 API를 사용해서 재정의한다.
+
+- put, get 등을 말한다.
+- 객체는 super.clone()이 만들고, 그 객체의 모든 필드는 고수준API를 통해서 데이터 접근을 한다.  → 단점 저수준 보다는 처리속도가 느리다.
+
+```java
+result = (HashTable)super.clone(); //객체를 만듬
+result.get(key)
+result.put(key, value)
+```
+
+---
+
+이 마지막을 이야기하기 위해서 앞에 빌드업을 했다..
+
+## 실질적으로 쓰이는 방법
+
+1. 복사 생성자
+2. 복사 팩터리
+
+이 두 가지를 사용한다.  앞서 이야기한 것들을 극복해주는 방법들이다..
+
+### 1️⃣복사 생성자
+
+```java
+public class HashSetExample {
+    public static void main(String[] args) {
+        Set<String> hashSet = new HashSet<>();
+        hashSet.add("Dante");
+        hashSet.add("DeokRin");
+        System.out.println("HashSet: " + hashSet);
+
+        Set<String> treeSet = new TreeSet<>(hashSet);
+        System.out.println("TreeSet: " + treeSet);
+
+    }
+} 
+```
+
+TreeSet 생성자로 hashset을 받는다.  엄격히 말하자면 `Collection`으로 받는다.  그리고 생성자에서 copy를 해준다.
+
+- TreeSet 생성자
+
+![Untitled 2](https://user-images.githubusercontent.com/56623911/210301917-6b137993-75eb-4a50-9bcf-d4ef81cd7dff.png)
+
+### 복사 생성자의 장점
+
+- 생성자를 쓰면 좋은점은 `명확`해진다는 것이다.
+  - clone() 메소드는 생성자를 써서 만들지 않기 때문에 어떻게 만들어지는지 불명확하기 때문에 좋지않다.
+
+- `final`을 사용할 수 있다.
+  - clone() 메소드 때문에 final을 못쓰는 것은 손실이 크다. 따라서 생성자를 쓰면 앞서 설정을 해주기 때문이다.
+
+- 해당 클래스가 구현한 ‘인터페이스’ 타입의 인스턴스를 인수로 받을 수 있다.
+  - 모든 범용 컬렉션 구현체는 Collection이나 Map 타입을 받는 생성자를 제공한다.
 
 <!-- outline-end -->
