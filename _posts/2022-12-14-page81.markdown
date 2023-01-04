@@ -42,11 +42,10 @@ date: 2022-12-14 23:30:00 +0900
 
 <!-- outline-start -->
 
-# 자바랭 다음으로 많이 쓰는 애들은 컬렉션 - Part3(Map)
+# Collection - Map
 
-# Map
+![Untitled](https://user-images.githubusercontent.com/56623911/210574385-f75977d1-075a-466a-aceb-0a561f23742b.png)
 
-![Untitled](%E1%84%8C%E1%85%A1%E1%84%87%E1%85%A1%E1%84%85%E1%85%A2%E1%86%BC%20%E1%84%83%E1%85%A1%E1%84%8B%E1%85%B3%E1%86%B7%E1%84%8B%E1%85%B3%E1%84%85%E1%85%A9%20%E1%84%86%E1%85%A1%E1%86%AD%E1%84%8B%E1%85%B5%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%8B%E1%85%A2%E1%84%83%E1%85%B3%E1%86%AF%E1%84%8B%E1%85%B3%E1%86%AB%20%E1%84%8F%E1%85%A5%E1%86%AF%E1%84%85%E1%85%A6%E1%86%A8%E1%84%89%E1%85%A7%E1%86%AB%20-%206f41973bbdeb47b6ba26fc2ad94bd43c/Untitled.png)
 
 ## Map이란 ?
 
@@ -123,6 +122,318 @@ java.lang.Object
 
 HashMap 객체를 생성할 때에는 매개 변수가 없는 생성자를 사용한다.
 
+하지만 HashMap에 담을 데이터의 개수가 많은 경우에는 초기 크기를 지정해 주는 것을 권장한다.
 
+<aside>
+💡 HashMap에 저장하는 키가 되는 객체를 직접 만들었을 때에는 유의해야 하는 것
+
+- HashMap의 키는 기본 자료형과 참조 자료형 모두 될 수 있다. → 보통 int나 long과 같은 숫자나 String 클래스를 키로 많이 사용한다.
+
+- 직접 클래스를 만들어 그 클래스를 키로 사용할 경우 Object 클래스의 hashCode() 메소드와 equals()메소드를 잘 구현해 놓아야만 한다.
+
+</aside>
+
+---
+
+## HashMap 객체에 값을 넣고 확인
+
+- 예제를 통해서  HashMap 객체에 값을 넣는 것을 알아보자.
+
+```java
+import java.util.HashMap;
+
+public class MapSample {
+    public static void main(String[] args) {
+        MapSample sample = new MapSample();
+        sample.checkHashMap();
+
+    }
+
+    public void checkHashMap() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("A", "a"); // HashMap에 "A"라는 키에 "a"는 값을 넣는다.
+        System.out.println(map.get("A"));
+        System.out.println(map.get("B"));
+
+
+    }
+}
+```
+
+- 결과
+
+```java
+a
+null
+```
+
+HashMap 객체에 put() 메소드를 사용하여 이미 존재하는 키로 값을 넣으면 어떻게 될까?
+
+```java
+map.put("A", "1");
+System.out.println(map.get("A"));
+```
+
+- 결과
+
+```java
+1
+```
+
+이미 존재하는 키로 값을 넣으면 기존의 값을 새로운 값으로 변경된다.
+
+반면에 ArrayList 클래스는 추가할 때 add() 메소드를 사용하면되고 수정할 때에는 set() 메소드를 사용한다.
+
+따라서 HashMap은 ArrayList랑 수정하는 방법이 다르다.
+
+---
+
+## HashMap 객체의 값을 확인하는 다른 방법
+
+HashMap에 어떤 키가 있는지 확인하려면 어떻게 해야할까?
+
+`KeySet()` 이라는 메소드를 사용하면 된다.
+
+값을 조회하려면 `get(key)`을 쓴다. 하지만 값을 조회하기 앞서 키를 알아야한다.  그렇기  때문에 `keySet()` 을 사용해야 한다.
+
+예제를 통해서 알아보자.
+
+```java
+public void checkKeySet(){
+    HashMap<String, String> map = new HashMap<>();
+    map.put("C", "c");
+    map.put("D", "d"); //①
+    map.put("A", "a"); //
+    Set<String> keySet = map.keySet();//②
+    for (String tempKey : keySet) { //③
+        System.out.println(tempKey + "=" + map.get(tempKey)); //④
+    }
+
+}
+```
+
+1️⃣ 데이터를 추가함
+
+2️⃣ keySet이라는  Set 타입의 변수를 선언하고, map의 keySet()  메소드 수행 결과를 할당했다.
+
+3️⃣ for루프를 이용해 결과를 출력
+
+4️⃣ tempkey라는 변수에 할당되는 값들은 HashMap에 담겨 있는 키 값이 될 것이므로, get() 메소드를 사용하여 값을 확인한다.
+
+- 결과
+
+```java
+A=a
+C=c
+D=d
+```
+
+결과를 보면 넣은 순서와 다르게 출력한다.  왜냐하면 List와 Queue는 순서를 중요시 여기지만 Set과 Map은 데이터를 추가 순서는 중요하지 않기 때문이다.
+
+더 정확히 말하면 Set은 데이터가 중복되지 않는 것이 중요하고, Map은 키가 중복되지 않는 것이 중요하다.
+
+따라서 데이터를 저장한 순서대로 결과가 출력되지는 않는다.
+
+HashMap 객체에 담겨 있는 값만 필요할 경우에는 KeySet()메소드 사용하여 키 목록을 얻어내고, 하나 하나 받아올 필요는 없다.
+
+values()라는 메소드가 있기 때문이다.
+
+```java
+public void checkValues(){
+    HashMap<String, String> map = new HashMap<>();
+    map.put("C", "c");
+    map.put("D", "d");
+    map.put("A", "a");
+
+    Collection<String> values = map.values();
+    for (String tempValue : values) {
+        System.out.println(tempValue);
+    }
+}
+```
+
+- 결과
+
+```java
+a
+c
+d
+```
+
+values() 라는 메소드를 사용하면 HashMap에 담겨있는 값의 목록을 `Collection` 타입의 목록으로 리턴해준다.
+
+```java
+import java.util.Collection;
+```
+
+선언해줘야한다.
+
+`values()` 메소드를 사용하는 것이 `keySet()` 메소드로 모든 키 값을 가져 온 후 처리하는 것보다 더 간편하다.
+
+위의 두 가지 말고도 데이터를 꺼내는 방법 외에 `entrySet()` 이라는 메소드를 사용할 수도 있다.
+
+`entrySet()` 메소드를 사용하면 Map에 선언된 `Entry`라는 타입의 객체를 리턴한다.
+
+이 `Entry`에는 단 하나의  키와 값만 저장된다.  따라서 `getKey()`와 `getValue()` 라는 메소드를 사용하면 키와 값을 간단하게 가져올 수 있다.
+
+```java
+public void checkHashMapEntry() {
+    HashMap<String, String> map = new HashMap<>();
+    map.put("A", "a");
+    map.put("B", "b");
+    map.put("C", "c");
+    map.put("D", "d");
+
+    Set<Map.Entry<String, String>> entries = map.entrySet();
+        for (Map.Entry<String, String> tempEntry : entries) {
+            System.out.println(tempEntry.getKey() + "=" + tempEntry.getValue());
+     }
+}
+```
+
+map의 entrySet()이라는 메소드를 호출하면 Set 타입으로 리턴하며, 그 Set 내에는 Entry 타입으로 데이터가 저장된다.
+
+`entrySet()` 메소드가 제대로 수행되도록 하려면 클래스 선언문 위에 두 개의 인터페이스를 import해야만 한다.
+
+```java
+import java.util.Map.Entry;
+import java.util.Set;
+```
+
+- 결과
+
+```java
+A=a
+B=b
+C=c
+D=d
+```
+
+---
+
+### Map에 key, value의 존재를 확인하는 메소드
+
+`containskey()` , `containsValue()`
+
+```java
+public void checkContains() {
+    HashMap<String, String> map = new HashMap<String,String>();
+    map.put("A", "a");
+    map.put("B", "b");
+    map.put("C", "c");
+    map.put("D", "d");
+
+    System.out.println(map.containsKey("A"));
+    System.out.println(map.containsKey("Z"));
+    System.out.println(map.containsValue("a"));
+    System.out.println(map.containsValue("z"));
+}
+```
+
+- 결과
+
+```java
+true
+false
+true
+false
+```
+
+무작정 `get()` 메소드로 해당 키나 값이 존재하는지 확인하는 것보다는 이렇게 `containsKey()`나 `containsValue()` 메소드를 사용하는 것이 효과적이다.
+
+---
+
+### Map 데이터 삭제 메소드
+
+```java
+public void checkRemove(){
+    HashMap<String, String> map = new HashMap<>();
+    map.put("A", "a");
+    System.out.println(map.size());
+
+    map.remove("A");
+    System.out.println(map.size());
+}
+```
+
+- 결과
+
+```java
+1
+0
+```
+
+`“A”` 를 키로 갖는 데이터를 삭제하려면, remove() 메소드의 매개 변수로 전달해주면 된다.
+
+---
+
+## 정렬된 키의 목록은 TreeMap
+
+HashMap 객체의 키를 정렬 하려면 Arrays라는 클래스를 사용하는 방법이 있다.
+
+하지만 불필요한 객체가 생긴다는 단점이 있다.
+
+이러한 단점을 보완하는 클래스 → `TreeMap` 클래스
+
+- key의 정렬의 기본적인 순서 (String 문자열이 저장될 때 순서)
+  - 숫자 > 알파벳 대문자 > 알파벳 소문자 > 한글
+
+- 예제
+
+```java
+public class TreeMapSample {
+    public static void main(String[] args) {
+        TreeMapSample sample = new TreeMapSample();
+        sample.checkTreeMap();
+
+    }
+
+    public void checkTreeMap() {
+
+        TreeMap<String, String> map = new TreeMap<>();
+        map.put("A", "a");
+        map.put("가", "e");
+        map.put("1", "f");
+        map.put("a", "g");
+        Set<Map.Entry<String, String>> entries = map.entrySet();
+        for (Map.Entry<String, String> tempEntry : entries) {
+            System.out.println(tempEntry.getKey() + "=" + tempEntry.getValue());
+        }
+
+        System.out.println();
+        System.out.println(map.firstEntry());
+        System.out.println();
+        System.out.println(map.firstKey());
+
+    }
+}
+```
+
+- 결과
+
+```java
+1=f
+A=a
+a=g
+가=e
+```
+
+`TreeMap` 은 키를 정렬하여 저장하고, 키의 목록을 가져와서 출력하면 정렬된 순서로 볼 수 있다.
+
+매우 많은 데이터를 TreeMap을 이용하여 보관하여 처리할 때에는 HashMap보다는 느릴 것이다.
+
+이유는 키가 정렬되기 때문이다.
+
+하지만 100건, 1000건 정도의 데이터를 처리하고, 정렬을 해야 할 필요가 있다면, HashMap 보다는 TreeMap을 사용하는 것이 더 좋다.
+
+`TreeMap`이 키를 정렬하는 것은 `SortedMap`이라는 인터페이스를 구현했기 때문이다.
+
+`SortedMap` 을 구현한 클래스들은 모두 키가 정렬되어 있어야만 한다.
+
+키가 정렬되었을 떄 장점은 가장 앞에 있는 키(firstKey()), 가장 뒤에 있는 키(lastKey()), 특정 키 뒤에 있는 키(higherKey()), 특정 키 앞에 있는 키(lowerKey()) 등을 알 수 있는 메소드를 제공해준다는 점이다.
+
+---
+
+## Map을 구현한 Properties 클래스
 
 <!-- outline-end -->
