@@ -67,7 +67,7 @@ public class Main{
 }
 ```
 
-- 한 소스파일(Dessert.java)에 두개의 클래스가 있다.
+- 한 소스파일(Utensil.java)에 두개의 클래스가 있다.
 
 ```java
 class Utensil {
@@ -79,5 +79,77 @@ class Dessert {
     static final String NAME= "cake";
 }
 ```
+
+- 한 소스파일(Dessert.java)에 두개의 클래스가 있다.
+
+```java
+class Utensil {
+    static final String NAME = "pot";
+
+}
+
+class Dessert {
+    static final String NAME= "pie";
+}
+```
+
+---
+
+### 동시에 컴파일 할 경우
+
+두개 같이 동시에 컴파일한다면 `duplicate class` 에러가 난다.
+
+![Untitled](https://user-images.githubusercontent.com/56623911/211052529-c7332bc5-c189-401f-a197-f8ad946506d9.png)
+
+---
+
+### 따로 컴파일을 할 경우
+
+- `javac Main.java Utensil.java` 할 경우
+  - 결과 : pancake
+
+![Untitled 1](https://user-images.githubusercontent.com/56623911/211052507-d78093b6-7d92-4dfc-b6bf-9ad6992dc4eb.png)
+
+- `javac Main.java Dessert.java` 할 경우
+  - 결과  : potpie
+
+![Untitled 2](https://user-images.githubusercontent.com/56623911/211052525-03c550af-8750-4dc4-8bb7-a71ce95b48f2.png)
+
+위 처럼 따로 컴파일 하는데 어느 것이 컴파일러에 먼저 순서가 가느냐에 따라서 동작이 달라진다.
+
+따라서 컴파일 시점에서 문제가 생기기 때문에 조심해야할 문제다.
+
+### 해결책
+
+- 톱레벨 클래스들(Utensil과 Dessert)을 서로 다른 소스 파일로 분리하라.
+
+- 굳이 여러 톱레벨 클래스를 한 파일에 담고 싶다면 `정적 멤버 클래스`를 사용하는 방법을 고려해라.
+  - 다른 클래스에 딸린 부차적인 클래스라면 `정적 멤버 클래스`로 만드는 방법이 더 나을 것이다.  왜냐하면 가독성이 좋고, private으로 선언하면 접근 범위도 최소로 관리할 수 있기 때문이다.
+
+- 톱레벨 클래들을 정적 멤버 클래스로 바꾼 예시
+
+```java
+public class Test{
+   public static void main(String[] args){
+       System.out.println(Utensil.NAME + Dessert.NAME);
+   }
+
+  private static class Utensil {
+      static final String NAME = "pen";
+
+  }
+
+  private static class Dessert {
+      static final String NAME= "cake";
+  }
+
+}
+```
+
+
+
+### 💡결론 : 톱레벨 클래스는 한 파일에 하나만 담으라!
+
+
 
 <!-- outline-end -->
