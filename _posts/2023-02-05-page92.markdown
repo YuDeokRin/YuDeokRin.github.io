@@ -207,4 +207,14 @@ JSP 환경을 셋팅하는데 느낀점은 정말 스프링, 스프링부트 최
 
 ![Untitled 1](https://user-images.githubusercontent.com/56623911/217821177-96bf0cee-c25e-44db-bc4b-d42c7be04e89.png)
 
+
+
+### 2023 2월 10일
+
+- 작업 현황
+  - 오류 발견 후 수정 중
+
+
+
+
 <!-- outline-end -->
