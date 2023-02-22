@@ -125,11 +125,10 @@ service.execute(() -> action());
 | --- | --- | --- |
 | 정적 | Integer::parseInt | str → Integer.parseInt(str) |
 | 한정적(인스턴스) | Instant.now()::isAfter | Instant then = Instant.now();
-t → then.isAfter(t) |
+|              |                        |t → then.isAfter(t) |
 | 비한정적(인스턴스) | String::toLowerCase | str → str.toLowerCase() |
 | 클래스 생성자 | TreeMap<K,V>::new | () → new TreeMap<K, V>() |
 | 배열 생성자 | int[]::new | len → new int[len] |
-
 ---
 
 ### ➡️인스턴스 메서드를 참조하는 두 가지 유형
