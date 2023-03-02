@@ -208,5 +208,34 @@ JdbcTemplate는 디자인 패턴 중 템플릿 메소드 패턴이 적용된 대
 따라서 위에서 자바코르를 처리해주는 역할을 JdbcTemplate가 역할을 해주고 개발자는 SQL 구문과 설정값만 관리해주면된다.
 
 
+---
+
+## ✅ 스프링 JDBC 설정
+
+먼저 Spring JDBC를 사용하려면 pom.xml 파일에 DBCP관련 <depencency> 설정을 추가해야한다. 즉 라이브러리 추가를 해줘야한다.
+
+```
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>5.3.24</version>
+        </dependency>
+
+
+
+        <!-- DBCP -->
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+```
+
+
+
+
+
 
 <!-- outline-end -->
