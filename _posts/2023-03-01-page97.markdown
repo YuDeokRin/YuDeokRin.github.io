@@ -42,7 +42,7 @@ date: 2023-03-01 23:25:00 +0900
 
 <!-- outline-start -->
 
-# 스프링 JDBC
+# Spring JDBC
 
 ## ⚓️서론
 
@@ -58,7 +58,7 @@ JDBC는 DB연동 프로그램을 개발하게 되면 데이터베이스에 비�
 
 ---
 
-## ✅JDBC
+## ✅Spring JDBC
 
 예시를 통해서 알아보자.
 
@@ -207,6 +207,7 @@ JdbcTemplate는 디자인 패턴 중 템플릿 메소드 패턴이 적용된 대
 
 따라서 위에서 자바코르를 처리해주는 역할을 JdbcTemplate가 역할을 해주고 개발자는 SQL 구문과 설정값만 관리해주면된다.
 
+<img width="821" alt="Untitled" src="https://user-images.githubusercontent.com/56623911/222725186-4844c4c6-2582-421f-a76a-6d33711cc855.png">
 
 ---
 
@@ -214,26 +215,210 @@ JdbcTemplate는 디자인 패턴 중 템플릿 메소드 패턴이 적용된 대
 
 먼저 Spring JDBC를 사용하려면 pom.xml 파일에 DBCP관련 <depencency> 설정을 추가해야한다. 즉 라이브러리 추가를 해줘야한다.
 
-```
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>5.3.24</version>
-        </dependency>
+```java
+<!-- Spring -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+           <artifactId>spring-jdbc</artifactId>
+           <version>5.3.24</version>
+    </dependency>
 
-
-
-        <!-- DBCP -->
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
-        </dependency>
-
+<!-- DBCP -->
+<dependency>
+    <groupId>commons-dbcp</groupId>
+    <artifactId>commons-dbcp</artifactId>
+    <version>1.4</version>
+</dependency>
 ```
 
+- 확인  해본다.
 
+<img width="522" alt="Untitled 1" src="https://user-images.githubusercontent.com/56623911/222725169-81bc930e-2677-41de-9884-e7ad9dbe0b7d.png">
+
+---
+
+## ✅DataSource 설정
+
+JdbcTemplate 클래스가 JDBC API를 사용하여 DB연동을 처리하려면 데이터베이스로부터 커넥션을 얻어야 한다.
+
+따라서 JdbcTemplate 객체가 사용할 DataSource를 <bean>에 등록하여 스프링 컨테이너가 생성하도록 해야 한다.
+
+```java
+<!-- DataSource 설정-->
+<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="${jdbc.driver}"/>
+    <property name="url" value="${jdbc.url"/>
+    <property name="username" value="${jdbc.username}"/>
+    <property name="password" value="${jdbc.password}"/>
+</bean>
+```
+
+DataSource 인터페이스를 구현한 클래스는 많이있다.
+
+여기서는 가장 많이 사용하는 Apache의 `BasicDataSource`를 등록했다.
+
+BasicDataSource  객체는 연결에 필요한 프로퍼티(property)들을 Setter 인잭션으로 설정해주면 된다.
+
+또한, BasicDataSource 객체가 삭제괴지 전에 연결을 해제하고자 close() 메소드를 destory-method 속성으로 지정했다.
+
+---
+
+## ✅프로퍼티 파일을 활용한 DataSource설정
+
+ProperttyPlaceholderConfigurer를 이용하면 외부의 프로퍼티 파일을 참조하여 DataSource를 설정할 수 있다.
+
+- database.properties
+
+```
+jdbc.driver=org.h2.Driver
+jdbc.url=jdbc:h2:tcp://localhost/~/test
+jdbc.username=sa
+jdbc.password=
+```
+
+- ApplicationContext.xml
+
+```xml
+<context:property-placeholder location="classpath:config/database.properties" />
+
+<!-- DataSource 설정-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+```
+
+프로퍼티 파일을 사용하려면 `<context:property-placeholder>`엘리먼트로 프로퍼티 파일의 위치를 등록해야 한다.
+
+- 프로퍼티 이름을 지정 구문
+  - 프로퍼티 값으로 치환되어 실행된다.
+
+```xml
+${}
+```
+
+---
+
+## ✅JdbcTemplate 안에 메소드들
+
+### ➡️update() 메소드
+
+- INSERT, UPDATE, DELETE 구문을 처리하려면 JdbcTemplate 클래스의 update() 메소드를 사용한다.
+- update() 메소드의 사용법은 `“?”`에 값을 설정하는 방식에 따라 크게 두 가지 형태가 있다.
+
+1. SQL구문에 설정된 “?” 수만큼 값들을 차례대로 나열하는 방식
+
+- 메서드
+
+| 메소드 | int update(String sql, Object… args) |
+| --- | --- |
+
+- 사용한 예) 글 수정
+
+```java
+public void updateBoard(BoardVO vo){
+    String BOARD_UPDATE = "update board set title=?, content=? where seq=?";
+    int cnt = jdbcTemplate.update(BOARD_UPDATE, vo.getTitle(), vo.getContent(), vo.getSeq());
+
+    System.out.println(cnt + "건 데이터 수정");
+}
+```
+
+1. Object 배열 객체에 SQL 구문에 설정된 `“?"`수만큼의 값들을 세팅하여 배열 객체를 두 번째 인자로 전달하는 방식
+
+- 메소드
+
+| 메소드 | int update(String sql, Obejct[] args) |
+| --- | --- |
+
+- 사용한 예) 글 수정
+
+```java
+public void updateBoard(BoardVO vo){
+    String BOARD_UPDATE = "update board set title=?, content=? where seq=?";
+    Object[] args = {vo.getTitle(), vo.getContent(), vo.getSeq());
+    int cnt = jdbcTemplate.update(BOARD_UPDATE,args);
+
+
+    System.out.println(cnt + "건 데이터 수정");
+}
+```
+
+### ➡️queryForInt() 메소드
+
+SELECT 구문으로 검색된 정숫값을 리턴으려면 `queryForInt()` 메소드를 사용한다. 매개변수의 의미는 앞에서 살펴본 update()메소드와 같다.
+
+- 메소드
+
+| 메소드 | int queryForInt(String sql) |
+| --- | --- |
+|  | int queryForInt(String sql, Object… args) |
+|  | int queryForInt(String sql, Object[] args) |
+
+- 사용한 예) 글 수정
+
+```java
+public void updateBoard(BoardVO vo){
+    String BOARD_TOT_COUNT = "select count(*) from board";
+    int count = jdbcTemplate.queryForInt(BOARD_TOT_COUNT);
+
+    System.out.println("전체 게시글 수 : " + count + "건");
+}
+```
+
+### ➡️queryForObject() 메소드
+
+queryForObject() 메소드는 SELECT 구문의 실행 결과를 특정 자바 객체(Value Object)로 매핑하여 리턴받을 떄 사용한다.
+
+queryForObject() 메소드는 검색결과가 없거나 검색 결과가 두 개 이상이면 예외(`IncorretResultSizeDataAccessException`)를 발생시킨다.
+
+- 메소드
+
+| 메소드 | Object queryForObject(String sql) |
+| --- | --- |
+|  | Object queryForObject(String sql, RowMapper<T> rowMapper) |
+|  | Object queryForObject(String sql, Object[] args, RowMapper<T> rowMapper) |
+
+- 사용 예) 글 상세 조회
+
+```java
+public BoardVO getBoard(BoardVO vo){
+    String BOARD_GET = "select * from board where seq=?";
+    Object[] args = {vo.getSeq};
+    return jdbcTemplate.queryForObject(BOARD_GET, args, new BoardRowMapper());
+
+}
+
+```
+
+### ➡️query() 메소드
+
+queryForObject()가 SELECT문으로 객체 하나를 검색할 때 사용하는 메소드라면, query() 메소드는 SELECT 문의 실행 결과가 목록일 때 사용한다.
+
+사용법은 queryForObject()메소드와 같다.
+
+- 메소드
+
+| 메소드 | List query(String sql) |
+| --- | --- |
+|  | List query(String sql, RowMapper<T> rowMapper) |
+|  | List query(String sql, Object[] args, RowMapper<T> rowMapper) |
+
+- 사용 예) 글 목록 조회
+
+```java
+public List<BoardVo> getBoardList(BoardVO vo){
+    String BOARD_LIST = "select * from board order by seq desc";
+    return jdbcTemplate.query(BOARD_LIST, new BoardRowMapper());
+
+}
+```
+
+`query()` 메소드가 실행되면 여러 건의 ROW 정보가 검색되며, 검색된 데이터 ROW 수만큼 RowMapper 객체의 mapRow() 메소드가 실행된다.  그리고 이렇게 ROW 정보가 매핑된 VO객체 여러 개가 List 컬렉션에 저장되어 리턴된다.
+
+이상으로 Spring JdbcTemplate을 마치겠습니다.
 
 
 
