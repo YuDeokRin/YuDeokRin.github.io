@@ -55,18 +55,79 @@ request, response, out 내부 객체는 jsp 페이지 입출력과 관련한 내
   내부 객체란 jsp페이지를 작성할 때 특별한 기능을 제공하는 JSP 컨테이너가 제공하는 특별한 객체(변수)를 말한다.
 
 
-### ➡️request
+## ➡️request
 
 request 객체는 브라우저에서 jsp 페이지로 전달되는 데이터의 묶음으로 `HTTP 헤더`와 `HTTP 바디`로 구성되어 있다.
 
 JSP 컨테이너는 요청된 HTTP 메세지를통해 HTTPServletRequest 객체 타입의 request 객체명으로 사용한다 .
 
-| 메소드 | 설명  |
-| --- | --- |
-| String getParameter(name) | name에 할당된 값을 반환하며 지정된 파라미터 값이 없으면 null 값을 반환한다. |
-| String[] getParameterValue(name) | name의 모든 값을 String 배열로 반환한다. |
-| Enumeration getParameterNames() | 요청에 사용된 모든 파라미터 이름을 java.util.Enumeration타입으로 반환한다. |
-| void setCharacterEncoding(env) | post방식으로 요청된 문자열의 character encoding을 설정합니다. |
+- request 내부 객체의 요청 메소드
+
+| 반환 타입 | 메소드 | 설명  |
+| --- | --- | --- |
+| String | String getParameter(name) | name에 할당된 값을 반환하며 지정된 파라미터 값이 없으면 null 값을 반환한다. |
+| String[]  | String[] getParameterValue(name) | name의 모든 값을 String 배열로 반환한다. |
+| Enumeration  | Enumeration getParameterNames() | 요청에 사용된 모든 파라미터 이름을 java.util.Enumeration타입으로 반환한다. |
+| void | void setCharacterEncoding(env) | post방식으로 요청된 문자열의 character encoding을 설정합니다. |
+
+- 웹 브라우저와 웹서버의 정보를 가져오는 메소드
+
+| 반환 타입 | 메소드 | 설명 |
+| --- | --- | --- |
+| String | getMethod() | 요청에 사용된 요청 방식(GET, POST, PUT)을 반환한다. |
+| String | getRequestURI() | 요청에 사용된 URL로부터 URI을 반환한다. |
+| String  | getQueryString() | 요청에 사용된 Query문장을 반환한다. |
+| String | getRemoteHost() | 클라이언트의 호스트 이름을 반환한다. |
+| String | getRemoteAddr() | 클라이언트의 주소를 반환한다. |
+| String | getProtocol() | 사용 중인 프로토콜을 반환 |
+| String | getServerName() | 서버의 도메인 이름을 반환한다. |
+| int  | getServerPort() | 서버의 주소를 반환합니다. |
+| String | getHeader(name) | HTTP 요청 헤더에 지정된 name의 값을 반환한다. |
+
+---
+
+## ➡️response
+
+response 객체는 요청을 시도한 클라이언트로 전송할 응답을 나타내는 데이터의 묶음이다.
+
+- response 내부 객체의 메소드
+
+| 반환 타입 | 메소드 | 설명 |
+| --- | --- | --- |
+| void | setHeader(name, value) | 응답에 포함될 Header를 설정한다. |
+| void | setContentType(type) | 출력되는 페이지의 contentType을 설정한다. |
+| String | getCharacterEncoding() | 요청에 사용된 Query 문장을 반환한다. |
+| void  | sendRedirect(url) | 지정된 URL로 요청을 재전송한다. |
+
+---
+
+## ➡️out
+
+out객체는 jsp 페이지의 결과를 클라이언트에 전송해 주는 출력 스트림을 나타낸다.
+
+out 객체는..
+
+java.io.Writer class → javax.servlet.jsp.JspWriter 클래스 타입의 객체이다.
+
+- 사용법
+
+```java
+<%
+    String a = "hello world";
+    out.println(a);
+%>
+```
+
+| 반환 타입 | 메소드 | 설명 |
+| --- | --- | --- |
+| boolean | isAutoFlush() | 출력 버퍼가 다 채워져 자동으로 flush 했을 경우는 true 반환, 그렇지 않은 경우는 false를 반환합니다. |
+| int | getBufferSize() | 출력 버퍼의 전체 크기를 바이트 단위로 반환한다. |
+| int | getRemaining() | 출력 버퍼의 남은 양을 바이트 단위로 반환한다. |
+| void | clearBuffer() | 현재 출력 버퍼에 저장된 내용을 취소한다. |
+| String | println(String) | String을 브라우저에 출력한다. |
+| void | flush() | 현재 출력 버퍼의 내용을 flush하여 클라이언트로 전송한다. |
+| void | close() | 출력 버퍼의 내용을 flush하고 스트림을 닫습니다. |
+
 
 
 <!-- outline-end -->
