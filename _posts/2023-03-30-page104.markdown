@@ -9,7 +9,7 @@ title: Session에 대해서
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible
-tags: [Http]
+tags: [Http, Session]
 # thumbnail image for post
 img: ":session.jpg"
 # disable comments on this page
