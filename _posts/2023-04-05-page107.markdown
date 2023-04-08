@@ -16,11 +16,11 @@ img: ":session.jpg"
 comments_disable: true
 
 # publish date
-date: 2023-04-05 23:42:00 +0900
+date: 2023-04-08 14:45:00 +0900
 
 # seo
 # if not specified, date will be used.
-#meta_modify_date: 2023-04-05 23:42:00 +0900
+#meta_modify_date: 2023-04-08 14:45:00 +0900
 # check the meta_common_description in _data/lang/[language].yml
 #meta_description: ""
 
@@ -41,6 +41,137 @@ date: 2023-04-05 23:42:00 +0900
 {%- include util/auto-content-generator.liquid -%}
 
 <!-- outline-start -->
+
+# 세션 직접 만들기
+
+## ⚓️서론
+
+세션을 직접 만들면서 세션에 대한 동작과 간단한 원리를 이해하고 넘어가자.
+
+기존에 쿠키와 세션는 간단하게 개념을 익혔다.
+
+- 쿠키는 클라이언트(브라우저)에서 저장하여 동일한 서버 재요청 시 저장된 데이터를 함께 전송한다.
+- 세션은 서버측에서 세션을 만들어 저장하여 동일한 요청 시 저장된 데이터를 함께 클라이언트(브라우저)에 전송한다.
+
+간단히 알고 있었다.
+
+이번 계기로 세션에 대해서 더 자세히 알아보자.
+
+---
+
+- loginController
+
+```java
+public String homeLoginV2(HttpServletRequest request, Model model) {
+    Member member = (Member) sessionManager.getSession(request);
+
+    //세션 관리자에 저장된 회원 정보 조회
+    if (member == null) {
+        return "home";
+}
+
+    //로그인
+    model.addAttribute("member", member);
+    return "loginHome";
+}
+```
+
+`SessionManager` 를 만들어서 세션을 생성, 조회, 만료 할 수 있게 만들어 준다.
+
+```java
+/**
+ * 세션 관리
+ */
+@Component
+public class SessionManager {
+    public static final String SESSION_COOKIE_NAME = "mySessionId";
+
+    private Map<String, Object> sessionStore = new ConcurrentHashMap<>();
+
+/**
+* 세션 생성
+*/
+public void createSession(Object value, HttpServletResponse response) {
+
+    //세션 id를 생성하고, 값을 세션에 저장
+    String sessionId = UUID.randomUUID().toString(); // UUID 만들기
+    sessionStore.put(sessionId, value);
+
+    //쿠키 생성
+    Cookie mySessionCookie = new Cookie(SESSION_COOKIE_NAME, sessionId); // Cookie(String name, String value)
+    response.addCookie(mySessionCookie); // response에 쿠키를 넣어준다.
+}
+
+/**
+* 세션 조회
+*/
+public Object getSession(HttpServletRequest request) {
+    /*
+    Cookie[] cookies = request.getCookies();
+    if (cookies == null) {
+        return null;
+    }
+
+    for (Cookie cookie : cookies) {
+        if (cookie.getName().equals(SESSION_COOKIE_NAME)) {
+             return sessionStore.get(cookie.getValue());
+    }
+}
+    return null;
+    */
+
+        // 위코드를 리펙토링한 코드
+    Cookie sessionCookie = findCookie(request, SESSION_COOKIE_NAME);
+        if (sessionCookie == null) {
+            return null;
+        }
+        return sessionStore.get(sessionCookie.getValue());
+    }
+
+/**
+* 세션 만료
+*/
+public void expire(HttpServletRequest request) {
+    Cookie sessionCookie = findCookie(request, SESSION_COOKIE_NAME);
+        if (sessionCookie != null) {
+            sessionStore.remove(sessionCookie.getValue());
+        }
+    }
+
+public Cookie findCookie(HttpServletRequest request, String cookieName) {
+    if (request.getCookies() == null) {
+        return null;
+    }
+
+    return Arrays.stream(request.getCookies()) // 배열을 스트림으로 바꿔준다.
+            .filter(cookie -> cookie.getName().equals(cookieName)) //  Loop를 돌리면서 쿠키가 같은지 확인
+            .findAny()
+            .orElse(null);
+    }
+}
+```
+
+- HomeContoller
+
+```java
+@GetMapping("/")
+public String homeLoginV2(HttpServletRequest request, Model model) {
+
+    //세션 관리자에 저장된 회원 정보 조회
+    Member member = (Member) sessionManager.getSession(request);
+
+    //로그인
+    if (member == null) {
+        return "home";
+    }
+
+    model.addAttribute("member", member);
+    return "loginHome";
+}
+```
+
+- 결과
+  <img width="1114" alt="Untitled" src="https://user-images.githubusercontent.com/56623911/230705518-31107875-2008-4680-8ae4-4801f7299fdc.png">
 
 
 <!-- outline-end -->
