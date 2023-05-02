@@ -9,9 +9,9 @@ title: 서블릿 필터를 이용해 로그 처리
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible
-tags: []
+tags: [servlet, filter]
 # thumbnail image for post
-img: ":HeadFirst.jpg"
+img: ":servlet.jpg"
 # disable comments on this page
 comments_disable: true
 
