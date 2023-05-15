@@ -9,7 +9,7 @@ title: MyBatis의 '${}'와 '#{}'
 # multiple category is not supported
 category: auto generated
 # multiple tag entries are possible
-tags: [Mybatis, XML]
+tags: [Mybatis, SQLMapper]
 # thumbnail image for post
 img: ":mybatis.jpg"
 # disable comments on this page
