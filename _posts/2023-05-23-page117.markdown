@@ -44,7 +44,7 @@ date: 2023-05-23 23:25:00 +0900
 
 # Mapper XML 파일
 
-## 👉서론
+## ✅서론
 
 마이바티스의 가장 큰 장점은 매핑구문이다.
 
@@ -54,35 +54,36 @@ date: 2023-05-23 23:25:00 +0900
 
 ---
 
-## 👉select
+## ✅select
 
 - select 구문은 데이터베이스에서 데이터를 가져온다.
 - 보통 데이터를 조회하는 기능에 많이 쓰인다 → 마이바티스는 데이터를 조회하고 그 결과를 매핑하는데 집중하고 있다.
 
-```xml
+```
 <select id="selectPerson" parameterType="int" resultType="hashmap">
 	  SELECT * FROM PERSON WHERE ID = #{id}
 </select>
+
 ```
 
 위 코드를 설명하면
 
 - `id = "selectPerson"`: 구문의 이름
-- `parameterType = “int”` :  int 타입의 파라미터를 가짐.
+- `parameterType = “int”` : int 타입의 파라미터를 가짐.
 - `resultType = “HashMap”` : HashMap에 저장된다.
-
 - `#{id}` : 이 표기법은 마이바티스에게 PreparedStatement 파라미터를 만들도록 지시한다.
   - 반면에 JDBC에서는 PreparedStatement에는 `“?”` 형태로 파라미터가 전달되었다.
 
-```sql
+```
 String selectPerson = "SELECT * FROM PERSON WHERE ID=?";
 PreparedStatement ps = conn.prepareStatement(selectPerson);
 ps.setInt(1,id);
+
 ```
 
-### select 엘리먼트 속성들
+### ➡️select 엘리먼트 속성들
 
-```xml
+```
 <select
   id="selectPerson"
   parameterType="int"
@@ -95,6 +96,7 @@ ps.setInt(1,id);
   fetchSize="256"
   statementType="PREPARED"
   resultSetType="FORWARD_ONLY">
+
 ```
 
 | 속성 | 설명 |
@@ -108,13 +110,12 @@ ps.setInt(1,id);
 | timeout | 예외가 던져지기 전에 데이터베이스의 요청 결과를 기다리는 최대시간을 설정한다. 디폴트는 셋팅하지 않는 것이고 드라이버에 따라 다소 지원이 되지 않을 수 있다. |
 | fetchSize | 지정된 수만큼의 결과를 리턴하도록 하는 드라이버 힌트 형태의 값이다. 디폴트는 셋팅하지 않는 것이고 드라이버에 따라 다소 지원되지 않을 수 있다. |
 | statementType | STATEMENT, PREPARED 또는 CALLABLE 중 하나를 선택할 수 있다. 마이바티스에게 Statement, PreparedStatement 또는 CallableStatement를 사용하게 한다. 디폴트는 PREPARED이다. |
-| statementType | FORWARD_ONLY | SCROLL_SENSITIVE | SCROLL_INSENSITIVE | DEFAULT(same as unset)중 하나를 선택할 수 있다. 디폴트는 셋팅하지 않는 것이고 드라이버에 다라 다소 지원되지 않을 수 있다. |
+| statementType | FORWARD_ONLY, SCROLL_SENSITIVE, SCROLL_INSENSITIVE, DEFAULT(same as unset)중 하나를 선택할 수 있다. 디폴트는 셋팅하지 않는 것이고 드라이버에 다라 다소 지원되지 않을 수 있다. |
 | databaseId | 설정된 databaseIdProvider가 있는 경우 마이바티스는 databaseId 속성이 없는 모든 구문을 로드하거나 일치하는 databaseId와 함께 로드될 것이다. 같은 구문에서 databaseId가 있거나 없는 경우 모두 있다면 뒤에 나온 것이 무시된다. |
 | resultOrdered | 이 설정은 내포된 결과를 조회하는 구문에서만 적용이 가능하다. true로 설정하면 내포된 결과를 가져오거나 새로운 주요 결과 레코드를 리턴할때 함께 가져오도록 한다. 이전의 결과 레코드에 대한 참조는 더 이상 발생하지 않는다. 이 설정은 내포된 결과를 처리할때 조금 더 많은 메모리를 채운다. 디폴트값은 false 이다. |
 | resultSets | 이 구문을 사용하면 쿼리의 각 결과 세트를 별도의 개체에 매핑할 수있다. |
-| affectData | 트랜잭션이 적절하게 제어되도록 데이터를 반환하는 INSERT, UPDATE 또는 DELETE 문을 작성할 때 이를 true로 설정합니다. 또한 트랜잭션 제어 방법을 참조하십시오 . 기본값: fals |
+| affectData | 트랜잭션이 적절하게 제어되도록 데이터를 반환하는 INSERT, UPDATE 또는 DELETE 문을 작성할 때 이를 true로 설정합니다. 또한 트랜잭션 제어 방법을 참조하십시오 . 기본값: fals |## 🔗참조
 
-## 🔗참조
 
 [MyBatis – 마이바티스 3 | 매퍼 XML 파일](https://mybatis.org/mybatis-3/ko/sqlmap-xml.html#mapper-xml-파일)
 
