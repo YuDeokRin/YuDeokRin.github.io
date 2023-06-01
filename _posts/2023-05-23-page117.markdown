@@ -116,6 +116,9 @@ ps.setInt(1,id);
 | resultSets | 이 구문을 사용하면 쿼리의 각 결과 세트를 별도의 개체에 매핑할 수있다. |
 | affectData | 트랜잭션이 적절하게 제어되도록 데이터를 반환하는 INSERT, UPDATE 또는 DELETE 문을 작성할 때 이를 true로 설정합니다. 또한 트랜잭션 제어 방법을 참조하십시오 . 기본값: fals |## 🔗참조
 
+---
+
+## 🔗참조
 
 [MyBatis – 마이바티스 3 | 매퍼 XML 파일](https://mybatis.org/mybatis-3/ko/sqlmap-xml.html#mapper-xml-파일)
 
