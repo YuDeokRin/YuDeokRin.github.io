@@ -41,7 +41,6 @@ date: 2023-06-01 23:15:00 +0900
 {%- include util/auto-content-generator.liquid -%}
 
 <!-- outline-start -->
-
 # 날짜 관련 클래스들
 
 ## ⚓️서론
@@ -70,32 +69,524 @@ Java 8 이전에 사용했던 것들은 문제가 많았다.
 2. 불변 객체가 아니여서 지속적으로 값이 변경이 가능했다.
 3. 하나의 클래스에 생성해 놓은 이들 클래스는 여러 쓰레드에서 접근할 때 이상한 값들을 리턴할 수도 있었다.
 
-참고로 기존의 연도는 1900년부터 시작하도록 되어 있고, 달은 1부터, 일은 0부터 시작한다. 따라서 1900년 1월 1일은 1900, 1, 0을 매개 변수로 넘겨줘야만 했다.
+참고로 기존의 연도는 1900년부터 시작하도록 되어 있고, 달은 1부터, 일은 0부터 시작한다. 따라서 1900년 1월 1일은 1900, 1, 0을 매개 변수로 넘겨줘야만 했다.  앞서말한 방식은 C언어에서 사용하던 방식을 그대로 가져왔다.
+
+- 참고.  컴퓨터 시계에 관하여
+
+  1970년 1월 1일 00:00:00 GMT 시간을 `epoch` 이라고한다.  이 날은 유닉스가 처음 시간을 재기 시작한 날이라는 말이 있다.
+
+
+### ➡️java.util.Date에 단점에 대해서
+
+우선 Java 8에 도입된 Date를 배우기 앞서 그 전에는 무엇을 쓰고 왜 문제인지 알아보자.
+
+1️⃣java.util.Date는 mutable하지않고
+
+- 예시) Date
+
+```java
+public static void main(String[] args) {
+        Date date = new Date();
+        long time = date.getTime();
+        System.out.println(date);
+        System.out.println(time);
+    }
+}
+```
+
+- 결과
+  1. date는 날짜에 대해서 반환 했다.
+  2. time은 GMT 1970년 1월 1일 00:00:00 이후의 밀리초 수를 반환 했다. → 기계형 시계
+
+```java
+1. Tue Jun 06 14:20:32 KST 2023
+2. 1686028832024
+```
+
+그런데.. date라는 것은 상수가 아니기 때문에 값이 바뀔 수 있다. 치명적인 단점이다.
+
+- setTime 예시)
+
+```java
+public static void main(String[] args) throws InterruptedException {
+        Date date = new Date();
+        long time = date.getTime();
+        System.out.println("1. " + date);
+        System.out.println("2. " + time);
+
+        Thread.sleep(1000 * 3);
+        Date after3Seconds = new Date();
+        System.out.println(after3Seconds);
+
+        after3Seconds.setTime(time);
+        System.out.println(after3Seconds);
+    }
+}
+```
+
+- 결과
+
+```java
+Tue Jun 06 14:26:09 KST 2023
+Tue Jun 06 14:26:06 KST 2023
+```
+
+위와 같은 상황에서 Date를 `mutable`하다라고 말한다.  `mutable`하기 때문에 발생하는 문제점이 스레드에 안전하지 못하다는 것으로 이어진다.
+
+스레드가 안전하지 못하면 멀티스레딩 환경에서 치명적으로 작용한다. (이것은 나중에 다뤄보자. )
+
+2️⃣타입 안정성이 없으며, 월(month)이 0부터 시작한다 (C언어에서 시작했기 때문)
+
+- 예시)
+
+```java
+public static void main(String[] args) throws InterruptedException {
+    Calendar birthDay = new GregorianCalendar(1993, 2, 10);
+}
+```
+
+위 코드에서 month는 2로 하게된다면 `Should be one of: Calendar.JANUARY, Calendar.FEBRUARY ...`이런 식으로 바꾸라고 말한다.
+
+- Calendar 내부를 살펴 보면… → 0으로 시작해서 헷갈린다.
+  - JANUARY가 0부터 시작이라 너무 헷갈린다.
+
+<img width="810" alt="Untitled" src="https://github.com/YuDeokRin/TDD/assets/56623911/bc6663a1-cbc2-466a-a11a-0f845f847e00">
+
+
+- GregorianCalendar 내부를 살펴 보면… → 타입 안정성 없다…
+  - 다 int로 받는다. 그렇다는 말은 아무 값이나 들어올 수 있다는 뜻이다…
+
+<img width="1425" alt="Untitled 1" src="https://github.com/YuDeokRin/TDD/assets/56623911/ddab2603-4030-4ff0-a24d-e8cb1bd9877e">
+
+<img width="897" alt="Untitled 2" src="https://github.com/YuDeokRin/TDD/assets/56623911/b19505d5-2680-4e1b-8eac-0d2b7721c9b2">
+
+그렇다면 타입 안정성있게 바꾸려면 ?
+
+<img width="1395" alt="Untitled 3" src="https://github.com/YuDeokRin/TDD/assets/56623911/bedbce2c-e1fb-4ab1-989c-515f72f1ad9b">
+
+month를 month라는 enum타입만 받게 하는것이다. 그럼 해당 타입만 받을 수 있으니깐 타입의 안정성이 확보된다.
 
 ### ➡️Java 8 이전과 이후의 차이점
 
 | 내용 | 버젼 | 패키지 | 설명 |
 | --- | --- | --- | --- |
-| 값 유지  | Java 8 이전 | java.util.Date, java.util.Calendar | Date 클래스는 날짜 계산을 할 수 없다. Calendar 클래스는 불변 객체가 아니므로 연산시 객체 자체가 변경되었다. |
-|  | Java 8  | java.time.ZonedDateTime, java.time.LocalDate 등  | ZonedDateTime과 LocalDate 등은 불변 객체이다. 모든 클래스가 연산용의 메소드를 갖고 있으며, 연산시 새로운 불변 객체를 돌려준다. 또한 쓰레드에 안전하다. |
-| 변경 | Java 8 이전 | java.text.SimpleDateFomat | SimpleDateFomat는 쓰레드 안전하지도 않고 느리다. |
+| 값 유지  | Java 8 이전           | java.util.Date, java.util.Calendar | Date 클래스는 날짜 계산을 할 수 없다. Calendar 클래스는 불변 객체가 아니므로 연산시 객체 자체가 변경되었다. |
+|  | Java 8      | java.time.ZonedDateTime, java.time.LocalDate 등  | ZonedDateTime과 LocalDate 등은 불변 객체이다. 모든 클래스가 연산용의 메소드를 갖고 있으며, 연산시 새로운 불변 객체를 돌려준다. 또한 쓰레드에 안전하다. |
+| 변경 | Java 8 이전     | java.text.SimpleDateFomat | SimpleDateFomat는 쓰레드 안전하지도 않고 느리다. |
 |  | Java 8  | java.time.format.DateTimeFormatter | DateTimeFormatter는 쓰레드가 안전하고 빠르다. |
-| 시간대 | Java 8 이전 | java.util.TimeZone | “Asia/Seoul”이나 “+09 : 00” 같은 정보를 가진다. |
-|  | Java 8  | java.time.ZoneId, java.time.ZoneOffset | ZoneId는 “Asia/Seoul”라는 정보를 갖고 있고, ZoneOffset는 “+09 : 00”라는 정보를 가지고 있다. |
-| 속성 관련  | 예전 버전 | java.util.Calendar | Calendar.YEAR, Calendar.MONTH, Calendar.DATE(또는 Calendar.DAY_OF_MONTH) 등 이들은 정수(int)이다. |
-|  | Java 8 | java.time.temporal.ChonoField(java.time.temporal.TemporalField) | ChonoField.YEAR, ChonoField.MONTH_OF_YEAR, ChonoField.DAY_OF_MONTH 등이 enum 타입이다. |
+| 시간대 | Java 8 이전      | java.util.TimeZone | “Asia/Seoul”이나 “+09 : 00” 같은 정보를 가진다. |
+|  | Java 8        | java.time.ZoneId, java.time.ZoneOffset | ZoneId는 “Asia/Seoul”라는 정보를 갖고 있고, ZoneOffset는 “+09 : 00”라는 정보를 가지고 있다. |
+| 속성 관련  | 예전 버전       | java.util.Calendar | Calendar.YEAR, Calendar.MONTH, Calendar.DATE(또는 Calendar.DAY_OF_MONTH) 등 이들은 정수(int)이다. |
+|  | Java 8        | java.time.temporal.ChonoField(java.time.temporal.TemporalField) | ChonoField.YEAR, ChonoField.MONTH_OF_YEAR, ChonoField.DAY_OF_MONTH 등이 enum 타입이다. |
 |  |  | java.time.temporal.ChonoUnit | ChonoUnit.YEAR(연수), ChonoUnit.MONTHS(개월), ChonoUnit.DAYS(일) 등이 enum타입이다. |
 
 자료 출처 : [http://www.ne.jp/asahi/hishidama/home/tech/java/datetime.html](http://www.ne.jp/asahi/hishidama/home/tech/java/datetime.html)
 
 ### ➡️시간을 나타내는 클래스
 
-`Local`, `Offset`, `Zoned` 3가지 종류가 존재한다.
+enum들 추가되었다.
 
-- Local : 시간대가 없는 시간. 예를 들어 "1시”는 어느 지역의 1시인지 구분되지 않는다.
-- Offset : UTC(그리니치 시간대)와의 오프셋(차이)을 가지는 시간 한국은 “+09:00”
-- Zoned : 시간대(”한국 시간과 같은 정보)를 갖는 시간, 한국은 경우는 “Asia/Seoul”
--
+- 시간을 나타내는 클래스 :  `local`, `Offset`, `Zoned` 3가지 종류가 존재한다.
+  - Local : 시간대가 없는 시간. 예를 들어 "1시”는 어느 지역의 1시인지 구분되지 않는다.
+  - Offset : UTC(그리니치 시간대)와의 오프셋(차이)을 가지는 시간 한국은 “+09:00”
+  - Zoned : 시간대(”한국 시간과 같은 정보)를 갖는 시간, 한국은 경우는 “Asia/Seoul”
 
+- Tip. Local 과 Locale
+
+  Local과 Locale은 다르다. Local 같은 경우 시간을 이갸기하는 것이고, Locale 같은 경우 지역을 의미하는 클래스이다.
+
+
+---
+
+## ✅DayOfWeek 및 Month enum
+
+### ➡️DayOfWeek
+
+DayOfWeek은 요일을 설명하는 7개의 상수가 있다. 정수의 범위값은 util.date와 다르게 1부터 시작한다.(1(월요일) ~ 7(일요일))
+
+- 일요일에서 +3 했을 경우 어떤 요일인가?  → 수요일
+
+```java
+System.out.printf("%s%n", DayOfWeek.SUNDAY.plus(3)); // -> 결과값 : WEDNESDAY
+```
+
+- DayOfWeek 클래스안에 getDisplayName()이라는 메소드가 해당 요일을 출력할 수 있게 해준다.
+
+```java
+DayOfWeek dow = DayOfWeek.SUNDAY;
+Locale locale = Locale.getDefault();
+System.out.println(dow.getDisplayName(TextStyle.FULL, locale)); // 일요일
+System.out.println(dow.getDisplayName(TextStyle.NARROW, locale)); // 일
+System.out.println(dow.getDisplayName(TextStyle.SHORT, locale)); // 일
+```
+
+### ➡️Month
+
+- Month enum에는 JANUARY에서 DECEMBER까지 12개월에 대한 상수가 있다.
+- Month enum에는 각 상수의 정수 값 1(1월)에서 12(12월)까지의 ISO 범위에 해당한다.
+
+- Month에는 maxLength 메서드를 사용하여 2월의 가능한 최대 일 수를 반환받는다.
+
+```java
+System.out.printf("%d%n", Month.FEBRUARY.maxLength()); // 결과 : 29
+```
+
+- Month에도 DayOfWeek와 마찬가지로 getDisplayName() 메소드가 있다.
+
+```java
+Month month = Month.AUGUST;
+Locale locale = Locale.getDefault();
+System.out.println(month.getDisplayName(TextStyle.FULL, locale)); //8월
+System.out.println(month.getDisplayName(TextStyle.NARROW, locale)); //8월
+System.out.println(month.getDisplayName(TextStyle.SHORT, locale)); //8월
+```
+
+---
+
+## ✅Date Classes
+
+Date-Time API는 시간이나 시간대에 관계없이 날짜 정보만 다루는 네 가지클래스를 제공한다.
+
+- LocalDate
+- YearMonth
+- MonthDay
+- Year
+
+### ➡️LocalDate
+
+LocalDate는 년-월-일을 나타내며 시간 없이 날짜만 나타내는 유형
+
+- 예제) of와 with를 사용해서 LocalDate 인스턴스 생성
+
+```java
+LocalDate date = LocalDate.of(2023, Month.JUNE, 6); // 결과 : 2023-06-06
+LocalDate nextWed = date.with(TemporalAdjusters.next(DayOfWeek.WEDNESDAY)); // 2023-06-07
+```
+
+LocalDate 클래스는 지정된 날짜에 대한 정보를 반환하는 getter 메소드가 존재한다.
+
+- getDayOfWeek()
+
+```java
+DayOfWeek dotw = LocalDate.of(2023,Month.JUNE, 9).getDayOfWeek(); // FRIDAY
+```
+
+- TemporalAdjuster를 사용하여 특정 날짜 이후의 제일 빨리 맞이하는 수요일을 검색합니다.
+
+```java
+LocalDate date = LocalDate.of(2023, Month.JUNE, 9);
+TemporalAdjuster adj = TemporalAdjusters.next(DayOfWeek.WEDNESDAY);
+LocalDate nextWed = date.with(adj);
+System.out.printf("%s의 경우 다음 수요일은 %s.%n", date, nextWed);
+```
+
+- 결과
+
+```java
+2023-06-09의 경우 다음 수요일은 2023-06-14.
+```
+
+- 참고
+  - [Oracle LocalDate](https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html)
+  - [Tempoarl Adjuster](https://docs.oracle.com/javase/tutorial/datetime/iso/adjusters.html)
+
+### ➡️YearMonth
+
+YearMonth 클래스는 특정 연도의 월을 나타낸다.
+
+다음 예제에서는 `YearMonth.lengthOfMonth()` 메서드를 사용하여 여러 연도 및 월 조합의 일 수를 결정합니다.
+
+```java
+YearMonth date = YearMonth.now();
+System.out.printf("%s : %d%n", date, date.lengthOfMonth());
+
+YearMonth date2 = YearMonth.of(2023, Month.JULY);
+System.out.printf("%s : %d%n", date2, date2.lengthOfMonth());
+
+YearMonth date3 = YearMonth.of(2012, Month.FEBRUARY);
+System.out.printf("%s : %d%n", date3, date3.lengthOfMonth());
+```
+
+- 결과 : lengthOfMonth() 메서드는 그 달의 길이를 반환해준다.
+
+```java
+2023-06 : 30
+2023-07 : 31
+2012-02 : 29
+```
+
+### ➡️MonthDay
+
+MonthDay 클래스는 특정 달의 날짜를 나타냅니다.
+
+- MonthDay.isValidYear() 메서드를 사용하여 2월 29일이 2023년과 2024년에 유효한지 확인한다.
+  - true : 윤년이다.
+  - false : 윤년이 아니다.
+
+```java
+MonthDay date = MonthDay.of(Month.FEBRUARY, 29);
+boolean vaildLeapYear = date.isValidYear(2023);
+System.out.println("vaildLeapYear = " + vaildLeapYear);
+
+boolean vaildLeapYear2 = date.isValidYear(2024);
+System.out.println("vaildLeapYear2 = " + vaildLeapYear);
+```
+
+- 결과 : 2023년 윤년이아님, 2024년은 윤년이다.
+
+```java
+vaildLeapYear = false
+vaildLeapYear2 = true
+```
+
+### ➡️Year
+
+Year 클래스 년도를 나타낸다.
+
+- 다음 예제에서는 Year.isLeap 메서드를 사용하여 지정된 년도가 윤년인지 확인한다.
+
+```java
+boolean  vaildLeapYear2 = Year.of(2024).isLeap(); //true
+```
+
+---
+
+## ✅****Date and Time Classes****
+
+### ➡️LocalTime
+
+LocalTime 클래스는 시간에관한 클래스이다. 이 클래스는 영화 시간 또는 지역 도서관 개폐 시간과 같은 Human 기반 시간을 나타내는 데 유용함.
+
+- 예제) 디지털 시계 만들기
+
+```java
+LocalTime thisSec;
+
+for(;;){
+    thisSec = LocalTime.now();
+    System.out.printf("%d: %d: %d",thisSec.getHour(), thisSec.getMinute(), thisSec.getSecond());
+    System.out.println();
+}
+```
+
+- 결과 - `시간: 분: 초:` 로 계속 나온다.
+
+```java
+6: 53: 3
+16: 53: 4
+16: 53: 4
+16: 53: 4
+16: 53: 4
+16: 53: 4
+16: 53: 4
+16: 53: 4
+16: 53: 4
+16: 53: 4
+16: 53: 4
+....
+```
+
+### ➡️LocalDateTime
+
+Date-Time API 핵심 클래스 중 하나 LocalDateTime 클래스는 시간(`시-분-초-나노초`)와 함께 날짜`(월-일-년)`를 나타내는 데 사용되며 LocalDate와 LocalTime의 조합이다.
+
+- LocalDateTime 예시)
+
+```java
+System.out.printf("현재: %s%n", LocalDateTime.now() );
+System.out.printf("2023년 6월 6일 @ 오전 11시 30분: %s%n", LocalDateTime.of(2023, Month.JUNE, 6, 11, 30) ) ;
+System.out.printf("지금 (인스턴트에서): %s%n", LocalDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()) );
+System.out.printf("6개월 후: %s%n", LocalDateTime.now().plusMonths(6) );
+System.out.printf("6개월 전: %s%n", LocalDateTime.now().minusMonths(6) );
+```
+
+- 결과
+
+```java
+2023년 6월 6일 @ 오전 11시 30분: 2023-06-06T11:30
+지금 (인스턴트에서): 2023-06-06T17:02:30.604461
+6개월 후: 2023-12-06T17:02:30.604625
+6개월 전: 2022-12-06T17:02:30.604837
+```
+
+---
+
+## ✅****Time Zone and Offset Classes****
+
+### ➡️****ZoneId and ZoneOffset****
+
+Date-Time API는 time zone(시간대) 또는 Offset을 지정하기 위한 두 가지 클래스를 제공한다.
+
+- `ZoneId`는 time zone 식별자를 지정하고 Instant와 LocalDateTime 사이를 변환하기 위한 규칙을 제공한다.
+- `ZoneOffset`은 그리치/UTC 시간에서 시간대(Time Zone) 오프셋을 지정한다.
+
+```java
+Set<String> allZones = ZoneId.getAvailableZoneIds();
+LocalDateTime dt = LocalDateTime.now();
+
+// 영역 집합을 사용하여 목록을 만들고 정렬한다.
+List<String> zoneList = new ArrayList<>(allZones);
+Collections.sort(zoneList);
+
+for (String s : zoneList) {
+    ZoneId zone = ZoneId.of(s);
+    ZonedDateTime zdt = dt.atZone(zone);
+    ZoneOffset offset = zdt.getOffset();
+    int secondsOfHour = offset.getTotalSeconds() % (60 * 60);
+    String out = String.format("%35s %10s%n", zone, offset);
+
+    // 전체 시간 오프셋이 없는 시간대만
+    // 표준 출력에 쓴다
+    if (secondsOfHour != 0) {
+        System.out.printf(out);
+    }
+}
+```
+
+- 결과
+
+```java
+                   America/St_Johns     -02:30
+                      Asia/Calcutta     +05:30
+                       Asia/Colombo     +05:30
+                         Asia/Kabul     +04:30
+                     Asia/Kathmandu     +05:45
+                      Asia/Katmandu     +05:45
+                       Asia/Kolkata     +05:30
+                       Asia/Rangoon     +06:30
+                        Asia/Tehran     +04:30
+                        Asia/Yangon     +06:30
+                 Australia/Adelaide     +09:30
+              Australia/Broken_Hill     +09:30
+                   Australia/Darwin     +09:30
+                    Australia/Eucla     +08:45
+                      Australia/LHI     +10:30
+                Australia/Lord_Howe     +10:30
+                    Australia/North     +09:30
+                    Australia/South     +09:30
+               Australia/Yancowinna     +09:30
+                Canada/Newfoundland     -02:30
+                       Indian/Cocos     +06:30
+                               Iran     +04:30
+                            NZ-CHAT     +12:45
+                    Pacific/Chatham     +12:45
+                  Pacific/Marquesas     -09:30
+```
+
+---
+
+## ✅****The Date-Time Classes****
+
+Date-Time API는 시간대(time zone)와 함께 작동하는 세 가지 임시 기반 클래스를 제공한다.
+
+- `ZonedDateTime` :  그리니치/UTC에서 시간대 오프셋이 있는 해당 시간대의 날짜 및 시간을 처리한다.
+  - ex) 지리적 위치 기반를 기반으로 날짜 및 시간 계산을 활용한 소프트웨어
+- `OffsetDateTime`: 표준 시간대 ID 없이 그리니치/UTC에서 해당 표준 시간대 오프셋으로 날짜 및 시간을 처리한다.
+  - ex) 그리니치/UTC 시간의 오프셋만 추적하는 데이터베이스에 타임스탬프를 저장하는 경우
+- `OffsetTime` : 시간데 ID 없이 그리니치/UTC의 해당 시간대 오프셋으로 시간을 처리한다.
+  - ex) XML 및 기타 네트워크 형식은 날짜-시간 전송을 할 때 사용(OffsetDateTime도 마찬가지)
+
+위의 세 클래스 모두 그리니치/UTC 시간에서 오프셋을 유지하지만 `ZonedDateTime` 만 `java.time.zone` 패키지의 일부인 [ZoneRules](https://docs.oracle.com/javase/8/docs/api/java/time/zone/ZoneRules.html)를 사용하여 특정 시간대에 대해 오프셋이 어떻게 달라지는 확인한다.
+
+예를들어, 대부분의 표준 시간대는 시계를 [일광 절약 시간](https://ko.wikipedia.org/wiki/일광_절약_시간제)으로 앞으로 이동할 때 간격(일반적으로 1시간)이 발생하고, 시계를 다시 표준 시간으로 이동할 때 시간이 겹치고 전환이 반복되기 전의 마지막 시간이 반복된다.
+
+`ZonedDateTime` 클래스는 이 시나리오를 수용하는 반면, `ZoneRules` 에 대한 액세스 권한이 없는OffsetDateTime 및 OffsetTime 클래스는 그렇지 않다.
+
+### ➡️****ZonedDateTime****
+
+`ZonedDateTime` 클래스는 LocalDateTime클래스를 ZoneId클래스와 결합한다. 표준 시간대(유럽/파리와 같은 지역/도시)와 함께 전체 날짜(년, 월, 일) 및 시간(시, 분 , 초, 나노초)을 나타내는데 사용한다.
+
+- 예제)샌프란시스코에서 도쿄로 가는 항공편의 출발 시간을 America/Los Angeles 시간대의 *ZonedDateTime* 으로 정의한다.
+  - `withZoneSameInstant` 및 `plusMinutes` 메서드들은 650분 비행 후 도쿄에 예상 도착 시간을 나타내는 ZonedDateTime의 인터스턴스를 생성하는데 사용된다.
+  - `ZoneRules.isDaylightSavings` 메서드는 항공편이 도쿄에 도착할 때 일광 절약 시간제인지 여부를 결정합니다.
+
+```java
+DateTimeFormatter format = DateTimeFormatter.ofPattern("MMM d yyyy  hh:mm a");
+
+// Leaving from San Francisco on July 20, 2013, at 7:30 p.m.
+LocalDateTime leaving = LocalDateTime.of(2013, Month.JULY, 20, 19, 30);
+ZoneId leavingZone = ZoneId.of("America/Los_Angeles");
+ZonedDateTime departure = ZonedDateTime.of(leaving, leavingZone);
+
+try {
+    String out1 = departure.format(format);
+    System.out.printf("LEAVING:  %s (%s)%n", out1, leavingZone);
+} catch (DateTimeException exc) {
+    System.out.printf("%s can't be formatted!%n", departure);
+    throw exc;
+}
+
+// Flight is 10 hours and 50 minutes, or 650 minutes
+ZoneId arrivingZone = ZoneId.of("Asia/Tokyo");
+ZonedDateTime arrival = departure.withZoneSameInstant(arrivingZone).plusMinutes(650);
+try {
+    String out2 = arrival.format(format);
+    System.out.printf("ARRIVING: %s (%s)%n", out2, arrivingZone);
+} catch (DateTimeException exc) {
+    System.out.printf("%s can't be formatted!%n", arrival);
+    throw exc;
+}
+
+if (arrivingZone.getRules().isDaylightSavings(arrival.toInstant()))
+    System.out.printf("  (%s daylight saving time will be in effect.)%n", arrivingZone);
+else
+    System.out.printf("  (%s standard time will be in effect.)%n", arrivingZone);
+```
+
+- 결과
+
+```java
+LEAVING:  7월 20 2013  07:30 오후 (America/Los_Angeles)
+ARRIVING: 7월 21 2013  10:20 오후 (Asia/Tokyo)
+  (Asia/Tokyo standard time will be in effect.)
+```
+
+### ➡️****OffsetDateTime****
+
+내부 코드를보면`OffsetDateTime` 클래스는 `LocalDateTime` 클래스를 `ZoneOffset` 클래스와 결합한다.
+
+그리니치/UTC 시간(+06:00 또는 - 과 같은 +/-시간:분)에서 오프셋을 사용하여 전체 날짜(년, 월, 일) 및 시간(시, 분, 초, 나노초)을 나타내는데 사용한다.
+
+다음 예제에서는 TemporalAdjuster.lastDay 메서드 와 함께 OffsetDateTime을 사용하여 2013년 7월의 마지막 목요일을 찾습니다.
+
+```java
+// 2013년 7월의 마지막 목요일을 찾습니다.
+LocalDateTime localDate = LocalDateTime.of(2013, Month.JULY, 20, 19, 30);
+ZoneOffset 오프셋 = ZoneOffset.of("-08:00");
+OffsetDateTime offsetDate = OffsetDateTime.of(localDate, offset);
+OffsetDateTime lastThursday =
+offsetDate.with(TemporalAdjusters.lastInMonth(DayOfWeek.THURSDAY));
+System.out.printf("2013년 7월 마지막 목요일은 %s일 입니다.", lastThursday.getDayOfMonth())
+```
+
+- 결과
+
+```java
+2013년 7월 마지막 목요일은 25일 입니다.
+```
+
+### ➡️OffSetTime
+
+- 내부 코드를보면 `OffsetTime` 클래스는 `LocalTime` 클래스를 `ZoneOffset` 클래스와 결합한다.
+- 그리니치/UTC 시간( +06:00 또는 -08:00 과 같은 +/-시간:분)의 오프셋으로 시간(시, 분, 초, 나노초)을 나타내는 데 사용된다.
+- `OffsetTime` 클래스는 `OffsetDateTime` 클래스와 동일한 상황에서 사용되지만 날짜 추적이 필요하지 않은 경우에 사용 된다.
+
+---
+
+## 📝Java 날짜 관련에 대한 회고
+
+회사에서 날짜에 대한 것을 처리하여, 휴일에 알아보았다.
+
+처음에 회사에서는 구글링해서 대충 정리된 내용을 봐서 이해가 안됐다. 하지만 자료를 천천히 다 찾아보고 읽고 정리해보니깐 이해가 쏙쏙된다.
+
+날짜클래스는 정말로 많이 사용하는 것을 이 글을 쓰면서 알게되었다. 앞으로도 날짜에 대한 클래스는 꾸준히 봐야겠다.
+
+---
+
+## 📎참고
+
+- [자바의 신 2부](https://www.yes24.com/Product/Goods/42643850)
+- [더 자바, Java8 - 백기선님](https://www.inflearn.com/course/the-java-java8)
+- [날짜와 관련된 공식 문서(Oracle)](https://docs.oracle.com/javase/tutorial/datetime/iso/index.html)
 
 <!-- outline-end -->
