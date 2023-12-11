@@ -209,5 +209,4 @@ REPEATABLE READ는 MVCC를 위해 UNDO 영억에 백업된 이전 데이터를 �
 
 
 
-
 <!-- outline-end -->
